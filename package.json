@@ -31,10 +31,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/suncalc": "^1.9.2",
+    "@types/suncalc": "^1.8.1",
     "@types/uuid": "^10.0.0",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.2",
+    "@stagewise/toolbar-next": "latest",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.0-canary.58",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

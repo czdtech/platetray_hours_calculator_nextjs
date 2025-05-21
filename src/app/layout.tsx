@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Header } from "@/components/Layout/Header";
 import { Footer } from "@/components/Layout/Footer";
 import { AnalyticsWrapper } from "@/components/Analytics/Analytics";
+import { StagewiseToolbar } from '@stagewise/toolbar-next';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,6 +27,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const stagewiseConfig = {
+    plugins: []
+  };
+
   return (
     <html lang="en">
       <body
@@ -37,6 +42,9 @@ export default function RootLayout({
         </main>
         <Footer />
         <AnalyticsWrapper />
+        {process.env.NODE_ENV === 'development' && (
+          <StagewiseToolbar config={stagewiseConfig} />
+        )}
       </body>
     </html>
   );
