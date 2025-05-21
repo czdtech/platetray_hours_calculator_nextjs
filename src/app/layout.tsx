@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "react-datepicker/dist/react-datepicker.css";
+import { Header } from "@/components/Layout/Header";
+import { Footer } from "@/components/Layout/Footer";
+import { AnalyticsWrapper } from "@/components/Analytics/Analytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,9 +29,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        {children}
+        <Header />
+        <main className="flex-grow">
+          {children}
+        </main>
+        <Footer />
+        <AnalyticsWrapper />
       </body>
     </html>
   );
