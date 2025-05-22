@@ -251,141 +251,155 @@ function LocationInputComponent({
           throw new Error(data.error || data.details || `Failed to fetch suggestions via proxy (status: ${response.status})`);
         }
 
-        if (data.predictions) {
-          setPredictions(data.predictions);
-          setShowPredictions(true);
+        if (requestId === lastRequestIdRef.current) {
+          setPredictions(data.predictions || []);
+          setShowPredictions(data.predictions && data.predictions.length > 0);
           setActivePredictionIndex(-1);
+          setError(null); // Clear error on successful fetch of suggestions
         } else {
+          // console.log(`Response for requestId ${requestId} (${inputValue}) arrived, but current is ${lastRequestIdRef.current}. Not updating UI.`);
+        }
+      } catch (err: unknown) {
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          // console.log(`Fetch for requestId ${requestId} (${inputValue}) was aborted.`);
+          // No error state update needed for self-aborted requests,
+          // unless it was the *very last* intended request that got aborted by unmount or similar.
+          // If this specific controller was the one stored as active, it means it was aborted by a *newer* request's controller.
+          // If it's still the active one after an abort error, it might be an external abort (less likely here).
+        } else if (requestId === lastRequestIdRef.current) { // For other errors, only update UI if current
+          console.error('fetchAutocompleteSuggestions (via proxy) error:', err);
           setPredictions([]);
-          // Don't hide predictions if there are simply no results for a valid query
+          setShowPredictions(false);
+          const error = err instanceof Error ? err : new Error('Unknown error');
+          setError(error.message || 'Could not fetch location suggestions.');
         }
-      } catch (error: any) {
-        if (error.name === 'AbortError') {
-          // console.log(`Fetch aborted for requestId ${requestId} (${inputValue})`);
-          return; // Expected behavior, do not set error or predictions
+        // Ensure the controller is cleared if it was the active one and an error occurred.
+        if (activeAutocompleteRequestControllerRef.current === controller) {
+          activeAutocompleteRequestControllerRef.current = null;
         }
-        console.error('Error fetching suggestions via proxy:', error);
-        setError('Could not fetch suggestions. Please try again.');
-        setPredictions([]);
-        setShowPredictions(false);
       }
-    }, 300), // 300ms debounce delay
-    [isLocationServiceReady, locationServiceError] // Dependencies for the useCallback itself
+    }, 150),
+    [isLocationServiceReady, locationServiceError, setError] // lastRequestIdRef and activeAutocompleteRequestControllerRef are refs
   );
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+  const handleInputChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
     setSearchInput(value);
-    setError(null);
+    setError(null); // Clear error on new input
 
-    if (value.trim() === '') {
+    // Minimum characters requirement (e.g., 3)
+    if (value.trim().length < 3) {
+      setPredictions([]);
+      setShowPredictions(false);
+      setActivePredictionIndex(-1);
+      // If there's an active autocomplete request, abort it as the input is now too short
+      if (activeAutocompleteRequestControllerRef.current) {
+        activeAutocompleteRequestControllerRef.current.abort();
+        activeAutocompleteRequestControllerRef.current = null; // Clear the ref
+      }
+      return; // Don't proceed to fetch suggestions if input is too short
+    }
+
+    const currentRequestId = ++lastRequestIdRef.current;
+
+    if (value.trim() === '' || isCoordinates(value).isValid) {
       setPredictions([]);
       setShowPredictions(false);
       return;
     }
 
-    if (!sessionTokenRef.current) {
-      console.warn('No session token available for autocomplete. Waiting for token or an error to be set.');
-      //setError('Location service initializing, please wait or try again shortly.'); // User-facing message
-      // Attempt to fetch a new token if one isn't available and not already fetching.
-      if (!isFetchingToken && !locationServiceError) {
-        fetchNewSessionToken();
-      }
-      return; // Don't proceed if token is missing
+    // If no token and not currently fetching one, then fetch a new one.
+    if (!sessionTokenRef.current && !isFetchingToken) {
+      await fetchNewSessionToken();
     }
-    // Increment request ID for each new input change to manage debounced calls
-    const newRequestId = lastRequestIdRef.current + 1;
-    lastRequestIdRef.current = newRequestId;
-    debouncedFetchSuggestions(value, sessionTokenRef.current, newRequestId);
-  };
 
-  const handleGetCurrentLocation = () => {
-    setIsLoading(true);
-    setError(null);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          const coords = { latitude, longitude, source: 'browser' as const };
-          setCurrentCoords(coords);
-
-          try {
-            const response = await fetch(`/api/maps/geocode?latlng=${latitude},${longitude}`);
-            const data = await response.json();
-
-            if (data.status === 'OK' && data.results[0]) {
-              const address = data.results[0].formatted_address;
-              setSearchInput(address);
-              onLocationChange(address);
-            } else {
-              // Fallback to raw coordinates if geocoding fails
-              const fallbackAddress = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-              setSearchInput(fallbackAddress);
-              onLocationChange(fallbackAddress);
-            }
-          } catch (e) {
-            console.error("Error reverse geocoding browser location:", e);
-            const fallbackAddress = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-            setSearchInput(fallbackAddress);
-            onLocationChange(fallbackAddress);
-            // setError("Could not determine address from current location.");
-          }
-
-          onUseCurrentLocation(coords); // This passes the coords up
-          setIsLoading(false);
-        },
-        (geoError) => {
-          console.error('Geolocation error:', geoError);
-          setError(getGeolocationErrorMessage(geoError.code));
-          setIsLoading(false);
-        }
-      );
+    // Only proceed if a token was successfully fetched or already existed.
+    if (sessionTokenRef.current) {
+      debouncedFetchSuggestions(value, sessionTokenRef.current, currentRequestId);
     } else {
-      setError('Geolocation is not supported by your browser.');
-      setIsLoading(false);
-    }
-  };
-
-  const getGeolocationErrorMessage = (code: number) => {
-    switch (code) {
-      case 1: return 'Location access denied. Please enable it in your browser settings.';
-      case 2: return 'Location information is unavailable. Please check your connection.';
-      case 3: return 'Location request timed out. Please try again.';
-      default: return 'An unknown error occurred while getting your location.';
-    }
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (activePredictionIndex >= 0 && predictions[activePredictionIndex]) {
-      handleSelectPrediction(predictions[activePredictionIndex]);
-    } else if (searchInput.trim()) {
-      geocodeAddress(searchInput.trim());
+      // This case might be hit if fetchNewSessionToken above failed.
+      setError(locationServiceError || "Location suggestions unavailable: session not ready.");
+      setPredictions([]);
       setShowPredictions(false);
     }
-  };
+  }, [
+    fetchNewSessionToken,
+    debouncedFetchSuggestions,
+    locationServiceError,
+    setError,
+    isFetchingToken
+    // activeAutocompleteRequestControllerRef is a ref, not needed in deps for this part
+  ]);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (showPredictions && predictions.length > 0) {
-      if (event.key === 'ArrowDown') {
-        event.preventDefault();
-        setActivePredictionIndex(prev => (prev + 1) % predictions.length);
-      } else if (event.key === 'ArrowUp') {
-        event.preventDefault();
-        setActivePredictionIndex(prev => (prev - 1 + predictions.length) % predictions.length);
-      } else if (event.key === 'Enter') {
-        if (activePredictionIndex >= 0) {
-          event.preventDefault(); // Prevent form submission if a prediction is active
-          handleSelectPrediction(predictions[activePredictionIndex]);
-        } else {
-          // Allow form submission to trigger geocodeAddress if Enter is pressed without active prediction
-        }
-      } else if (event.key === 'Escape') {
-        setShowPredictions(false);
-        setActivePredictionIndex(-1);
-      }
+  const handleGetLocation = useCallback(async () => {
+    setError(null);
+    setIsLoading(true);
+
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser.");
+      setIsLoading(false);
+      return;
     }
-  };
+
+    try {
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true, timeout: 5000, maximumAge: 0
+        });
+      });
+      const { latitude, longitude } = position.coords;
+
+      const response = await fetch(`/api/maps/geocode?latlng=${latitude},${longitude}`);
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        if (!response.ok) throw new Error(`Reverse geocoding via proxy failed with status ${response.status}`);
+        throw new Error('Failed to parse API response from handleGetLocation');
+      }
+      if (!response.ok) throw new Error(data.error || data.details || `Reverse geocoding via proxy failed with status ${response.status}`);
+
+      if (data.status === 'OK' && data.results[0]) {
+        const place = data.results[0];
+        const addressComponents = place.address_components;
+        const addrComps = addressComponents as AddressComponent[];
+        const city = addrComps.find(c => c.types.includes('locality'))?.long_name || '';
+        const state = addrComps.find(c => c.types.includes('administrative_area_level_1'))?.long_name || '';
+        const country = addrComps.find(c => c.types.includes('country'))?.long_name || '';
+        const formattedAddress = [city, state, country].filter(Boolean).join(', ');
+
+        setSearchInput(formattedAddress);
+        onLocationChange(formattedAddress);
+        setCurrentCoords({ latitude, longitude, source: 'browser' as const, address: formattedAddress });
+        onUseCurrentLocation({ latitude, longitude });
+      } else {
+        throw new Error(`No results found for current location: ${data.status}`);
+      }
+    } catch (err: unknown) {
+      if (err instanceof GeolocationPositionError) {
+        switch (err.code) {
+          case err.PERMISSION_DENIED:
+            setError("Please allow location access or enter location manually");
+            break;
+          case err.POSITION_UNAVAILABLE:
+            setError("Location information is unavailable. Please try entering location manually");
+            break;
+          case err.TIMEOUT:
+            setError("Location request timed out. Please try again or enter location manually");
+            break;
+          default:
+            setError("An unknown error occurred. Please try entering location manually");
+        }
+      } else {
+        const error = err instanceof Error ? err : new Error('Unknown error');
+        setError(error.message || "Failed to get location. Please try entering location manually");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [onLocationChange, onUseCurrentLocation]);
+
+    const handleInputKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {    if (showPredictions && predictions.length > 0) {      if (e.key === 'ArrowDown') {        e.preventDefault();        setActivePredictionIndex(prevIndex => (prevIndex + 1) % predictions.length);      } else if (e.key === 'ArrowUp') {        e.preventDefault();        setActivePredictionIndex(prevIndex => (prevIndex - 1 + predictions.length) % predictions.length);      } else if (e.key === 'Enter') {        e.preventDefault();        if (activePredictionIndex >= 0 && predictions[activePredictionIndex]) {          handleSelectPrediction(predictions[activePredictionIndex]);        } else if (searchInput.trim()) {          geocodeAddress(searchInput);          setShowPredictions(false);          setPredictions([]);          setActivePredictionIndex(-1);          debouncedFetchSuggestions.cancel();          if (activeAutocompleteRequestControllerRef.current) {            activeAutocompleteRequestControllerRef.current.abort();            activeAutocompleteRequestControllerRef.current = null;          }          lastRequestIdRef.current++;        }      } else if (e.key === 'Escape') {        e.preventDefault();        setShowPredictions(false);        setActivePredictionIndex(-1);      }    } else if (e.key === 'Enter') {      e.preventDefault();      if (searchInput.trim()) {        geocodeAddress(searchInput);        setShowPredictions(false);        setPredictions([]);        setActivePredictionIndex(-1);        debouncedFetchSuggestions.cancel();        if (activeAutocompleteRequestControllerRef.current) {          activeAutocompleteRequestControllerRef.current.abort();          activeAutocompleteRequestControllerRef.current = null;        }        lastRequestIdRef.current++;      }    }  }, [showPredictions, predictions, activePredictionIndex, handleSelectPrediction, searchInput, geocodeAddress, debouncedFetchSuggestions]);
 
   // Handle clicks outside of the input and prediction list to close it
   useEffect(() => {
@@ -414,87 +428,83 @@ function LocationInputComponent({
   }, [searchInput]);
 
   const getCoordinatesMessage = () => {
-    if (!currentCoords) return '';
+    if (!currentCoords) return null;
     const lat = currentCoords.latitude.toFixed(4);
     const lng = currentCoords.longitude.toFixed(4);
-    let sourceMsg = '';
-    switch (currentCoords.source) {
-      case 'browser': sourceMsg = ' (from browser location)'; break;
-      case 'input': sourceMsg = ' (from typed coordinates)'; break;
-      case 'geocode': sourceMsg = ' (geocoded)'; break;
-      case 'prediction': sourceMsg = ' (from selection)'; break;
-    }
-    return `Using coordinates: ${lat}, ${lng}${sourceMsg}`;
+    return `longitude: ${lng}, latitude: ${lat}`;
   };
 
   return (
-    <div className="relative">
-      <form onSubmit={handleSubmit} className="flex items-center space-x-2">
-        <div ref={inputRef} className="relative flex-grow">
-          <input
-            type="text"
-            value={searchInput}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onFocus={() => predictions.length > 0 && setShowPredictions(true)} // Show on focus if there are existing predictions
-            placeholder="Enter city, address, or coordinates"
-            className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
-            aria-autocomplete="list"
-            aria-expanded={showPredictions}
-            aria-controls="predictions-list"
-            aria-activedescendant={activePredictionIndex >= 0 ? `prediction-${activePredictionIndex}` : undefined}
-          />
-          {showPredictions && predictions.length > 0 && (
-            <ul
-              id="predictions-list"
-              className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
-              role="listbox"
-            >
-              {predictions.map((prediction, index) => (
-                <li
-                  key={prediction.place_id || index} // Fallback to index if place_id is missing
-                  id={`prediction-${index}`}
-                  role="option"
-                  aria-selected={activePredictionIndex === index}
-                  className={`px-3 py-2 cursor-pointer hover:bg-purple-50 text-sm text-gray-700 ${
-                    activePredictionIndex === index ? 'bg-purple-100' : ''
-                  }`}
-                  onClick={() => handleSelectPrediction(prediction)}
-                  onMouseEnter={() => setActivePredictionIndex(index)} // Allow mouse hover to also set active
-                >
-                  {prediction.description}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+    <div className="space-y-2">
+      <label htmlFor="location" className="block text-sm font-medium text-gray-700">Location</label>
+      <div className="relative">
+        <input
+          ref={inputRef}
+          type="text"
+          id="location"
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 transition-all duration-200 pl-4 pr-10"
+          placeholder="Enter your location..."
+          value={searchInput}
+          onChange={handleInputChange}
+          onKeyDown={handleInputKeyDown}
+          onFocus={() => {
+            if (searchInput.trim() && predictions.length > 0) setShowPredictions(true);
+            // Attempt to get a new session token on focus if one doesn't exist and not already fetching,
+            // as user might start typing immediately.
+            if (!sessionTokenRef.current && !isFetchingToken) {
+              fetchNewSessionToken();
+            }
+          }}
+          onBlur={() => {
+            setTimeout(() => {
+              if (document.activeElement && inputRef.current && !inputRef.current.parentElement?.contains(document.activeElement)) {
+                setShowPredictions(false);
+              }
+            }, 200);
+          }}
+          autoComplete="off"
+        />
+        {showPredictions && predictions.length > 0 && (
+          <ul
+            className="absolute z-10 w-full left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg mt-1 max-h-60 overflow-y-auto"
+            role="listbox"
+            aria-activedescendant={activePredictionIndex >= 0 ? `prediction-item-${activePredictionIndex}` : undefined}
+          >
+            {predictions.map((prediction, index) => (
+              <li
+                key={prediction.place_id || index}
+                id={`prediction-item-${index}`}
+                role="option"
+                aria-selected={index === activePredictionIndex}
+                className={`px-4 py-2 cursor-pointer hover:bg-purple-100 ${index === activePredictionIndex ? 'bg-purple-100' : ''} text-sm truncate`}
+                onMouseDown={() => handleSelectPrediction(prediction)}
+              >
+                {prediction.description}
+              </li>
+            ))}
+            <li className="px-4 py-2 text-xs text-gray-500 text-right">Powered by Google</li>
+          </ul>
+        )}
         <button
-          type="button"
-          onClick={handleGetCurrentLocation}
-          disabled={isLoading || isFetchingToken}
-          className="p-2 text-purple-600 hover:text-purple-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors duration-150 rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-          title="Use my current location"
+          onClick={handleGetLocation}
+          disabled={isLoading}
+          className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${isLoading ? 'text-purple-400' : 'text-gray-400 hover:text-purple-500'} transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/30 rounded-full p-1`}
+          aria-label="Use current location"
         >
-          {isLoading ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          ) : (
-            <MapPin className="h-5 w-5" />
-          )}
+          {isLoading ? <Loader2 size={18} className="animate-spin" /> : <MapPin size={18} />}
         </button>
-      </form>
+      </div>
       {error && (
-        <div className="mt-2 flex items-center text-sm text-red-600 bg-red-50 p-2 rounded-md border border-red-200">
-          <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
+        <div className="text-sm text-red-600 mt-1 animate-fade-in flex items-center gap-2">
+          <AlertCircle size={14} />
           <span>{error}</span>
         </div>
       )}
-      {locationServiceError && (
-        <div className="mt-2 flex items-center text-sm text-yellow-700 bg-yellow-50 p-2 rounded-md border border-yellow-300">
-          <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span>Location Service Error: {locationServiceError}. Some features might be limited.</span>
+      {currentCoords && !error && (
+        <div className="text-xs text-gray-500 mt-1 animate-fade-in">
+          {getCoordinatesMessage()}
         </div>
       )}
-      {/* <p className="mt-1 text-xs text-gray-500 italic">{getCoordinatesMessage()}</p> */}
     </div>
   );
 }

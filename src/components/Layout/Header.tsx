@@ -2,15 +2,39 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 // import { HashLink } from 'react-router-hash-link'; // HashLink might need a Next.js alternative or different handling
 
-// interface HeaderProps {
-//   activePage: 'calculator' | 'about' | 'blog';
-// }
+interface HeaderProps {
+  activePage: 'calculator' | 'about' | 'blog';
+}
 
-// export function Header({ activePage }: HeaderProps) {
-export function Header() { // Removed activePage prop
+export function Header({ activePage }: HeaderProps) {
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
+
+  const handleFAQClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // 如果当前不在首页，先导航到首页
+    if (window.location.pathname !== '/') {
+      router.push('/');
+      // 需要等到页面加载完毕后才能滚动
+      setTimeout(() => {
+        const faqElement = document.getElementById('faq');
+        if (faqElement) {
+          faqElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 500);
+    } else {
+      // 如果已经在首页，直接滚动
+      const faqElement = document.getElementById('faq');
+      if (faqElement) {
+        faqElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    setMenuOpen(false);
+  };
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -26,39 +50,37 @@ export function Header() { // Removed activePage prop
         <nav className="hidden md:flex space-x-6">
           <Link
             href="/"
-            // className={`text-sm ${activePage === 'calculator' // activePage logic removed for now
-            //   ? 'text-purple-600 font-medium border-b-2 border-purple-600 pb-1'
-            //   : 'text-gray-600 hover:text-purple-700 transition-colors duration-200'
-            //   }`}
-            className="text-sm text-gray-600 hover:text-purple-700 transition-colors duration-200"
+            className={`text-sm ${activePage === 'calculator'
+              ? 'text-purple-600 font-medium border-b-2 border-purple-600 pb-1'
+              : 'text-gray-600 hover:text-purple-700 transition-colors duration-200'
+              }`}
           >
             Calculator
           </Link>
-          {/* {activePage === 'calculator' && ( // activePage logic removed for now */}
-          <Link
-            href="/#faq"
-            className="text-sm text-gray-600 hover:text-purple-700 transition-colors duration-200"
-          >
-            FAQ
-          </Link>
-          {/* )} */}
+          {activePage === 'calculator' && (
+            <Link
+              href="/#faq"
+              onClick={handleFAQClick}
+              className="text-sm text-gray-600 hover:text-purple-700 transition-colors duration-200"
+            >
+              FAQ
+            </Link>
+          )}
           <Link
             href="/blog"
-            // className={`text-sm ${activePage === 'blog' // activePage logic removed for now
-            //   ? 'text-purple-600 font-medium border-b-2 border-purple-600 pb-1'
-            //   : 'text-gray-600 hover:text-purple-700 transition-colors duration-200'
-            //   }`}
-            className="text-sm text-gray-600 hover:text-purple-700 transition-colors duration-200"
+            className={`text-sm ${activePage === 'blog'
+              ? 'text-purple-600 font-medium border-b-2 border-purple-600 pb-1'
+              : 'text-gray-600 hover:text-purple-700 transition-colors duration-200'
+              }`}
           >
             Blog
           </Link>
           <Link
             href="/about"
-            // className={`text-sm ${activePage === 'about' // activePage logic removed for now
-            //   ? 'text-purple-600 font-medium border-b-2 border-purple-600 pb-1'
-            //   : 'text-gray-600 hover:text-purple-700 transition-colors duration-200'
-            //   }`}
-            className="text-sm text-gray-600 hover:text-purple-700 transition-colors duration-200"
+            className={`text-sm ${activePage === 'about'
+              ? 'text-purple-600 font-medium border-b-2 border-purple-600 pb-1'
+              : 'text-gray-600 hover:text-purple-700 transition-colors duration-200'
+              }`}
           >
             About
           </Link>
@@ -98,15 +120,15 @@ export function Header() { // Removed activePage prop
           >
             Calculator
           </Link>
-          {/* {activePage === 'calculator' && ( // activePage logic removed for now */}
-          <Link
-            href="/#faq"
-            className="block py-2 text-sm font-medium text-gray-700 hover:text-purple-700"
-            onClick={() => setMenuOpen(false)}
-          >
-            FAQ
-          </Link>
-          {/* )} */}
+          {activePage === 'calculator' && (
+            <Link
+              href="/#faq"
+              className="block py-2 text-sm font-medium text-gray-700 hover:text-purple-700"
+              onClick={handleFAQClick}
+            >
+              FAQ
+            </Link>
+          )}
           <Link
             href="/blog"
             className="block py-2 text-sm font-medium text-gray-700 hover:text-purple-700"

@@ -11,6 +11,17 @@ interface HourItemProps {
   onToggle: (index: number) => void;
 }
 
+// 行星颜色的实际RGB值
+const planetColorValues = {
+  Sun: '#B45309',   // amber-800
+  Moon: '#6366F1',  // indigo-500
+  Mercury: '#0EA5E9', // sky-500
+  Venus: '#BE185D', // pink-800
+  Mars: '#DC2626',  // red-600
+  Jupiter: '#A855F7', // purple-600
+  Saturn: '#6B7280', // gray-500
+};
+
 export function HourItem({ hour, index, planetColors, planetSymbols, isOpen, onToggle }: HourItemProps) {
   const handleClick = () => {
     const isCoarse = window.matchMedia('(pointer: coarse)').matches;
@@ -19,6 +30,8 @@ export function HourItem({ hour, index, planetColors, planetSymbols, isOpen, onT
     }
   };
 
+  // 获取行星对应的颜色值
+  const planetColor = planetColorValues[hour.planet as keyof typeof planetColorValues] || '#6B7280';
   return (
     <div className="relative group">
       <button
@@ -42,12 +55,21 @@ export function HourItem({ hour, index, planetColors, planetSymbols, isOpen, onT
         <span className="w-8 text-sm text-gray-500 font-medium">
           {String(index + 1).padStart(2, '0')}
         </span>
-        <span className={`font-medium ${planetColors[hour.planet]}`}>
+        {/* 使用双重方式应用颜色：CSS类 + 内联样式作为备选 */}
+        <span 
+          className={`font-medium ${planetColors[hour.planet]}`}
+          style={{ color: planetColor }}
+        >
           {hour.planet}
         </span>
         <div className="ml-auto flex items-center shrink-0">
           <span className="text-sm text-gray-600 truncate">{hour.timeRange}</span>
-          <span className={`ml-3 text-lg ${planetColors[hour.planet]}`}> {planetSymbols[hour.planet]} </span>
+          <span 
+            className={`ml-3 text-lg ${planetColors[hour.planet]}`} 
+            style={{ color: planetColor }}
+          >
+            {planetSymbols[hour.planet]}
+          </span>
         </div>
       </button>
 
@@ -74,4 +96,4 @@ export function HourItem({ hour, index, planetColors, planetSymbols, isOpen, onT
       )}
     </div>
   );
-} 
+}

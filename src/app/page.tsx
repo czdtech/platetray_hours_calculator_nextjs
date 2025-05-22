@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Header } from '@/components/Layout/Header';
 import CalculatorPageClient from './CalculatorPageClient'; // 将创建这个客户端组件
 import { getFAQPageSchema } from '@/utils/seo/jsonld'; // Assuming this path is correct
 
@@ -47,5 +48,10 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  return <CalculatorPageClient />;
+  return (
+    <>
+      <Header activePage="calculator" />
+      <CalculatorPageClient />
+    </>
+  );
 }

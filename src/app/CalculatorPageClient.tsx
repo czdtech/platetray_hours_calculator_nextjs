@@ -11,22 +11,19 @@ import { HoursList } from '@/components/Calculator/HoursList';
 import { TimeFormatToggle } from '@/components/Calculator/TimeFormatToggle';
 import { HoursListSkeleton } from '@/components/Skeleton/HoursListSkeleton';
 import { CurrentHourSkeleton } from '@/components/Skeleton/CurrentHourSkeleton';
-// import { JsonLd } from '@/components/SEO/JsonLd'; // JSON-LD will be handled by page.tsx metadata or a dedicated component if complex
-// import { getWebSiteSchema, getFAQPageSchema } from '@/utils/seo/jsonld'; // Ditto
-import { Breadcrumb } from '@/components/SEO/Breadcrumb'; 
 import { Section } from '@/components/semantic/Section';
-import { timeZoneService } from '@/services/TimeZoneService'; // For initial formatting, if needed before context is fully ready
-import { formatInTimeZone as formatInTimeZoneDirect } from 'date-fns-tz'; // Direct import for specific cases
+import { timeZoneService } from '@/services/TimeZoneService';
+import { formatInTimeZone as formatInTimeZoneDirect } from 'date-fns-tz';
 import { subDays } from 'date-fns';
+import { FAQSection } from '@/components/FAQ/FAQSection';
 
 interface Coordinates {
   latitude: number;
   longitude: number;
-  source: 'browser' | 'input' | 'geocode' | 'autocomplete'; // Make sure this matches LocationInput's expectations if different
+  source: 'browser' | 'input' | 'geocode' | 'autocomplete';
   address?: string;
 }
 
-// Combine Calculator and CalculatorContent logic here
 function CalculatorCore() {
   const { selectedDate, timezone, setSelectedDate, setTimezone, formatDate } = useDateContext();
   
@@ -65,52 +62,55 @@ function CalculatorCore() {
     }
   }, [currentHour, planetaryHoursRaw]);
 
+  // 与旧版本保持一致的时区获取逻辑
   useEffect(() => {
-    const fetchTimezoneAndCalculate = async () => {
+    const fetchTimezone = async () => {
       if (coordinates) {
-        setIsTimezoneUpdating(true);
         try {
+          // Mark timezone as updating
+          setIsTimezoneUpdating(true);
+
           const timestamp = Math.floor(Date.now() / 1000);
           const response = await fetch(
             `/api/maps/timezone?location=${coordinates.latitude},${coordinates.longitude}&timestamp=${timestamp}`
           );
           const data = await response.json();
-          let newTimezone = timezone; // Default to current timezone if API fails
           if (data.status === 'OK') {
-            newTimezone = data.timeZoneId;
             setTimezone(data.timeZoneId);
+
+            // 日志：完成时区更新后立即重新计算行星时
+            console.log('✅ [Timezone] 时区获取完成，开始重新计算行星时间');
+            calculate(coordinates.latitude, coordinates.longitude, selectedDate, data.timeZoneId);
           }
-          calculate(coordinates.latitude, coordinates.longitude, selectedDate, newTimezone);
+
+          // Mark timezone update as complete
+          setIsTimezoneUpdating(false);
         } catch (error) {
           console.error('Error fetching timezone:', error);
-          // Calculate with current/default timezone on error
-          calculate(coordinates.latitude, coordinates.longitude, selectedDate, timezone);
-        } finally {
+          // Also mark as complete in case of error
           setIsTimezoneUpdating(false);
         }
       }
     };
-    fetchTimezoneAndCalculate();
-  }, [coordinates, calculate, selectedDate, setTimezone, timezone]); // Added timezone to dependencies
 
+    fetchTimezone();
+  }, [coordinates]);
+
+  // 当用户仅修改日期时重新计算（坐标和时区已就绪）
   useEffect(() => {
-    // This effect recalculates if ONLY the date changes, and timezone is stable.
-    // The main calculation is now triggered by the coordinates change effect (fetchTimezoneAndCalculate).
-    if (!isTimezoneUpdating && coordinates && timezone && !isLoadingHours) { // Ensure not already loading hours
-      // console.log('[DateChange Only Effect] Recalculating for date change');
-      // calculate(coordinates.latitude, coordinates.longitude, selectedDate, timezone);
-      // This might be redundant if fetchTimezoneAndCalculate covers it. Let's monitor.
+    if (!isTimezoneUpdating && coordinates && timezone) {
+      calculate(coordinates.latitude, coordinates.longitude, selectedDate, timezone);
     }
-  }, [selectedDate]); // Removed calculate, coordinates, timezone, isLoadingHours to be more specific
+  }, [selectedDate]);
 
-  // ---- HANDLERS ----
   const handleLocationChange = (newLocation: string) => {
     setLocation(newLocation);
-    // Coordinate update will trigger timezone fetch and calculation
   };
 
   const handleCoordinatesUpdate = (coords: { latitude: number; longitude: number; source?: string; address?: string }) => {
-    // setIsTimezoneUpdating(true); // This will be set by the effect that fetches timezone
+    // Mark timezone as updating
+    setIsTimezoneUpdating(true);
+
     setCoordinates({
       latitude: coords.latitude,
       longitude: coords.longitude,
@@ -120,13 +120,11 @@ function CalculatorCore() {
   };
 
   const handleDateChange = (date: Date) => {
-    setSelectedDate(date); 
-    // The effect watching `selectedDate` along with stable timezone/coords should trigger re-calc.
+    setSelectedDate(date);
   };
 
   const handleTimeFormatChange = (format: '12h' | '24h') => {
     setTimeFormat(format);
-    // Re-calculation will happen due to usePlanetaryHours dependency on timeFormat
   };
 
   // ---- RENDER LOGIC ----
@@ -149,117 +147,235 @@ function CalculatorCore() {
     Jupiter: '♃',
     Saturn: '♄'
   };
-
-  const breadcrumbItems = [
-    { name: 'Home', url: '/' } // Assuming this is the root page
-  ];
   
   // Determine date for display in CurrentHourDisplay (pre-sunrise logic)
   const sunriseLocal = planetaryHoursRaw?.sunriseLocal;
-  let ephemDate = selectedDate;
-  let isBeforeSunriseToday = false;
+  let ephemDateStr = formatInTimeZoneDirect(selectedDate, timezone, 'yyyy-MM-dd');
+
   if (sunriseLocal) {
-    const nowInSelectedTimezone = timeZoneService.utcToZonedTime(new Date(), timezone);
-    if (nowInSelectedTimezone < sunriseLocal && 
-        formatInTimeZoneDirect(nowInSelectedTimezone, timezone, 'yyyy-MM-dd') === formatInTimeZoneDirect(sunriseLocal, timezone, 'yyyy-MM-dd')) {
-      ephemDate = subDays(selectedDate, 1);
-      isBeforeSunriseToday = true;
+    const nowUtc = new Date();
+    const nowInTzDay = formatInTimeZoneDirect(nowUtc, timezone, 'yyyy-MM-dd');
+    const sunriseDay = formatInTimeZoneDirect(sunriseLocal, timezone, 'yyyy-MM-dd');
+
+    // 如果当前仍在日出之前，则行星时归属前一天
+    if (nowInTzDay === sunriseDay && nowUtc < sunriseLocal) {
+      const yesterday = subDays(sunriseLocal, 1);
+      ephemDateStr = formatInTimeZoneDirect(yesterday, timezone, 'yyyy-MM-dd');
+    } else {
+      ephemDateStr = sunriseDay;
     }
   }
+
+  const isSameDate = formatInTimeZoneDirect(selectedDate, timezone, 'yyyy-MM-dd') === ephemDateStr;
   const selectedDayRuler = planetaryHoursRaw?.dayRuler;
+
+  // FAQ数据
+  const faqs = [
+    {
+      question: 'How are planetary hours calculated?',
+      answer: 'Planetary hours are calculated by dividing the time between sunrise and sunset (for daytime hours) and sunset and the next sunrise (for nighttime hours) into 12 equal parts. The length of these "hours" varies depending on the season and latitude.'
+    },
+    {
+      question: 'Why are the hours not exactly 60 minutes long?',
+      answer: 'Because the length of daylight and nighttime changes throughout the year, the duration of each planetary hour also changes. They are only close to 60 minutes near the equinoxes.'
+    },
+    {
+      question: 'Do I need to know my exact sunrise/sunset times?',
+      answer: 'No, this calculator handles that automatically based on the location and date you provide. It uses precise astronomical calculations.'
+    },
+    {
+      question: 'Which planets are used?',
+      answer: 'The system uses the seven traditional astrological planets: Sun, Moon, Mercury, Venus, Mars, Jupiter, and Saturn. Uranus, Neptune, and Pluto are not part of this traditional system.'
+    },
+    {
+      question: 'Is this scientifically proven?',
+      answer: 'Planetary hours are part of traditional astrology and are not based on modern scientific principles. They are used as a symbolic or spiritual timing system by those who follow these traditions.'
+    },
+    {
+      question: 'How accurate is the location detection?',
+      answer: 'If you allow location access, the calculator uses your browser\'s geolocation capabilities, which are generally quite accurate for determining sunrise/sunset times. You can also manually enter any location worldwide.'
+    },
+    {
+      question: 'Why do summer and winter hours differ in length?',
+      answer: 'Because planetary hours divide sunrise-to-sunset into 12 slices, the length of each slice stretches in summer and shrinks in winter. Near the equator they stay close to 60 minutes all year.'
+    },
+    {
+      question: 'Why is it still "night hours" before today\'s sunrise?',
+      answer: 'By tradition the planetary day starts at sunrise. Any time before sunrise belongs to the previous night set, even if the clock shows 3 AM of the new calendar date.'
+    },
+    {
+      question: 'How do I choose the best hour for my task?',
+      answer: 'Match the symbolism: Venus for love or art, Mercury for emails or study, Mars for workouts or assertive action. Use our cheat-sheet or hover tips for quick guidance.'
+    },
+  ];
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
-      <Breadcrumb items={breadcrumbItems} />
       
-      <Section aria-labelledby="calculator-settings">
-        <h1 id="calculator-settings" className="sr-only">Calculator Settings</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          <LocationInput 
-            defaultLocation={location}
-            onLocationChange={handleLocationChange}
-            onUseCurrentLocation={handleCoordinatesUpdate}
-          />
-          <DateTimeInput 
-            selectedDate={selectedDate} 
-            onDateChange={handleDateChange} 
-            defaultDate={formatDate(selectedDate, 'medium')} // Or use formatDateWithPattern from context
-          />
+      <Section className="bg-gradient-to-b from-white to-gray-50 rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6 md:p-8 mb-8 w-full max-w-full">
+        <div className="flex flex-col md:flex-row justify-between items-center border-b border-gray-100 pb-6 mb-8">
+          <div className="w-full md:w-2/5 pr-0 md:pr-6">
+            {/* 页面唯一主标题 */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-500 to-indigo-400 bg-clip-text text-transparent mb-3 md:mb-0 leading-tight overflow-hidden text-ellipsis">
+              Find Your Planetary Hours
+            </h1>
+          </div>
+          <div className="w-full md:w-3/5 mt-3 md:mt-0 md:pl-6 md:border-l border-gray-200">
+            <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+              Discover the perfect time for your activities based on ancient planetary wisdom.
+            </p>
+          </div>
+        </div>
+
+        {hoursError && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            {hoursError}
+          </div>
+        )}
+
+        {loading && (
+          <div className="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg text-purple-700">
+            Calculating planetary hours...
+          </div>
+        )}
+
+        <div className="space-y-8">
+          <div className="grid grid-cols-12 gap-4 md:gap-8">
+            <div className="col-span-12 lg:col-span-8">
+              <div className="space-y-6 md:space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                  <LocationInput
+                    defaultLocation={location}
+                    onLocationChange={handleLocationChange}
+                    onUseCurrentLocation={handleCoordinatesUpdate}
+                  />
+                  <DateTimeInput
+                    defaultDate={formatDate(selectedDate, 'medium')}
+                    onDateChange={handleDateChange}
+                    selectedDate={selectedDate}
+                  />
+                </div>
+                <WeekNavigation
+                  planetColors={planetColors}
+                  onDaySelect={handleDateChange}
+                />
+              </div>
+            </div>
+            <div className="col-span-12 lg:col-span-4">
+              {loading ? (
+                <CurrentHourSkeleton />
+              ) : (
+                <CurrentHourDisplay
+                  currentHour={currentHour}
+                  planetColors={planetColors}
+                  planetSymbols={planetSymbols}
+                  dayRuler={selectedDayRuler}
+                  sunriseTime={sunriseLocal}
+                  timeFormat={timeFormat}
+                  isSameDate={isSameDate}
+                  beforeSunrise={sunriseLocal ? (new Date() < sunriseLocal) : false}
+                />
+              )}
+            </div>
+          </div>
+
+          <div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+              <div className="flex flex-col md:flex-row items-center justify-center md:justify-between">
+                <div className="flex flex-col md:flex-row items-center text-center md:text-left gap-1 md:gap-2 mb-3 md:mb-0">
+                  <h2 className="text-xl font-semibold text-gray-800 flex flex-wrap items-center justify-center gap-1">
+                    <span>{formatDate(selectedDate, 'medium')}</span>
+                    <span className="text-gray-500 hidden md:inline">•</span>
+                    <span>{location}</span>
+                  </h2>
+                  <div className="flex items-center justify-center text-sm text-gray-500">
+                    <svg className="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+                    <span>{timezone} ({timeZoneService.getTimeZoneAbbreviation(new Date(), timezone)}, {timeZoneService.formatInTimeZone(new Date(), timezone, 'z')})</span>
+                  </div>
+                </div>
+                <div className="md:ml-4">
+                  <TimeFormatToggle format={timeFormat} onFormatChange={handleTimeFormatChange} />
+                </div>
+              </div>
+            </div>
+
+            {/* 行星时间列表：移动端单列（可切换），桌面端双列并排 */}
+            <div className="mb-4">
+              {/* 移动端 Tab 切换按钮 */}
+              <div className="flex md:hidden rounded-lg bg-gray-100 p-1">
+                <button
+                  onClick={() => setActiveTab('day')}
+                  className={`flex items-center justify-center w-1/2 py-2 text-sm font-medium rounded-md ${activeTab === 'day'
+                    ? 'bg-white text-amber-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800'
+                    } transition-colors duration-200`}
+                >
+                  <svg className="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" /></svg>
+                  Daytime Hours
+                </button>
+                <button
+                  onClick={() => setActiveTab('night')}
+                  className={`flex items-center justify-center w-1/2 py-2 text-sm font-medium rounded-md ${activeTab === 'night'
+                    ? 'bg-white text-indigo-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800'
+                    } transition-colors duration-200`}
+                >
+                  <svg className="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+                  Nighttime Hours
+                </button>
+              </div>
+
+              {/* 列表区域：grid-1（移动端） / grid-2（桌面端） */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mt-4">
+                {/* Daytime list */}
+                <div className={`${activeTab === 'day' ? '' : 'hidden'} md:block`}>
+                  {loading ? (
+                    <HoursListSkeleton title="Daytime Hours" />
+                  ) : (
+                    <HoursList
+                      title="Daytime Hours"
+                      hours={daytimeHours}
+                      planetColors={planetColors}
+                      planetSymbols={planetSymbols}
+                      titleColor="text-amber-600"
+                    />
+                  )}
+                </div>
+
+                {/* Nighttime list */}
+                <div className={`${activeTab === 'night' ? '' : 'hidden'} md:block`}>
+                  {loading ? (
+                    <HoursListSkeleton title="Nighttime Hours" />
+                  ) : (
+                    <HoursList
+                      title="Nighttime Hours"
+                      hours={nighttimeHours}
+                      planetColors={planetColors}
+                      planetSymbols={planetSymbols}
+                      titleColor="text-indigo-600"
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </Section>
 
-      <WeekNavigation planetColors={planetColors} onDaySelect={handleDateChange} />
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        <div className="lg:col-span-1 space-y-4">
-          <Section aria-labelledby="current-hour-heading">
-            <h2 id="current-hour-heading" className="sr-only">Current Planetary Hour</h2>
-            {loading ? (
-              <CurrentHourSkeleton />
-            ) : (
-              <CurrentHourDisplay 
-                currentHour={currentHour}
-                planetColors={planetColors}
-                planetSymbols={planetSymbols}
-                dayRuler={selectedDayRuler}
-                sunriseTime={sunriseLocal} // Pass localized sunrise time
-                timeFormat={timeFormat}
-                beforeSunrise={isBeforeSunriseToday}
-              />
-            )}
-          </Section>
-          <TimeFormatToggle format={timeFormat} onFormatChange={handleTimeFormatChange} />
-        </div>
-
-        <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md border border-gray-200">
-          <div className="flex border-b border-gray-200 mb-4">
-            <button 
-              onClick={() => setActiveTab('day')}
-              className={`py-2 px-4 font-medium text-sm transition-colors duration-150 ${activeTab === 'day' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500 hover:text-gray-700'}`}>
-              Day Hours
-            </button>
-            <button 
-              onClick={() => setActiveTab('night')}
-              className={`py-2 px-4 font-medium text-sm transition-colors duration-150 ${activeTab === 'night' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500 hover:text-gray-700'}`}>
-              Night Hours
-            </button>
-          </div>
-
-          {loading ? (
-            <HoursListSkeleton title={activeTab === 'day' ? "Loading Daytime Hours..." : "Loading Nighttime Hours..."} />
-          ) : activeTab === 'day' ? (
-            <HoursList 
-              title="Daytime Planetary Hours"
-              hours={daytimeHours}
-              planetColors={planetColors}
-              planetSymbols={planetSymbols}
-              titleColor="text-yellow-600"
-            />
-          ) : (
-            <HoursList 
-              title="Nighttime Planetary Hours"
-              hours={nighttimeHours}
-              planetColors={planetColors}
-              planetSymbols={planetSymbols}
-              titleColor="text-indigo-600"
-            />
-          )}
-          {hoursError && <p className="text-red-500 mt-4">Error calculating hours: {hoursError}</p>}
-        </div>
-      </div>
+      <Section id="faq">
+        <FAQSection faqs={faqs} />
+      </Section>
     </div>
   );
 }
 
 export default function CalculatorPageClient() {
   const initialDate = new Date();
-  // Attempt to get user's timezone; fallback to a common one if not available or on server initially.
-  // This is tricky SSR vs Client. For now, stick to a default, context can allow user to change.
-  const initialTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York';
+  const initialTimezone = 'America/New_York';
 
   return (
     <DateProvider initialDate={initialDate} initialTimezone={initialTimezone}>
       <CalculatorCore />
     </DateProvider>
   );
-} 
+}

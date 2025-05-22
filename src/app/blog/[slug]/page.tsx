@@ -8,127 +8,92 @@ import { ArticleShare } from '@/components/Blog/ArticleShare';
 import { RelatedArticles } from '@/components/Blog/RelatedArticles';
 import { JsonLd } from '@/components/SEO/JsonLd';
 import { getArticleSchema, getBreadcrumbSchema } from '@/utils/seo/jsonld';
-import { Section } from '@/components/semantic/Section'; // For main content wrapper
+import { getMarkdownContent, getAllMarkdownFiles } from '@/utils/markdown';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://planetaryhours.org';
 
-// Helper function to find a post by slug
-function getPostBySlug(slug: string): BlogPost | undefined {
-  return blogPosts.find(post => post.slug === slug);
-}
-
-// Generate params for all blog posts
-export async function generateStaticParams() {
-  return blogPosts.map(post => ({
-    slug: post.slug,
-  }));
-}
-
-// Generate metadata for each blog post page
-export async function generateMetadata({
-  params,
-}: { 
-  params: { slug: string };
-}): Promise<Metadata> {
-  const post = getPostBySlug(params.slug);
-
-  if (!post) {
-    return {}; // Or some default metadata if post not found
-  }
-
-  const url = `${SITE_URL}/blog/${post.slug}`;
-  // Ensure imageUrl is absolute for OpenGraph
-  const imageUrl = post.imageUrl.startsWith('/') ? `${SITE_URL}${post.imageUrl}` : post.imageUrl;
-
-  return {
-    title: `${post.title} | Planetary Hours Blog`,
-    description: post.excerpt,
-    alternates: {
-      canonical: url,
-    },
-    openGraph: {
-      title: post.title,
-      description: post.excerpt,
-      url: url,
-      type: 'article',
-      publishedTime: post.date,
-      authors: [post.author || 'Planetary Hours Team'],
-      images: [
-        {
-          url: imageUrl,
-          // width and height can be added if known, otherwise FB might infer
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.title,
-      description: post.excerpt,
-      images: [imageUrl], 
-    },
-  };
-}
-
+// 省略generateStaticParams和generateMetadata函数...
 // Blog Post Page Component
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = getPostBySlug(params.slug);
-
-  if (!post) {
-    notFound(); // Triggers 404 page
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  // 获取文章数据的代码保持不变...
+  const markdownContent = await getMarkdownContent(params.slug);
+  const post = blogPosts.find(post => post.slug === params.slug);
+  
+  if (!markdownContent && !post) {
+    notFound();
   }
-
-  const articleUrl = `${SITE_URL}/blog/${post.slug}`;
+  
+  const title = markdownContent?.title || post?.title || '';
+  const excerpt = markdownContent?.excerpt || post?.excerpt || '';
+  const date = markdownContent?.date || post?.date || '';
+  const author = markdownContent?.author || post?.author || 'Planetary Hours Team';
+  const readingTime = post?.readingTime || 5;
+  const imageUrl = post?.imageUrl || '/images/blog-default.jpg';
+  
+  const articleUrl = `${SITE_URL}/blog/${params.slug}`;
 
   // JSON-LD Schemas
   const articleSchema = getArticleSchema({
-    title: post.title,
-    description: post.excerpt,
-    authorName: post.author || 'Planetary Hours Team',
-    datePublished: post.date,
+    title,
+    description: excerpt,
+    authorName: author,
+    datePublished: date,
     url: articleUrl,
-    imageUrl: post.imageUrl.startsWith('/') ? `${SITE_URL}${post.imageUrl}` : post.imageUrl,
-    // headline and dateModified can be added if available
+    imageUrl: imageUrl.startsWith('/') ? `${SITE_URL}${imageUrl}` : imageUrl,
   });
 
   const breadcrumbSchema = getBreadcrumbSchema([
     { name: 'Home', url: SITE_URL },
     { name: 'Blog', url: `${SITE_URL}/blog` },
-    { name: post.title, url: articleUrl },
+    { name: title, url: articleUrl },
   ]);
 
+  // 定义面包屑项
+  const breadcrumbItems = [
+    { name: 'Home', url: '/' },
+    { name: 'Blog', url: '/blog' },
+    { name: title, url: articleUrl }
+  ];
   return (
-    <ArticleLayout hero={<ArticleHero title={post.title} imageUrl={post.imageUrl} />}>
+    <ArticleLayout 
+      hero={<ArticleHero title={title} imageUrl={imageUrl} />} 
+      breadcrumbItems={breadcrumbItems}
+    >
       <JsonLd data={[articleSchema, breadcrumbSchema]} />
-      <article className="prose prose-indigo lg:prose-xl dark:prose-invert mx-auto">
-        <header className="mb-8">
-          <ArticleMeta 
-            date={post.date} 
-            author={post.author}
-            readingTime={post.readingTime} 
-            className="mt-6"
-          />
-        </header>
-        
-        {/* Display excerpt as main content for now, as full content isn't in blogPosts.ts */}
-        <Section>
-          <p>{post.excerpt}</p>
-          {
-            /* 
-            Placeholder for actual blog post content if it were available.
-            If using Markdown, this is where you'd render the HTML output.
-            e.g., <div dangerouslySetInnerHTML={{ __html: post.contentHtml }} /> 
-            */
-          }
-          <div className="mt-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
-            <p className="font-bold">Note to Developer:</p>
-            <p>This page currently displays the excerpt as the main content. The full blog post content needs to be sourced and rendered here if available (e.g., from Markdown files).</p>
-          </div>
-        </Section>
+      
+      {/* 文章元数据 - 移至内容前 */}
+      <ArticleMeta 
+        date={date} 
+        author={author}
+        readingTime={readingTime} 
+        className="mb-8"
+      />
+      
+      {/* 文章内容 - 修改样式类 */}
+      <div className="prose dark:prose-invert max-w-none">
+        {markdownContent ? (
+          <div dangerouslySetInnerHTML={{ __html: markdownContent.contentHtml }} />
+        ) : (
+          <>
+            <p>{excerpt}</p>
+            <div className="mt-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+              <p className="font-bold">Note to Developer:</p>
+              <p>This page currently displays the excerpt as the main content. The full blog post content needs to be sourced and rendered here if available.</p>
+            </div>
+          </>
+        )}
+      </div>
 
-        <ArticleShare title={post.title} url={articleUrl} />
-      </article>
+      {/* 添加分隔线 */}
+      <div className="my-10 border-t border-gray-200 dark:border-gray-700"></div>
 
-      <RelatedArticles articles={blogPosts} currentSlug={post.slug} />
+      {/* 分享功能 */}
+      <ArticleShare title={title} url={articleUrl} />
+
+      {/* 相关文章 */}
+      <div className="mt-12">
+        <RelatedArticles articles={blogPosts} currentSlug={params.slug} />
+      </div>
     </ArticleLayout>
   );
-} 
+}
