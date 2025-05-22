@@ -1,28 +1,17 @@
 'use client';
 
 import { FormattedPlanetaryHour } from '@/utils/planetaryHourFormatters';
+// 导入全局行星颜色常量
+import { PLANET_COLOR_CLASSES, PLANET_COLOR_HEX, PLANET_SYMBOLS } from '@/constants/planetColors';
 
 interface HourItemProps {
   hour: FormattedPlanetaryHour;
   index: number;
-  planetColors: Record<string, string>;
-  planetSymbols: Record<string, string>;
   isOpen: boolean;
   onToggle: (index: number) => void;
 }
 
-// 行星颜色的实际RGB值
-const planetColorValues = {
-  Sun: '#B45309',   // amber-800
-  Moon: '#6366F1',  // indigo-500
-  Mercury: '#0EA5E9', // sky-500
-  Venus: '#BE185D', // pink-800
-  Mars: '#DC2626',  // red-600
-  Jupiter: '#A855F7', // purple-600
-  Saturn: '#6B7280', // gray-500
-};
-
-export function HourItem({ hour, index, planetColors, planetSymbols, isOpen, onToggle }: HourItemProps) {
+export function HourItem({ hour, index, isOpen, onToggle }: HourItemProps) {
   const handleClick = () => {
     const isCoarse = window.matchMedia('(pointer: coarse)').matches;
     if (isCoarse) {
@@ -30,8 +19,22 @@ export function HourItem({ hour, index, planetColors, planetSymbols, isOpen, onT
     }
   };
 
-  // 获取行星对应的颜色值
-  const planetColor = planetColorValues[hour.planet as keyof typeof planetColorValues] || '#6B7280';
+  // 检查行星名称是否有效
+  const isValidPlanet = hour.planet && hour.planet in PLANET_COLOR_CLASSES;
+  // 获取行星对应的颜色值 - 安全访问
+  const planetColor = isValidPlanet 
+    ? PLANET_COLOR_HEX[hour.planet as keyof typeof PLANET_COLOR_HEX] 
+    : '#6B7280'; // 默认灰色
+
+  // 安全获取CSS类
+  const planetColorClass = isValidPlanet 
+    ? PLANET_COLOR_CLASSES[hour.planet as keyof typeof PLANET_COLOR_CLASSES] 
+    : 'text-gray-500'; // 默认灰色文本
+    
+  // 安全获取行星符号
+  const planetSymbol = isValidPlanet 
+    ? PLANET_SYMBOLS[hour.planet as keyof typeof PLANET_SYMBOLS] 
+    : ''; // 空字符串作为后备
   return (
     <div className="relative group">
       <button
@@ -57,7 +60,7 @@ export function HourItem({ hour, index, planetColors, planetSymbols, isOpen, onT
         </span>
         {/* 使用双重方式应用颜色：CSS类 + 内联样式作为备选 */}
         <span 
-          className={`font-medium ${planetColors[hour.planet]}`}
+          className={`font-medium ${planetColorClass}`}
           style={{ color: planetColor }}
         >
           {hour.planet}
@@ -65,10 +68,10 @@ export function HourItem({ hour, index, planetColors, planetSymbols, isOpen, onT
         <div className="ml-auto flex items-center shrink-0">
           <span className="text-sm text-gray-600 truncate">{hour.timeRange}</span>
           <span 
-            className={`ml-3 text-lg ${planetColors[hour.planet]}`} 
+            className={`ml-3 text-lg ${planetColorClass}`} 
             style={{ color: planetColor }}
           >
-            {planetSymbols[hour.planet]}
+            {planetSymbol}
           </span>
         </div>
       </button>

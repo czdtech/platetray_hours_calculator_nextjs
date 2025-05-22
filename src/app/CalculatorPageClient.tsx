@@ -16,6 +16,8 @@ import { timeZoneService } from '@/services/TimeZoneService';
 import { formatInTimeZone as formatInTimeZoneDirect } from 'date-fns-tz';
 import { subDays } from 'date-fns';
 import { FAQSection } from '@/components/FAQ/FAQSection';
+// 导入全局行星颜色常量
+import { PLANET_COLOR_CLASSES, PLANET_SYMBOLS } from '@/constants/planetColors';
 
 interface Coordinates {
   latitude: number;
@@ -128,25 +130,7 @@ function CalculatorCore() {
   };
 
   // ---- RENDER LOGIC ----
-  const planetColors = {
-    Sun: 'text-planet-sun',
-    Moon: 'text-planet-moon',
-    Mercury: 'text-planet-mercury',
-    Venus: 'text-planet-venus',
-    Mars: 'text-planet-mars',
-    Jupiter: 'text-planet-jupiter',
-    Saturn: 'text-planet-saturn'
-  };
-
-  const planetSymbols = {
-    Sun: '☉',
-    Moon: '☽',
-    Mercury: '☿',
-    Venus: '♀',
-    Mars: '♂',
-    Jupiter: '♃',
-    Saturn: '♄'
-  };
+  // 移除本地的 planetColors 和 planetSymbols 定义
   
   // Determine date for display in CurrentHourDisplay (pre-sunrise logic)
   const sunriseLocal = planetaryHoursRaw?.sunriseLocal;
@@ -256,7 +240,6 @@ function CalculatorCore() {
                   />
                 </div>
                 <WeekNavigation
-                  planetColors={planetColors}
                   onDaySelect={handleDateChange}
                 />
               </div>
@@ -267,8 +250,6 @@ function CalculatorCore() {
               ) : (
                 <CurrentHourDisplay
                   currentHour={currentHour}
-                  planetColors={planetColors}
-                  planetSymbols={planetSymbols}
                   dayRuler={selectedDayRuler}
                   sunriseTime={sunriseLocal}
                   timeFormat={timeFormat}
@@ -335,8 +316,6 @@ function CalculatorCore() {
                     <HoursList
                       title="Daytime Hours"
                       hours={daytimeHours}
-                      planetColors={planetColors}
-                      planetSymbols={planetSymbols}
                       titleColor="text-amber-600"
                     />
                   )}
@@ -350,8 +329,6 @@ function CalculatorCore() {
                     <HoursList
                       title="Nighttime Hours"
                       hours={nighttimeHours}
-                      planetColors={planetColors}
-                      planetSymbols={planetSymbols}
                       titleColor="text-indigo-600"
                     />
                   )}

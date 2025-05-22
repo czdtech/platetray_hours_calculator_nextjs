@@ -1,5 +1,7 @@
 import { formatInTimeZone } from 'date-fns-tz';
 import { PlanetaryHour } from '../services/PlanetaryHoursCalculator';
+// 导入全局行星颜色常量
+import { PLANET_COLOR_CLASSES } from '@/constants/planetColors';
 
 // 定义格式化后的行星时间接口
 export interface FormattedPlanetaryHour {
@@ -13,17 +15,8 @@ export interface FormattedPlanetaryHour {
   current: boolean;
 }
 
-// 行星颜色映射
-export const PLANET_COLORS = {
-  Sun: 'text-planet-sun',
-  Moon: 'text-planet-moon',
-  Mercury: 'text-planet-mercury',
-  Venus: 'text-planet-venus',
-  Mars: 'text-planet-mars',
-  Jupiter: 'text-planet-jupiter',
-  Saturn: 'text-planet-saturn'
-};
-
+// 移除本地的行星颜色映射
+// export const PLANET_COLORS = { ... };
 // 记录上一次高亮的行星时，避免每次渲染都打印
 let lastHighlightedKey: string | null = null;
 
@@ -81,7 +74,8 @@ export function formatHoursToList(
     return {
       planet: hour.ruler,
       timeRange: timeRange,
-      planetColor: PLANET_COLORS[hour.ruler as keyof typeof PLANET_COLORS] || 'text-gray-500',
+      // 使用全局常量替换本地常量
+      planetColor: PLANET_COLOR_CLASSES[hour.ruler as keyof typeof PLANET_COLOR_CLASSES] || 'text-gray-500',
       type: hour.type,
       durationMinutes: hour.durationMinutes,
       goodFor: hour.goodFor || '',
@@ -115,11 +109,12 @@ export function formatSingleHour(
   return {
     planet: hour.ruler,
     timeRange: `${startTimeFormatted} - ${endTimeFormatted}`,
-    planetColor: PLANET_COLORS[hour.ruler as keyof typeof PLANET_COLORS] || 'text-gray-500',
+    // 使用全局常量替换本地常量
+    planetColor: PLANET_COLOR_CLASSES[hour.ruler as keyof typeof PLANET_COLOR_CLASSES] || 'text-gray-500',
     type: hour.type,
     durationMinutes: hour.durationMinutes,
     goodFor: hour.goodFor || '',
     avoid: hour.avoid || '',
     current: isActuallyCurrent
   };
-} 
+}

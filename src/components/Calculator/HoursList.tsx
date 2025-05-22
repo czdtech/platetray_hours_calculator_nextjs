@@ -7,16 +7,12 @@ import { HourItem } from './HourItem';
 interface HoursListProps {
   title: string;
   hours: FormattedPlanetaryHour[];
-  planetColors: Record<string, string>;
-  planetSymbols: Record<string, string>;
   titleColor: string;
 }
 
 export function HoursList({
   title,
   hours,
-  planetColors,
-  planetSymbols,
   titleColor
 }: HoursListProps) {
   const [openMobileIndex, setOpenMobileIndex] = useState<number | null>(null);
@@ -36,8 +32,6 @@ export function HoursList({
             key={index}
             hour={hour}
             index={index}
-            planetColors={planetColors}
-            planetSymbols={planetSymbols}
             isOpen={openMobileIndex === index}
             onToggle={handleToggleMobile}
           />
@@ -45,4 +39,4 @@ export function HoursList({
       </div>
     </div>
   );
-} 
+}

@@ -3,11 +3,11 @@
 import { FormattedPlanetaryHour } from '@/utils/planetaryHourFormatters';
 import { useDateContext } from '@/contexts/DateContext';
 import { timeZoneService } from '@/services/TimeZoneService';
+// 导入全局行星颜色常量
+import { PLANET_COLOR_CLASSES, PLANET_COLOR_HEX, PLANET_SYMBOLS } from '@/constants/planetColors';
 
 interface CurrentHourDisplayProps {
   currentHour: FormattedPlanetaryHour | null;
-  planetColors: Record<string, string>;
-  planetSymbols: Record<string, string>;
   dayRuler?: string;
   sunriseTime?: Date;
   timeFormat?: '12h' | '24h';
@@ -15,20 +15,8 @@ interface CurrentHourDisplayProps {
   beforeSunrise?: boolean;
 }
 
-// 行星颜色的实际RGB值
-const planetColorValues = {
-  Sun: '#B45309',   // amber-800
-  Moon: '#6366F1',  // indigo-500
-  Mercury: '#0EA5E9', // sky-500
-  Venus: '#BE185D', // pink-800
-  Mars: '#DC2626',  // red-600
-  Jupiter: '#A855F7', // purple-600
-  Saturn: '#6B7280', // gray-500
-};
 export function CurrentHourDisplay({
   currentHour,
-  planetColors,
-  planetSymbols,
   dayRuler,
   sunriseTime,
   timeFormat = '24h',
@@ -70,13 +58,19 @@ export function CurrentHourDisplay({
   const formattedToday = formatDate(todayDisplayBase, 'medium');
   const formattedYesterday = formatDate(yesterdayDisplayBase, 'medium');
 
-  // 获取当前小时的行星颜色值
-  const currentPlanetColor = currentHour?.planet ? 
-    planetColorValues[currentHour.planet as keyof typeof planetColorValues] : undefined;
+  // 添加这些安全访问帮助变量
+  const isValidDayRuler = dayRuler && dayRuler in PLANET_COLOR_CLASSES;
+  const planetColorClass = isValidDayRuler
+    ? PLANET_COLOR_CLASSES[dayRuler as keyof typeof PLANET_COLOR_CLASSES]
+    : 'text-gray-500';
+  const planetSymbol = isValidDayRuler
+    ? PLANET_SYMBOLS[dayRuler as keyof typeof PLANET_SYMBOLS]
+    : '';
   
-  // 获取日期统治行星的颜色值
-  const dayRulerColor = dayRuler ? 
-    planetColorValues[dayRuler as keyof typeof planetColorValues] : undefined;
+  // 获取当前小时的行星颜色值
+  const currentPlanetColor = currentHour?.planet && currentHour.planet in PLANET_COLOR_HEX ?
+    PLANET_COLOR_HEX[currentHour.planet as keyof typeof PLANET_COLOR_HEX] : undefined;
+
   return (
     <div className="space-y-2">
       <p className="block text-sm font-medium text-gray-700">
@@ -93,17 +87,17 @@ export function CurrentHourDisplay({
               <div className="p-3 flex justify-between items-center bg-gray-50">
                 <span className="text-sm font-medium text-purple-700">Day Ruler</span>
                 <div className="flex items-center gap-2">
-                  <span 
-                    className={`font-semibold ${planetColors[dayRuler]}`}
-                    style={{ color: dayRulerColor }}
+                  <span
+                    className={`font-semibold ${planetColorClass}`}
+                    style={{ color: PLANET_COLOR_HEX[dayRuler as keyof typeof PLANET_COLOR_HEX] }}
                   >
                     {dayRuler}
                   </span>
-                  <span 
-                    className={`text-xl ${planetColors[dayRuler]}`}
-                    style={{ color: dayRulerColor }}
+                  <span
+                    className={`text-xl ${planetColorClass}`}
+                    style={{ color: PLANET_COLOR_HEX[dayRuler as keyof typeof PLANET_COLOR_HEX] }}
                   >
-                    {planetSymbols[dayRuler]}
+                    {planetSymbol}
                   </span>
                 </div>
               </div>
@@ -111,15 +105,17 @@ export function CurrentHourDisplay({
 
             {/* Current Hour Row */}
             <div className="p-3 flex items-center">
-              <div 
+              <div
                 className={`text-2xl ${currentHour?.planetColor || 'text-gray-500'}`}
                 style={{ color: currentPlanetColor }}
               >
-                {planetSymbols[currentHour?.planet || 'Sun']}
+                {currentHour?.planet && currentHour.planet in PLANET_SYMBOLS ?
+                  PLANET_SYMBOLS[currentHour.planet as keyof typeof PLANET_SYMBOLS] :
+                  PLANET_SYMBOLS['Sun']}
               </div>
               <div className="ml-3 flex-grow">
                 <div className="flex items-center space-x-2">
-                  <span 
+                  <span
                     className={`font-medium ${currentHour?.planetColor || 'text-gray-500'}`}
                     style={{ color: currentPlanetColor }}
                   >
@@ -161,17 +157,17 @@ export function CurrentHourDisplay({
               <div className="p-3 flex justify-between items-center bg-gray-50">
                 <span className="text-sm font-medium text-purple-700">Day Ruler</span>
                 <div className="flex items-center gap-2">
-                  <span 
-                    className={`font-semibold ${planetColors[dayRuler]}`}
-                    style={{ color: dayRulerColor }}
+                  <span
+                    className={`font-semibold ${planetColorClass}`}
+                    style={{ color: PLANET_COLOR_HEX[dayRuler as keyof typeof PLANET_COLOR_HEX] }}
                   >
                     {dayRuler}
                   </span>
-                  <span 
-                    className={`text-xl ${planetColors[dayRuler]}`}
-                    style={{ color: dayRulerColor }}
+                  <span
+                    className={`text-xl ${planetColorClass}`}
+                    style={{ color: PLANET_COLOR_HEX[dayRuler as keyof typeof PLANET_COLOR_HEX] }}
                   >
-                    {planetSymbols[dayRuler]}
+                    {planetSymbol}
                   </span>
                 </div>
               </div>
