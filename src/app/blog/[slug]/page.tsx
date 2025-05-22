@@ -14,10 +14,13 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://planetaryhours.org
 
 // 省略generateStaticParams和generateMetadata函数...
 // Blog Post Page Component
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params: paramsPromise }: { params: { slug: string } }) {
+  const params = await paramsPromise;
+  const { slug } = params;
+
   // 获取文章数据的代码保持不变...
-  const markdownContent = await getMarkdownContent(params.slug);
-  const post = blogPosts.find(post => post.slug === params.slug);
+  const markdownContent = await getMarkdownContent(slug);
+  const post = blogPosts.find(p => p.slug === slug);
   
   if (!markdownContent && !post) {
     notFound();
@@ -30,7 +33,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   const readingTime = post?.readingTime || 5;
   const imageUrl = post?.imageUrl || '/images/blog-default.jpg';
   
-  const articleUrl = `${SITE_URL}/blog/${params.slug}`;
+  const articleUrl = `${SITE_URL}/blog/${slug}`;
 
   // JSON-LD Schemas
   const articleSchema = getArticleSchema({
@@ -92,7 +95,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
       {/* 相关文章 */}
       <div className="mt-12">
-        <RelatedArticles articles={blogPosts} currentSlug={params.slug} />
+        <RelatedArticles articles={blogPosts} currentSlug={slug} />
       </div>
     </ArticleLayout>
   );

@@ -1,17 +1,14 @@
 'use client';
 
-import { useDateContext } from '@/contexts/DateContext'; // Updated import path
+import { useDateContext } from '@/contexts/DateContext';
 import { useRef, useEffect } from 'react';
+import { PLANET_COLOR_CLASSES, PLANET_COLOR_HEX } from '@/constants/planetColors';
 
 interface WeekNavigationProps {
-  planetColors: Record<string, string>;
   onDaySelect: (date: Date) => void;
 }
 
-export function WeekNavigation({
-  planetColors,
-  onDaySelect
-}: WeekNavigationProps) {
+export function WeekNavigation({ onDaySelect }: WeekNavigationProps) {
   const { weekDays, selectedDate, setSelectedDate } = useDateContext();
   const activeButtonRef = useRef<HTMLButtonElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -72,6 +69,10 @@ export function WeekNavigation({
         <div className="flex md:grid md:grid-cols-7 divide-x divide-gray-100 min-w-max md:min-w-0">
           {weekDays.map((day, index) => {
             const isActive = day.active;
+            // 获取当前行星的颜色值
+            const planetColor = PLANET_COLOR_HEX[day.planet as keyof typeof PLANET_COLOR_HEX];
+            const planetColorClass = PLANET_COLOR_CLASSES[day.planet as keyof typeof PLANET_COLOR_CLASSES];
+            
             return (
               <button
                 key={index}
@@ -91,7 +92,10 @@ export function WeekNavigation({
                   >
                     {day.name.slice(0, 3)}
                   </span>
-                  <div className={`text-2xl ${isActive ? 'text-purple-500' : planetColors[day.planet]}`}>
+                  <div 
+                    className={`text-2xl ${isActive ? 'text-purple-500' : planetColorClass}`}
+                    style={{ color: isActive ? undefined : planetColor }}
+                  >
                     <span aria-label={`Planet symbol for ${day.planet}`}>
                       {day.symbol}
                     </span>
@@ -109,4 +113,4 @@ export function WeekNavigation({
       </div>
     </div>
   );
-} 
+}
