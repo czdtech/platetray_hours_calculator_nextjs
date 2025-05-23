@@ -12,27 +12,86 @@ import { getMarkdownContent, getAllMarkdownFiles } from '@/utils/markdown';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://planetaryhours.org';
 
-// 省略generateStaticParams和generateMetadata函数...
-// Blog Post Page Component
-export default async function BlogPostPage({ params: paramsPromise }: { params: { slug: string } }) {
-  const params = await paramsPromise;
-  const { slug } = params;
+// 生成静态参数
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  return blogPosts.map((post) => ({
+    slug: post.slug,
+  }));
+}
 
-  // 获取文章数据的代码保持不变...
+// 生成动态元数据
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+
+  // 获取文章数据
   const markdownContent = await getMarkdownContent(slug);
   const post = blogPosts.find(p => p.slug === slug);
-  
+
+  if (!markdownContent && !post) {
+    return {
+      title: 'Article Not Found | Planetary Hours Calculator',
+      description: 'The requested article could not be found.',
+    };
+  }
+
+  // 优先使用 markdown 文件中的元数据，然后是 blogPosts 数据
+  const title = markdownContent?.title || post?.title || '';
+  const description = markdownContent?.excerpt || post?.excerpt || '';
+  const imageUrl = post?.imageUrl || '/images/blog-default.jpg';
+  const articleUrl = `${SITE_URL}/blog/${slug}`;
+
+  // 确保图片URL是完整的
+  const fullImageUrl = imageUrl.startsWith('/') ? `${SITE_URL}${imageUrl}` : imageUrl;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: articleUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      url: articleUrl,
+      images: [
+        {
+          url: fullImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [fullImageUrl],
+    },
+  };
+}
+
+// Blog Post Page Component
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+
+  // 获取文章数据
+  const markdownContent = await getMarkdownContent(slug);
+  const post = blogPosts.find(p => p.slug === slug);
+
   if (!markdownContent && !post) {
     notFound();
   }
-  
+
+  // 优先使用 markdown 文件中的数据，然后是 blogPosts 数据
   const title = markdownContent?.title || post?.title || '';
   const excerpt = markdownContent?.excerpt || post?.excerpt || '';
   const date = markdownContent?.date || post?.date || '';
   const author = markdownContent?.author || post?.author || 'Planetary Hours Team';
   const readingTime = post?.readingTime || 5;
   const imageUrl = post?.imageUrl || '/images/blog-default.jpg';
-  
+
   const articleUrl = `${SITE_URL}/blog/${slug}`;
 
   // JSON-LD Schemas
@@ -58,20 +117,20 @@ export default async function BlogPostPage({ params: paramsPromise }: { params: 
     { name: title, url: articleUrl }
   ];
   return (
-    <ArticleLayout 
-      hero={<ArticleHero title={title} imageUrl={imageUrl} />} 
+    <ArticleLayout
+      hero={<ArticleHero title={title} imageUrl={imageUrl} />}
       breadcrumbItems={breadcrumbItems}
     >
       <JsonLd data={[articleSchema, breadcrumbSchema]} />
-      
+
       {/* 文章元数据 - 移至内容前 */}
-      <ArticleMeta 
-        date={date} 
+      <ArticleMeta
+        date={date}
         author={author}
-        readingTime={readingTime} 
+        readingTime={readingTime}
         className="mb-8"
       />
-      
+
       {/* 文章内容 - 修改样式类 */}
       <div className="prose dark:prose-invert max-w-none">
         {markdownContent ? (

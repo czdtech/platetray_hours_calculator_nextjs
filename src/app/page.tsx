@@ -16,7 +16,6 @@ const faqItems = [
 const faqSchema = getFAQPageSchema(faqItems);
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
   title: 'Planetary Hours Calculator | Find Your Planetary Hours Online',
   description: 'Calculate planetary hours based on your location and date. Discover the perfect time for your activities with ancient planetary wisdom.',
   alternates: {
@@ -43,7 +42,7 @@ export const metadata: Metadata = {
     images: ['/og-image.jpg'], // 确保这个图片在 public 目录下
   },
   other: {
-     'application/ld+json': JSON.stringify(faqSchema),
+    'application/ld+json': JSON.stringify(faqSchema),
   }
 };
 

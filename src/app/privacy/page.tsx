@@ -6,7 +6,7 @@ import { Article } from '@/components/semantic/Article';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://planetaryhours.org';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Planetary Hours Calculator',
+  title: 'Privacy Policy',
   description: 'Read about how the Planetary Hours Calculator processes and protects your personal data.',
   alternates: {
     canonical: `${SITE_URL}/privacy`,

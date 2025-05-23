@@ -4,7 +4,7 @@ import { Header } from '@/components/Layout/Header';
 export default function NotFound() {
   return (
     <>
-      <Header />
+      <Header activePage="calculator" />
       <div className="container mx-auto px-4 py-16 flex flex-col items-center justify-center text-center">
         <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-indigo-400 bg-clip-text text-transparent">
           404
@@ -15,8 +15,8 @@ export default function NotFound() {
         <p className="text-lg text-gray-600 max-w-md mb-8">
           The page you are looking for doesn't exist or has been moved.
         </p>
-        <Link 
-          href="/" 
+        <Link
+          href="/"
           className="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:ring-2 focus:ring-purple-500/30 focus:outline-none"
         >
           Return to Homepage

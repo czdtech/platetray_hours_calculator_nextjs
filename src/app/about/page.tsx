@@ -7,7 +7,7 @@ import { Article } from '@/components/semantic/Article';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://planetaryhours.org';
 
 export const metadata: Metadata = {
-  title: 'About | Planetary Hours Calculator',
+  title: 'About',
   description: 'Learn about the mission, methodology and team behind the Planetary Hours Calculator.',
   alternates: {
     canonical: `${SITE_URL}/about`,
@@ -33,7 +33,7 @@ export default function AboutPage() {
         <div className="mb-4">
           <Breadcrumb items={breadcrumbItems} />
         </div>
-        
+
         <Article className="bg-white rounded-xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">About Planetary Hours</h2>
 

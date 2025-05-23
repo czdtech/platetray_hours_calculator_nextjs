@@ -13,7 +13,7 @@ import { Footer } from '@/components/Layout/Footer';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://planetaryhours.org';
 
 export const metadata: Metadata = {
-  title: 'Blog | Planetary Hours Calculator',
+  title: 'Blog',
   description: 'Read the latest updates, guides and announcements about the Planetary Hours Calculator.',
   openGraph: {
     title: 'Blog | Planetary Hours Calculator',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 export default function BlogPage() {
   // 直接使用导入的blogPosts数据
   // blogPosts已经引用了blogDates.json和blogRead.json中的数据
-  
+
   // 面包屑导航项
   const breadcrumbItems = [
     { name: 'Home', url: '/' },
@@ -36,13 +36,13 @@ export default function BlogPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* JSON-LD 结构化数据 */}
-      <JsonLd 
+      <JsonLd
         data={getBreadcrumbSchema([
           { name: 'Home', url: SITE_URL },
           { name: 'Blog', url: `${SITE_URL}/blog` },
-        ])} 
+        ])}
       />
-      
+
       <Header activePage="blog" />
       <main className="flex-grow">
         <Section className="container mx-auto px-4 py-12">
@@ -51,7 +51,7 @@ export default function BlogPage() {
             <div className="mb-6">
               <Breadcrumb items={breadcrumbItems} />
             </div>
-            
+
             <h1 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-purple-500 to-indigo-400 bg-clip-text text-transparent">
               Planetary Hours Calculator Blog
             </h1>
@@ -62,7 +62,7 @@ export default function BlogPage() {
                 <div className="bg-white rounded-xl shadow-md overflow-hidden">
                   <div className="md:flex">
                     <div className="md:flex-shrink-0 h-64 md:h-auto md:w-1/3 relative">
-                      <Image 
+                      <Image
                         src={blogPosts[0].imageUrl}
                         alt={blogPosts[0].title}
                         fill
@@ -75,8 +75,8 @@ export default function BlogPage() {
                         <div className="text-sm text-indigo-600 mb-2">
                           {formatDistanceToNow(new Date(blogPosts[0].date), { addSuffix: true })}
                         </div>
-                        <Link 
-                          href={`/blog/${blogPosts[0].slug}`} 
+                        <Link
+                          href={`/blog/${blogPosts[0].slug}`}
                           className="block mt-2 mb-3"
                         >
                           <h2 className="text-2xl font-semibold text-gray-800 hover:text-indigo-600 transition-colors">
@@ -88,8 +88,8 @@ export default function BlogPage() {
                         </p>
                       </div>
                       <div className="mt-4">
-                        <Link 
-                          href={`/blog/${blogPosts[0].slug}`} 
+                        <Link
+                          href={`/blog/${blogPosts[0].slug}`}
                           className="text-indigo-600 hover:underline font-medium"
                         >
                           Read full article →
@@ -107,8 +107,8 @@ export default function BlogPage() {
                 <article key={post.slug} className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 group hover:shadow-md transition-shadow">
                   <Link href={`/blog/${post.slug}`} className="block">
                     <div className="h-48 overflow-hidden relative">
-                      <Image 
-                        src={post.imageUrl} 
+                      <Image
+                        src={post.imageUrl}
                         alt={post.title}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
