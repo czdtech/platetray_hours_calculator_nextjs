@@ -1,12 +1,17 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState, Suspense } from 'react';
+import { useEffect, useRef, useState, Suspense } from "react";
+
+interface ComponentModule {
+  default?: React.ComponentType<unknown>;
+  [key: string]: unknown;
+}
 
 interface ViewportLazyProps<P> {
   /**
    * 动态导入函数，返回组件模块 Promise
    */
-  loader: () => Promise<any>;
+  loader: () => Promise<ComponentModule>;
   /**
    * 占位符（组件可见前的占位内容）
    */
@@ -29,11 +34,12 @@ export function ViewportLazy<P = Record<string, unknown>>({
   loader,
   fallback = null,
   componentProps,
-  rootMargin = '0px',
+  rootMargin = "0px",
   threshold = 0,
 }: ViewportLazyProps<P>) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [LoadedComponent, setLoadedComponent] = useState<React.ComponentType<any> | null>(null);
+  const [LoadedComponent, setLoadedComponent] =
+    useState<React.ComponentType<P> | null>(null);
   const [hasStartedLoading, setHasStartedLoading] = useState(false);
 
   useEffect(() => {
@@ -46,13 +52,13 @@ export function ViewportLazy<P = Record<string, unknown>>({
           setHasStartedLoading(true);
           // 开始加载组件
           loader().then((mod) => {
-            const Loaded = (mod.default ?? mod) as React.ComponentType<any>;
+            const Loaded = (mod.default ?? mod) as React.ComponentType<P>;
             setLoadedComponent(() => Loaded);
           });
           observer.disconnect();
         }
       },
-      { rootMargin, threshold }
+      { rootMargin, threshold },
     );
 
     observer.observe(containerRef.current);
@@ -66,11 +72,11 @@ export function ViewportLazy<P = Record<string, unknown>>({
     <div ref={containerRef}>
       {LoadedComponent ? (
         <Suspense fallback={fallback}>
-          <LoadedComponent {...(componentProps ?? {})} />
+          <LoadedComponent {...(componentProps as any)} />
         </Suspense>
       ) : (
         fallback
       )}
     </div>
   );
-} 
+}

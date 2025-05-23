@@ -3,30 +3,22 @@ import "./globals.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { Footer } from "@/components/Layout/Footer";
 import { AnalyticsWrapper } from "@/components/Analytics/Analytics";
-import { StagewiseToolbar } from '@stagewise/toolbar-next';
+import { PerformanceDashboard } from "@/components/Analytics/PerformanceDashboard";
+import { StagewiseToolbar } from "@stagewise/toolbar-next";
+import { getDefaultSiteMetadata } from "@/utils/seo/metadata";
+import { getGSCVerificationMeta } from "@/config/seo-monitoring";
+
+// 添加Google Search Console验证meta标签
+const gscVerification = getGSCVerificationMeta();
+const baseMetadata = getDefaultSiteMetadata();
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
-  title: {
-    default: 'Planetary Hours Calculator',
-    template: '%s | Planetary Hours Calculator',
-  },
-  description: 'Calculate planetary hours based on your location and date. Discover the perfect time for your activities with ancient planetary wisdom.',
-  icons: {
-    icon: [
-      { url: '/favicon.ico', type: 'image/x-icon' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-  },
-  other: {
-    'theme-color': '#ffffff',
-  },
+  ...baseMetadata,
+  ...(gscVerification && {
+    verification: {
+      google: gscVerification,
+    },
+  }),
 };
 
 export default function RootLayout({
@@ -35,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const stagewiseConfig = {
-    plugins: []
+    plugins: [],
   };
 
   return (
@@ -51,12 +43,19 @@ export default function RootLayout({
 
         {/* 保持原始结构不变，只在children前添加锚点 */}
         <main className="flex-grow">
-          <div id="content-start" className="outline-none" tabIndex={-1} aria-hidden="true"></div>
+          <div
+            id="content-start"
+            className="outline-none"
+            tabIndex={-1}
+            aria-hidden="true"
+          ></div>
           {children}
         </main>
         <Footer />
         <AnalyticsWrapper />
-        {process.env.NODE_ENV === 'development' && (
+        {/* 性能监控仪表板 - 仅在开发环境显示 */}
+        <PerformanceDashboard />
+        {process.env.NODE_ENV === "development" && (
           <StagewiseToolbar config={stagewiseConfig} />
         )}
       </body>

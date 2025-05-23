@@ -38,7 +38,7 @@ Precision is paramount. We achieve this through:
 
 - **Pinpoint Sunrise & Sunset**: Leveraging the highly-regarded [SunCalc.js library](https://github.com/mourner/suncalc), which uses established astronomical algorithms to calculate accurate solar positions and event times (sunrise, sunset, etc.) for your exact coordinates.
 - **Faithful to Ancient Rules**: We strictly adhere to the Chaldean Order of planets and the correct Day Ruler sequence for assigning rulership to each planetary hour.
-- **Meticulous Time Zone Correction**: All calculations are converted to your *actual local time*, accounting for complex IANA time zones and Daylight Saving Time rules, thanks to our robust backend and the power of libraries like [date-fns-tz](https://github.com/marnusw/date-fns-tz).
+- **Meticulous Time Zone Correction**: All calculations are converted to your _actual local time_, accounting for complex IANA time zones and Daylight Saving Time rules, thanks to our robust backend and the power of libraries like [date-fns-tz](https://github.com/marnusw/date-fns-tz).
 
 Curious about the nitty-gritty of how we ensure such accuracy? Explore the mechanics in [**"Behind the Calculator: A Deep Dive into Our Planetary Hour Algorithm"**](/blog/algorithm-behind-calculator).
 
@@ -61,6 +61,7 @@ Beyond just telling you the time, we provide context:
 
 - **Your Data is Yours**: We only use your location ephemerally for calculations and to query Google services via a secure proxy. We **never** store your personal location data on our servers.
 - **Open Source Commitment**: Our project is open source under the MIT license. We believe in transparency and invite you to review our code.
+
 ## Getting Started with the Planetary Hours Calculator
 
 Ready to experience this unique tool? It's easy:

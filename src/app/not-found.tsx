@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { Header } from '@/components/Layout/Header';
+import Link from "next/link";
+import { Header } from "@/components/Layout/Header";
 
 export default function NotFound() {
   return (

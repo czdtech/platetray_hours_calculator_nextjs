@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { formatDistanceToNow } from 'date-fns';
+import Link from "next/link";
+import Image from "next/image";
+import { formatDistanceToNow } from "date-fns";
 
 interface BlogPostCardProps {
   slug: string;
@@ -17,9 +17,9 @@ export function BlogPostCard({
   title,
   excerpt,
   date,
-  author,
+  author: _author,
   imageUrl,
-  readingTime
+  readingTime,
 }: BlogPostCardProps) {
   // 使用相对时间格式
   const relativeDate = formatDistanceToNow(new Date(date), { addSuffix: true });
@@ -42,12 +42,18 @@ export function BlogPostCard({
           {readingTime && ` • ${readingTime}`}
         </div>
         <h2 className="text-xl font-semibold text-gray-800 mb-2">
-          <Link href={`/blog/${slug}`} className="hover:text-indigo-600 transition-colors">
+          <Link
+            href={`/blog/${slug}`}
+            className="hover:text-indigo-600 transition-colors"
+          >
             {title}
           </Link>
         </h2>
         <p className="text-gray-600 text-sm mb-4 line-clamp-3">{excerpt}</p>
-        <Link href={`/blog/${slug}`} className="text-indigo-600 font-medium text-sm hover:underline">
+        <Link
+          href={`/blog/${slug}`}
+          className="text-indigo-600 font-medium text-sm hover:underline"
+        >
           Read more →
         </Link>
       </div>

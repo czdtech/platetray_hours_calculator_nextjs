@@ -1,11 +1,11 @@
 /**
  * TimeZoneService
- * 
+ *
  * 提供时区转换和验证的服务
  * 集中管理所有时区相关的操作，确保一致性
  */
 
-import { toZonedTime, fromZonedTime, formatInTimeZone } from 'date-fns-tz';
+import { toZonedTime, fromZonedTime, formatInTimeZone } from "date-fns-tz";
 
 export interface TimeZoneValidationResult {
   isValid: boolean;
@@ -15,7 +15,7 @@ export interface TimeZoneValidationResult {
 export class TimeZoneService {
   private static instance: TimeZoneService;
 
-  private constructor() { }
+  private constructor() {}
 
   /**
    * 获取单例实例
@@ -34,7 +34,7 @@ export class TimeZoneService {
    */
   public validateTimeZone(timezone: string): TimeZoneValidationResult {
     if (!timezone) {
-      return { isValid: false, message: '时区是必需的' };
+      return { isValid: false, message: "时区是必需的" };
     }
 
     try {
@@ -42,7 +42,7 @@ export class TimeZoneService {
       Intl.DateTimeFormat(undefined, { timeZone: timezone });
       return { isValid: true };
     } catch {
-      return { isValid: false, message: '无效的时区标识符' };
+      return { isValid: false, message: "无效的时区标识符" };
     }
   }
 
@@ -75,7 +75,11 @@ export class TimeZoneService {
    * @param format 格式字符串
    * @returns 格式化后的日期字符串
    */
-  public formatInTimeZone(date: Date, timezone: string, format: string): string {
+  public formatInTimeZone(
+    date: Date,
+    timezone: string,
+    format: string,
+  ): string {
     this.validateTimeZoneOrThrow(timezone);
     return formatInTimeZone(date, timezone, format);
   }
@@ -97,17 +101,21 @@ export class TimeZoneService {
    * @param locale 语言代码，默认为 'en'
    * @returns 时区缩写
    */
-  public getTimeZoneAbbreviation(date: Date, timezone: string, locale: string = 'en'): string {
+  public getTimeZoneAbbreviation(
+    date: Date,
+    timezone: string,
+    locale: string = "en",
+  ): string {
     // 验证时区合法性
     this.validateTimeZoneOrThrow(timezone);
     // 使用 Intl.DateTimeFormat 获取短时区名称 (如 EDT / EST)
     const parts = new Intl.DateTimeFormat(locale, {
       timeZone: timezone,
-      timeZoneName: 'short'
+      timeZoneName: "short",
     }).formatToParts(date);
 
-    const tzPart = parts.find(part => part.type === 'timeZoneName');
-    return tzPart ? tzPart.value : '';
+    const tzPart = parts.find((part) => part.type === "timeZoneName");
+    return tzPart ? tzPart.value : "";
   }
 
   /**
@@ -124,4 +132,4 @@ export class TimeZoneService {
 }
 
 // 导出单例实例
-export const timeZoneService = TimeZoneService.getInstance(); 
+export const timeZoneService = TimeZoneService.getInstance();

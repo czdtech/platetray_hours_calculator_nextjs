@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import { AlertCircle, RefreshCw } from "lucide-react";
 
 interface NetworkErrorMessageProps {
   message?: string;
   onRetry?: () => void;
 }
 
-export function NetworkErrorMessage({ 
-  message = "Network connection problem. Please check your internet connection and try again.", 
-  onRetry 
+export function NetworkErrorMessage({
+  message = "Network connection problem. Please check your internet connection and try again.",
+  onRetry,
 }: NetworkErrorMessageProps) {
   return (
     <div className="w-full p-4 bg-red-50 border border-red-200 rounded-lg animate-fade-in">
@@ -18,7 +18,7 @@ export function NetworkErrorMessage({
         <div className="flex-grow">
           <p className="text-red-700 mb-2">{message}</p>
           {onRetry && (
-            <button 
+            <button
               onClick={onRetry}
               className="inline-flex items-center text-sm font-medium text-red-600 hover:text-red-700 transition-colors gap-1.5"
             >

@@ -2,14 +2,21 @@
 
 /**
  * DateContext
- * 
+ *
  * 提供全局可访问的日期上下文
  * 包含当前日期、时区等状态和修改方法
  */
 
-import { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';
-import { dateService, WeekDay } from '../services/DateService';
-import { timeZoneService } from '../services/TimeZoneService';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  ReactNode,
+} from "react";
+import { dateService, WeekDay } from "../services/DateService";
+import { timeZoneService } from "../services/TimeZoneService";
 
 interface DateContextType {
   // 当前选中的日期（UTC）
@@ -27,7 +34,7 @@ interface DateContextType {
   // 获取下一周
   goToNextWeek: () => void;
   // 格式化日期
-  formatDate: (date: Date, format?: 'short' | 'medium' | 'long') => string;
+  formatDate: (date: Date, format?: "short" | "medium" | "long") => string;
   // 将UTC日期转换为时区日期
   utcToZonedTime: (date: Date) => Date;
   // 将时区日期转换为UTC日期
@@ -49,7 +56,7 @@ interface DateProviderProps {
 export function DateProvider({
   children,
   initialDate = new Date(),
-  initialTimezone = 'America/New_York' // 默认时区可以后续调整或从配置读取
+  initialTimezone = "America/New_York", // 默认时区可以后续调整或从配置读取
 }: DateProviderProps) {
   // 状态
   const [selectedDate, setSelectedDateState] = useState<Date>(initialDate);
@@ -100,7 +107,10 @@ export function DateProvider({
   };
 
   // 格式化日期
-  const formatDate = (date: Date, format: 'short' | 'medium' | 'long' = 'medium') => {
+  const formatDate = (
+    date: Date,
+    format: "short" | "medium" | "long" = "medium",
+  ) => {
     return dateService.formatDate(date, timezone, format);
   };
 
@@ -131,21 +141,17 @@ export function DateProvider({
     formatDate,
     utcToZonedTime,
     zonedTimeToUtc,
-    formatDateWithPattern
+    formatDateWithPattern,
   };
 
-  return (
-    <DateContext.Provider value={value}>
-      {children}
-    </DateContext.Provider>
-  );
+  return <DateContext.Provider value={value}>{children}</DateContext.Provider>;
 }
 
 // 自定义钩子，用于访问上下文
 export function useDateContext() {
   const context = useContext(DateContext);
   if (context === undefined) {
-    throw new Error('useDateContext must be used within a DateProvider');
+    throw new Error("useDateContext must be used within a DateProvider");
   }
   return context;
-} 
+}

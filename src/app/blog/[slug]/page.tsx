@@ -1,16 +1,18 @@
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { blogPosts, BlogPost } from '@/data/blogPosts';
-import { ArticleLayout } from '@/components/Blog/ArticleLayout';
-import { ArticleHero } from '@/components/Blog/ArticleHero';
-import { ArticleMeta } from '@/components/Blog/ArticleMeta';
-import { ArticleShare } from '@/components/Blog/ArticleShare';
-import { RelatedArticles } from '@/components/Blog/RelatedArticles';
-import { JsonLd } from '@/components/SEO/JsonLd';
-import { getArticleSchema, getBreadcrumbSchema } from '@/utils/seo/jsonld';
-import { getMarkdownContent, getAllMarkdownFiles } from '@/utils/markdown';
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { BlogPost as _BlogPost } from "@/types/blog";
+import { blogPosts } from "@/data/blogPosts";
+import { getMarkdownContent } from "@/utils/markdown";
+import { ArticleLayout } from "@/components/Blog/ArticleLayout";
+import { ArticleHero } from "@/components/Blog/ArticleHero";
+import { ArticleMeta } from "@/components/Blog/ArticleMeta";
+import { ArticleShare } from "@/components/Blog/ArticleShare";
+import { RelatedArticles } from "@/components/Blog/RelatedArticles";
+import { JsonLd } from "@/components/SEO/JsonLd";
+import { getArticleSchema, getBreadcrumbSchema } from "@/utils/seo/jsonld";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://planetaryhours.org';
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
 
 // 生成静态参数
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
@@ -20,28 +22,34 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
 }
 
 // 生成动态元数据
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
 
   // 获取文章数据
   const markdownContent = await getMarkdownContent(slug);
-  const post = blogPosts.find(p => p.slug === slug);
+  const post = blogPosts.find((p) => p.slug === slug);
 
   if (!markdownContent && !post) {
     return {
-      title: 'Article Not Found | Planetary Hours Calculator',
-      description: 'The requested article could not be found.',
+      title: "Article Not Found | Planetary Hours Calculator",
+      description: "The requested article could not be found.",
     };
   }
 
   // 优先使用 markdown 文件中的元数据，然后是 blogPosts 数据
-  const title = markdownContent?.title || post?.title || '';
-  const description = markdownContent?.excerpt || post?.excerpt || '';
-  const imageUrl = post?.imageUrl || '/images/blog-default.jpg';
+  const title = markdownContent?.title || post?.title || "";
+  const description = markdownContent?.excerpt || post?.excerpt || "";
+  const imageUrl = post?.imageUrl || "/images/blog-default.jpg";
   const articleUrl = `${SITE_URL}/blog/${slug}`;
 
   // 确保图片URL是完整的
-  const fullImageUrl = imageUrl.startsWith('/') ? `${SITE_URL}${imageUrl}` : imageUrl;
+  const fullImageUrl = imageUrl.startsWith("/")
+    ? `${SITE_URL}${imageUrl}`
+    : imageUrl;
 
   return {
     title,
@@ -52,7 +60,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title,
       description,
-      type: 'article',
+      type: "article",
       url: articleUrl,
       images: [
         {
@@ -64,7 +72,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title,
       description,
       images: [fullImageUrl],
@@ -73,24 +81,29 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 // Blog Post Page Component
-export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function BlogPostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
 
   // 获取文章数据
   const markdownContent = await getMarkdownContent(slug);
-  const post = blogPosts.find(p => p.slug === slug);
+  const post = blogPosts.find((p) => p.slug === slug);
 
   if (!markdownContent && !post) {
     notFound();
   }
 
   // 优先使用 markdown 文件中的数据，然后是 blogPosts 数据
-  const title = markdownContent?.title || post?.title || '';
-  const excerpt = markdownContent?.excerpt || post?.excerpt || '';
-  const date = markdownContent?.date || post?.date || '';
-  const author = markdownContent?.author || post?.author || 'Planetary Hours Team';
+  const title = markdownContent?.title || post?.title || "";
+  const excerpt = markdownContent?.excerpt || post?.excerpt || "";
+  const date = markdownContent?.date || post?.date || "";
+  const author =
+    markdownContent?.author || post?.author || "Planetary Hours Team";
   const readingTime = post?.readingTime || 5;
-  const imageUrl = post?.imageUrl || '/images/blog-default.jpg';
+  const imageUrl = post?.imageUrl || "/images/blog-default.jpg";
 
   const articleUrl = `${SITE_URL}/blog/${slug}`;
 
@@ -101,21 +114,22 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     authorName: author,
     datePublished: date,
     url: articleUrl,
-    imageUrl: imageUrl.startsWith('/') ? `${SITE_URL}${imageUrl}` : imageUrl,
+    imageUrl: imageUrl.startsWith("/") ? `${SITE_URL}${imageUrl}` : imageUrl,
   });
 
   const breadcrumbSchema = getBreadcrumbSchema([
-    { name: 'Home', url: SITE_URL },
-    { name: 'Blog', url: `${SITE_URL}/blog` },
+    { name: "Home", url: SITE_URL },
+    { name: "Blog", url: `${SITE_URL}/blog` },
     { name: title, url: articleUrl },
   ]);
 
   // 定义面包屑项
   const breadcrumbItems = [
-    { name: 'Home', url: '/' },
-    { name: 'Blog', url: '/blog' },
-    { name: title, url: articleUrl }
+    { name: "Home", url: "/" },
+    { name: "Blog", url: "/blog" },
+    { name: title, url: `/blog/${slug}` },
   ];
+
   return (
     <ArticleLayout
       hero={<ArticleHero title={title} imageUrl={imageUrl} />}
@@ -134,13 +148,19 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       {/* 文章内容 - 修改样式类 */}
       <div className="prose dark:prose-invert max-w-none">
         {markdownContent ? (
-          <div dangerouslySetInnerHTML={{ __html: markdownContent.contentHtml }} />
+          <div
+            dangerouslySetInnerHTML={{ __html: markdownContent.contentHtml }}
+          />
         ) : (
           <>
             <p>{excerpt}</p>
             <div className="mt-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
               <p className="font-bold">Note to Developer:</p>
-              <p>This page currently displays the excerpt as the main content. The full blog post content needs to be sourced and rendered here if available.</p>
+              <p>
+                This page currently displays the excerpt as the main content.
+                The full blog post content needs to be sourced and rendered here
+                if available.
+              </p>
             </div>
           </>
         )}

@@ -7,9 +7,10 @@ author: "Planetary Hours Team"
 
 # Planetary Hours Explained: A Beginner's Guide to Origins, Principles, and Meanings
 
-Ever wondered about Planetary Hours? It's an ancient timekeeping system, distinct from our standard 60-minute hour, that divides your day and night into dynamic segments, each governed by the energy of a specific planet. You might be asking: What exactly *are* Planetary Hours? How do they work? Is this just an old superstition, or is there a deeper wisdom to uncover?
+Ever wondered about Planetary Hours? It's an ancient timekeeping system, distinct from our standard 60-minute hour, that divides your day and night into dynamic segments, each governed by the energy of a specific planet. You might be asking: What exactly _are_ Planetary Hours? How do they work? Is this just an old superstition, or is there a deeper wisdom to uncover?
 
 As a long-time researcher of Planetary Hours, I'll guide you through the essentials in this article. We'll get straight to the core: defining what they are, how they differ from conventional hours, exploring the crucial Chaldean Order of planets, and introducing the seven classical planets that rule these unique time slots. Whether you're entirely new to the concept or looking to solidify your understanding, this guide will provide a robust foundation.
+
 ## What Are Planetary Hours? – More Than Just "Hours"
 
 When we speak of an "hour," we typically mean a fixed 60-minute block of time. In the system of Planetary Hours, however, the concept is quite different, reflecting a deep-seated, ancient understanding of celestial rhythms and their connection to time itself.
@@ -110,8 +111,8 @@ Absolutely not! While Planetary Hours originate from astrological tradition, und
 
 Excellent question for clarity. Briefly:
 
-- **Planetary Hours** are a *time-based* division, focusing on the energetic quality of different *segments of the day*, determined by the ruling planet of that hour.
-- **Zodiac Signs** are a *space-based* division of the ecliptic (the Sun's annual path), describing personality traits, innate potentials, etc. (e.g., your Sun sign).
+- **Planetary Hours** are a _time-based_ division, focusing on the energetic quality of different _segments of the day_, determined by the ruling planet of that hour.
+- **Zodiac Signs** are a _space-based_ division of the ecliptic (the Sun's annual path), describing personality traits, innate potentials, etc. (e.g., your Sun sign).
 - **Houses** in an astrological chart are another spatial division, representing different areas of life (career, family, finances, etc.).
 
 They are distinct yet interconnected tools within astrology. Planetary Hours are primarily used for "electional" purposes (choosing favorable times) and understanding the "current energetic weather."

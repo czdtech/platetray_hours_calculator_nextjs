@@ -4,9 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:optimized": "next dev --turbopack",
+    "dev:fast": "next dev --turbopack --experimental-https",
+    "dev:profile": "next dev --turbopack --experimental-debug",
     "build": "next build",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "performance:test": "./scripts/simple-performance-test.sh",
+    "performance:analyze": "npm run build && npx @next/bundle-analyzer",
+    "performance:lighthouse": "lighthouse http://localhost:3000 --output=html --output-path=./docs/lighthouse-report.html",
+    "seo:validate": "npm run build && node scripts/seo-validator.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -19,6 +30,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.511.0",
     "next": "15.3.2",
+    "next-pwa": "^5.6.0",
     "react": "^19.0.0",
     "react-datepicker": "^8.3.0",
     "react-dom": "^19.0.0",
@@ -31,15 +43,24 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@stagewise/toolbar-next": "latest",
+    "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/next-pwa": "^5.6.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/suncalc": "^1.8.1",
     "@types/uuid": "^10.0.0",
+    "@vitejs/plugin-react": "^4.5.0",
     "eslint": "^8",
-    "eslint-config-next": "15.0.0-canary.58",
+    "eslint-config-next": "^15.3.2",
+    "jsdom": "^26.1.0",
+    "puppeteer": "^24.9.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.1.4"
   }
 }

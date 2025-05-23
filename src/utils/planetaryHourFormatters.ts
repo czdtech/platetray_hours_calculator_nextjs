@@ -1,14 +1,14 @@
-import { formatInTimeZone } from 'date-fns-tz';
-import { PlanetaryHour } from '../services/PlanetaryHoursCalculator';
+import { formatInTimeZone } from "date-fns-tz";
+import { PlanetaryHour } from "../services/PlanetaryHoursCalculator";
 // 导入全局行星颜色常量
-import { PLANET_COLOR_CLASSES } from '@/constants/planetColors';
+import { PLANET_COLOR_CLASSES } from "@/constants/planetColors";
 
 // 定义格式化后的行星时间接口
 export interface FormattedPlanetaryHour {
   planet: string;
   timeRange: string;
   planetColor: string;
-  type: 'day' | 'night';
+  type: "day" | "night";
   durationMinutes: number;
   goodFor: string;
   avoid: string;
@@ -33,18 +33,26 @@ let lastHighlightedKey: string | null = null;
 export function formatHoursToList(
   hours: PlanetaryHour[],
   calculationTimezone: string,
-  timeFormat: '12h' | '24h',
+  timeFormat: "12h" | "24h",
   currentHourForHighlighting?: FormattedPlanetaryHour | null,
-  highlightAllowed: boolean = true
+  highlightAllowed: boolean = true,
 ): FormattedPlanetaryHour[] {
   if (!hours?.length || !calculationTimezone) return [];
 
-  const formatPattern = timeFormat === '24h' ? 'HH:mm' : 'h:mm aa';
+  const formatPattern = timeFormat === "24h" ? "HH:mm" : "h:mm aa";
   const nowUtc = new Date();
 
-  return hours.map(hour => {
-    const startTimeFormatted = formatInTimeZone(hour.startTime, calculationTimezone, formatPattern);
-    const endTimeFormatted = formatInTimeZone(hour.endTime, calculationTimezone, formatPattern);
+  return hours.map((hour) => {
+    const startTimeFormatted = formatInTimeZone(
+      hour.startTime,
+      calculationTimezone,
+      formatPattern,
+    );
+    const endTimeFormatted = formatInTimeZone(
+      hour.endTime,
+      calculationTimezone,
+      formatPattern,
+    );
     const timeRange = `${startTimeFormatted} - ${endTimeFormatted}`;
 
     // 改进的高亮判断逻辑
@@ -52,7 +60,8 @@ export function formatHoursToList(
 
     // 方法1：使用currentHourForHighlighting（如果有）
     if (currentHourForHighlighting) {
-      isCurrent = currentHourForHighlighting.planet === hour.ruler &&
+      isCurrent =
+        currentHourForHighlighting.planet === hour.ruler &&
         currentHourForHighlighting.timeRange === timeRange;
     }
     // 方法2：直接检查当前时间是否在此小时范围内
@@ -75,12 +84,14 @@ export function formatHoursToList(
       planet: hour.ruler,
       timeRange: timeRange,
       // 使用全局常量替换本地常量
-      planetColor: PLANET_COLOR_CLASSES[hour.ruler as keyof typeof PLANET_COLOR_CLASSES] || 'text-gray-500',
+      planetColor:
+        PLANET_COLOR_CLASSES[hour.ruler as keyof typeof PLANET_COLOR_CLASSES] ||
+        "text-gray-500",
       type: hour.type,
       durationMinutes: hour.durationMinutes,
-      goodFor: hour.goodFor || '',
-      avoid: hour.avoid || '',
-      current: highlightAllowed ? isCurrent : false
+      goodFor: hour.goodFor || "",
+      avoid: hour.avoid || "",
+      current: highlightAllowed ? isCurrent : false,
     };
   });
 }
@@ -97,24 +108,34 @@ export function formatHoursToList(
 export function formatSingleHour(
   hour: PlanetaryHour | null,
   calculationTimezone: string,
-  timeFormat: '12h' | '24h',
-  isActuallyCurrent: boolean = true // 默认认为是当前，除非被覆盖
+  timeFormat: "12h" | "24h",
+  isActuallyCurrent: boolean = true, // 默认认为是当前，除非被覆盖
 ): FormattedPlanetaryHour | null {
   if (!hour || !calculationTimezone) return null;
 
-  const formatPattern = timeFormat === '24h' ? 'HH:mm' : 'h:mm aa';
-  const startTimeFormatted = formatInTimeZone(hour.startTime, calculationTimezone, formatPattern);
-  const endTimeFormatted = formatInTimeZone(hour.endTime, calculationTimezone, formatPattern);
+  const formatPattern = timeFormat === "24h" ? "HH:mm" : "h:mm aa";
+  const startTimeFormatted = formatInTimeZone(
+    hour.startTime,
+    calculationTimezone,
+    formatPattern,
+  );
+  const endTimeFormatted = formatInTimeZone(
+    hour.endTime,
+    calculationTimezone,
+    formatPattern,
+  );
 
   return {
     planet: hour.ruler,
     timeRange: `${startTimeFormatted} - ${endTimeFormatted}`,
     // 使用全局常量替换本地常量
-    planetColor: PLANET_COLOR_CLASSES[hour.ruler as keyof typeof PLANET_COLOR_CLASSES] || 'text-gray-500',
+    planetColor:
+      PLANET_COLOR_CLASSES[hour.ruler as keyof typeof PLANET_COLOR_CLASSES] ||
+      "text-gray-500",
     type: hour.type,
     durationMinutes: hour.durationMinutes,
-    goodFor: hour.goodFor || '',
-    avoid: hour.avoid || '',
-    current: isActuallyCurrent
+    goodFor: hour.goodFor || "",
+    avoid: hour.avoid || "",
+    current: isActuallyCurrent,
   };
 }

@@ -1,5 +1,5 @@
-import { Fragment } from 'react';
-import Link from 'next/link';
+import { Fragment as _Fragment } from "react";
+import Link from "next/link";
 
 interface BreadcrumbItem {
   name: string;
@@ -18,9 +18,11 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
           {index > 0 && (
             <span className="mx-2 text-gray-400 dark:text-gray-500">/</span>
           )}
-          
+
           {index === items.length - 1 ? (
-            <span className="font-medium text-gray-800 dark:text-gray-200">{item.name}</span>
+            <span className="font-medium text-gray-800 dark:text-gray-200">
+              {item.name}
+            </span>
           ) : (
             <Link
               href={item.url}

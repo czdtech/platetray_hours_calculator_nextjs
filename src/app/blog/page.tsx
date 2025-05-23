@@ -1,25 +1,28 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import Image from 'next/image';
-import { formatDistanceToNow } from 'date-fns';
-import { blogPosts } from '@/data/blogPosts';
-import { Breadcrumb } from '@/components/SEO/Breadcrumb';
-import { JsonLd } from '@/components/SEO/JsonLd';
-import { getBreadcrumbSchema } from '@/utils/seo/jsonld';
-import { Section } from '@/components/semantic/Section';
-import { Header } from '@/components/Layout/Header';
-import { Footer } from '@/components/Layout/Footer';
+import type { Metadata } from "next";
+import Link from "next/link";
+import Image from "next/image";
+import { formatDistanceToNow } from "date-fns";
+import { blogPosts } from "@/data/blogPosts";
+import { Breadcrumb } from "@/components/SEO/Breadcrumb";
+import { JsonLd } from "@/components/SEO/JsonLd";
+import { getBreadcrumbSchema } from "@/utils/seo/jsonld";
+import { Section } from "@/components/semantic/Section";
+import { Header } from "@/components/Layout/Header";
+import { Footer } from "@/components/Layout/Footer";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://planetaryhours.org';
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
 
 export const metadata: Metadata = {
-  title: 'Blog',
-  description: 'Read the latest updates, guides and announcements about the Planetary Hours Calculator.',
+  title: "Blog",
+  description:
+    "Read the latest updates, guides and announcements about the Planetary Hours Calculator.",
   openGraph: {
-    title: 'Blog | Planetary Hours Calculator',
-    description: 'Read the latest updates, guides and announcements about the Planetary Hours Calculator.',
+    title: "Blog | Planetary Hours Calculator",
+    description:
+      "Read the latest updates, guides and announcements about the Planetary Hours Calculator.",
     url: `${SITE_URL}/blog`,
-    type: 'article',
+    type: "article",
   },
 };
 
@@ -29,8 +32,8 @@ export default function BlogPage() {
 
   // 面包屑导航项
   const breadcrumbItems = [
-    { name: 'Home', url: '/' },
-    { name: 'Blog', url: '/blog' }
+    { name: "Home", url: "/" },
+    { name: "Blog", url: "/blog" },
   ];
 
   return (
@@ -38,8 +41,8 @@ export default function BlogPage() {
       {/* JSON-LD 结构化数据 */}
       <JsonLd
         data={getBreadcrumbSchema([
-          { name: 'Home', url: SITE_URL },
-          { name: 'Blog', url: `${SITE_URL}/blog` },
+          { name: "Home", url: SITE_URL },
+          { name: "Blog", url: `${SITE_URL}/blog` },
         ])}
       />
 
@@ -73,7 +76,9 @@ export default function BlogPage() {
                     <div className="p-8 flex flex-col justify-between md:w-2/3">
                       <div>
                         <div className="text-sm text-indigo-600 mb-2">
-                          {formatDistanceToNow(new Date(blogPosts[0].date), { addSuffix: true })}
+                          {formatDistanceToNow(new Date(blogPosts[0].date), {
+                            addSuffix: true,
+                          })}
                         </div>
                         <Link
                           href={`/blog/${blogPosts[0].slug}`}
@@ -103,8 +108,11 @@ export default function BlogPage() {
 
             {/* 其他文章 - 网格布局 */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogPosts.slice(1).map(post => (
-                <article key={post.slug} className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 group hover:shadow-md transition-shadow">
+              {blogPosts.slice(1).map((post) => (
+                <article
+                  key={post.slug}
+                  className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 group hover:shadow-md transition-shadow"
+                >
                   <Link href={`/blog/${post.slug}`} className="block">
                     <div className="h-48 overflow-hidden relative">
                       <Image
@@ -118,16 +126,27 @@ export default function BlogPage() {
                   </Link>
                   <div className="p-6">
                     <div className="text-xs text-gray-500 mb-2">
-                      {formatDistanceToNow(new Date(post.date), { addSuffix: true })}
-                      {post.readingTime !== undefined && ` • ${post.readingTime} min read`}
+                      {formatDistanceToNow(new Date(post.date), {
+                        addSuffix: true,
+                      })}
+                      {post.readingTime !== undefined &&
+                        ` • ${post.readingTime} min read`}
                     </div>
                     <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                      <Link href={`/blog/${post.slug}`} className="hover:text-indigo-600 transition-colors">
+                      <Link
+                        href={`/blog/${post.slug}`}
+                        className="hover:text-indigo-600 transition-colors"
+                      >
                         {post.title}
                       </Link>
                     </h2>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">{post.excerpt}</p>
-                    <Link href={`/blog/${post.slug}`} className="text-indigo-600 font-medium text-sm hover:underline">
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                      {post.excerpt}
+                    </p>
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      className="text-indigo-600 font-medium text-sm hover:underline"
+                    >
                       Read more →
                     </Link>
                   </div>

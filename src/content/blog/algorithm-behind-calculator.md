@@ -48,7 +48,7 @@ With the precise sunrise and sunset times established, we can calculate the actu
 
 - **Calculate Daylight Duration**: `Time of Sunset - Time of Sunrise = Total Milliseconds of Daylight`.
 - **Calculate Night Duration**: `Time of Next Day's Sunrise - Time of Current Day's Sunset = Total Milliseconds of Night`.
-- **Twelfth Parts**: We then divide the "Total Milliseconds of Daylight" by 12 to get the exact millisecond duration of each *diurnal* (daytime) planetary hour for that specific day and location. Similarly, the "Total Milliseconds of Night" is divided by 12 for the *nocturnal* (nighttime) planetary hours. As you can see, the length in minutes of a daytime planetary hour will usually differ from a nighttime one.
+- **Twelfth Parts**: We then divide the "Total Milliseconds of Daylight" by 12 to get the exact millisecond duration of each _diurnal_ (daytime) planetary hour for that specific day and location. Similarly, the "Total Milliseconds of Night" is divided by 12 for the _nocturnal_ (nighttime) planetary hours. As you can see, the length in minutes of a daytime planetary hour will usually differ from a nighttime one.
 
 ### Step 4: Assigning the Celestial Rulers (Chaldean Order & Day Ruler)
 
@@ -59,9 +59,9 @@ Once the 24 distinct time slots are precisely defined, they need to be assigned 
 
 ### Step 5: Grounding in Local Time – The Indispensable Time Zone Correction
 
-This is the final, critical step to ensure the planetary hours are genuinely usable for *you*, and it's a detail many simpler calculators overlook or mishandle.
+This is the final, critical step to ensure the planetary hours are genuinely usable for _you_, and it's a detail many simpler calculators overlook or mishandle.
 
-- **Why UTC Isn't Enough for Users**: Astronomical calculations like those from [SunCalc.js](https://github.com/mourner/suncalc) typically return results in Coordinated Universal Time (UTC). However, users need to see times relevant to their *local* clocks. Simply adding or subtracting a fixed offset is highly unreliable due to the world's complex patchwork of time zones and Daylight Saving Time (DST) rules.
+- **Why UTC Isn't Enough for Users**: Astronomical calculations like those from [SunCalc.js](https://github.com/mourner/suncalc) typically return results in Coordinated Universal Time (UTC). However, users need to see times relevant to their _local_ clocks. Simply adding or subtracting a fixed offset is highly unreliable due to the world's complex patchwork of time zones and Daylight Saving Time (DST) rules.
 - **The Necessity of an Accurate IANA Time Zone**: For true localization, we first obtain the standard [IANA time zone](https://www.iana.org/time-zones) identifier for the queried location (e.g., "America/New_York", "Asia/Shanghai"). This is achieved via our securely proxied Google Maps Time Zone API, which returns the precise IANA name based on latitude and longitude.
 - **The Power of [date-fns-tz](https://github.com/marnusw/date-fns-tz)**: With the IANA time zone in hand, the robust [date-fns-tz](https://github.com/marnusw/date-fns-tz) library (its core logic integrated via `src/services/TimeZoneService.ts`) works its magic. It accurately converts all calculated UTC start and end times for each planetary hour into the correct local "wall time" for the target zone, correctly handling all complex DST transitions.
 - **The Final Result**: What you ultimately see on the Planetary Hours Calculator interface is the culmination of all these rigorous steps—precisely calculated and accurately localized planetary hour information.

@@ -18,4 +18,4 @@ export function SuggestionBar({ goodFor, avoid }: SuggestionBarProps) {
       </div>
     </div>
   );
-} 
+}

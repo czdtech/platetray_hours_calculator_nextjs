@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { FormattedPlanetaryHour } from '@/utils/planetaryHourFormatters';
-import { HourItem } from './HourItem';
+import { useState } from "react";
+import { FormattedPlanetaryHour } from "@/utils/planetaryHourFormatters";
+import { HourItem } from "./HourItem";
 
 interface HoursListProps {
   title: string;
@@ -10,20 +10,18 @@ interface HoursListProps {
   titleColor: string;
 }
 
-export function HoursList({
-  title,
-  hours,
-  titleColor
-}: HoursListProps) {
+export function HoursList({ title, hours, titleColor }: HoursListProps) {
   const [openMobileIndex, setOpenMobileIndex] = useState<number | null>(null);
 
   const handleToggleMobile = (index: number) => {
-    setOpenMobileIndex(prev => (prev === index ? null : index));
+    setOpenMobileIndex((prev) => (prev === index ? null : index));
   };
 
   return (
     <div>
-      <h3 className={`text-base font-medium ${titleColor} mb-3 pb-2 border-b border-gray-200 text-center`}>
+      <h3
+        className={`text-base font-medium ${titleColor} mb-3 pb-2 border-b border-gray-200 text-center`}
+      >
         {title}
       </h3>
       <div className="space-y-3">

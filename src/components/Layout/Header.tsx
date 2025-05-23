@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 // import { HashLink } from 'react-router-hash-link'; // HashLink might need a Next.js alternative or different handling
 
 interface HeaderProps {
-  activePage: 'calculator' | 'about' | 'blog';
+  activePage: "calculator" | "about" | "blog";
 }
 
 export function Header({ activePage }: HeaderProps) {
@@ -16,20 +16,20 @@ export function Header({ activePage }: HeaderProps) {
   const handleFAQClick = (e: React.MouseEvent) => {
     e.preventDefault();
     // 如果当前不在首页，先导航到首页
-    if (window.location.pathname !== '/') {
-      router.push('/');
+    if (window.location.pathname !== "/") {
+      router.push("/");
       // 需要等到页面加载完毕后才能滚动
       setTimeout(() => {
-        const faqElement = document.getElementById('faq');
+        const faqElement = document.getElementById("faq");
         if (faqElement) {
-          faqElement.scrollIntoView({ behavior: 'smooth' });
+          faqElement.scrollIntoView({ behavior: "smooth" });
         }
       }, 500);
     } else {
       // 如果已经在首页，直接滚动
-      const faqElement = document.getElementById('faq');
+      const faqElement = document.getElementById("faq");
       if (faqElement) {
-        faqElement.scrollIntoView({ behavior: 'smooth' });
+        faqElement.scrollIntoView({ behavior: "smooth" });
       }
     }
     setMenuOpen(false);
@@ -50,14 +50,15 @@ export function Header({ activePage }: HeaderProps) {
         <nav className="hidden md:flex space-x-6">
           <Link
             href="/"
-            className={`text-sm ${activePage === 'calculator'
-              ? 'text-purple-600 font-medium border-b-2 border-purple-600 pb-1'
-              : 'text-gray-600 hover:text-purple-700 transition-colors duration-200'
-              }`}
+            className={`text-sm ${
+              activePage === "calculator"
+                ? "text-purple-600 font-medium border-b-2 border-purple-600 pb-1"
+                : "text-gray-600 hover:text-purple-700 transition-colors duration-200"
+            }`}
           >
             Calculator
           </Link>
-          {activePage === 'calculator' && (
+          {activePage === "calculator" && (
             <Link
               href="/#faq"
               onClick={handleFAQClick}
@@ -68,19 +69,21 @@ export function Header({ activePage }: HeaderProps) {
           )}
           <Link
             href="/blog"
-            className={`text-sm ${activePage === 'blog'
-              ? 'text-purple-600 font-medium border-b-2 border-purple-600 pb-1'
-              : 'text-gray-600 hover:text-purple-700 transition-colors duration-200'
-              }`}
+            className={`text-sm ${
+              activePage === "blog"
+                ? "text-purple-600 font-medium border-b-2 border-purple-600 pb-1"
+                : "text-gray-600 hover:text-purple-700 transition-colors duration-200"
+            }`}
           >
             Blog
           </Link>
           <Link
             href="/about"
-            className={`text-sm ${activePage === 'about'
-              ? 'text-purple-600 font-medium border-b-2 border-purple-600 pb-1'
-              : 'text-gray-600 hover:text-purple-700 transition-colors duration-200'
-              }`}
+            className={`text-sm ${
+              activePage === "about"
+                ? "text-purple-600 font-medium border-b-2 border-purple-600 pb-1"
+                : "text-gray-600 hover:text-purple-700 transition-colors duration-200"
+            }`}
           >
             About
           </Link>
@@ -102,9 +105,17 @@ export function Header({ activePage }: HeaderProps) {
             strokeWidth="2"
           >
             {isMenuOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
             ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             )}
           </svg>
         </button>
@@ -120,7 +131,7 @@ export function Header({ activePage }: HeaderProps) {
           >
             Calculator
           </Link>
-          {activePage === 'calculator' && (
+          {activePage === "calculator" && (
             <Link
               href="/#faq"
               className="block py-2 text-sm font-medium text-gray-700 hover:text-purple-700"

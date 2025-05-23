@@ -32,11 +32,13 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 **Energy Recap:** The Sun infuses its hour with potent life force, creativity, confidence, and a commanding presence. It's a favorable period for self-expression, pursuing success, and gaining recognition.
 
 **Best For (Good For):**
+
 - **Career & Leadership:** Launching key initiatives, chairing important meetings, public speaking, pitching to superiors or clients, seeking promotion or support, brand promotion.
 - **Personal Spotlight:** Attending interviews, delivering presentations, showcasing talents, enhancing personal image and reputation.
 - **Health & Vitality:** Engaging in invigorating physical exercise, (moderate) sunbathing, boosting personal energy levels.
 
 **Consider Avoiding (Avoid):**
+
 - Activities requiring discretion, secrecy, or behind-the-scenes work.
 - Displaying excessive humility, lacking self-assurance, or shirking responsibility.
 - Actions that might provoke power struggles if you're unprepared.
@@ -48,11 +50,13 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 **Energy Recap:** The Moon governs emotions, intuition, the subconscious, domestic affairs, and collective public sentiment. It's a period for introspection, emotional care, home-related tasks, and connecting with others on an emotional level.
 
 **Best For (Good For):**
+
 - **Emotions & Home:** Spending quality time with family, homemaking, cooking and sharing meals, heartfelt conversations, emotional healing.
 - **Personal Growth:** Journaling, meditation, self-reflection, listening to your intuition, engaging in therapy or counseling.
 - **Public & Community:** Publishing content that resonates emotionally, market research (understanding public needs), work in caregiving or service industries.
 
 **Consider Avoiding (Avoid):**
+
 - Making major decisions requiring high levels of detached rationality (emotions may cloud judgment).
 - Engaging in intense confrontations or initiating conflict.
 - High-risk speculative ventures.
@@ -64,11 +68,13 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 **Energy Recap:** Mercury rules communication of all kinds, learning, writing, logical analysis, commerce, information exchange, and short trips. This is when the mind is typically at its most agile.
 
 **Best For (Good For):**
+
 - **Learning & Work:** Reading, writing, acquiring new skills, taking exams, brainstorming, data processing, paperwork, coding.
 - **Communication & Business:** Negotiations, signing contracts, delivering speeches or reports, chairing meetings, sales and marketing, customer service.
 - **Travel & Information:** Short journeys, sending important emails or messages, gathering information, research.
 
 **Consider Avoiding (Avoid):**
+
 - Conversations requiring deep emotional engagement without a logical framework.
 - Making hasty decisions with insufficient information.
 - Monotonous physical labor requiring little mental input.
@@ -80,11 +86,13 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 **Energy Recap:** Venus is the harbinger of love, beauty, art, social connection, pleasure, cooperation, and harmony. This hour is imbued with a sense of ease, attraction, and enjoyment.
 
 **Best For (Good For):**
+
 - **Relationships & Emotions:** Dates, deepening bonds with partners, resolving conflicts amicably, socializing, meeting new people, expressing affection and gratitude.
 - **Arts & Aesthetics:** Visiting art galleries, attending concerts, creative pursuits, beauty treatments, decorating your home, acquiring beautiful items.
 - **Cooperation & Leisure:** Seeking collaborations, team-building activities, enjoying good food, attending parties, engaging in lighthearted recreation.
 
 **Consider Avoiding (Avoid):**
+
 - Initiating conflicts or engaging in harsh criticism.
 - Activities requiring intense competition or confrontation.
 - Overspending or indulging excessively.
@@ -96,11 +104,13 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 **Energy Recap:** Mars represents action, courage, determination, a competitive spirit, raw drive, and the power to overcome obstacles. This is a time to act decisively and face challenges head-on.
 
 **Best For (Good For):**
+
 - **Action & Execution:** Starting new initiatives (especially those requiring boldness), overcoming procrastination, engaging in strenuous physical labor or exercise, completing challenging tasks.
 - **Competition & Courage:** Participating in contests, asserting your rights (within reason), making brave decisions, breaking deadlocks.
 - **Innovation & Breakthroughs:** Trying new things, challenging old patterns, undertaking tasks that require a "cutting through" approach.
 
 **Consider Avoiding (Avoid):**
+
 - Activities requiring patience, diplomacy, or delicate handling.
 - Seeking peaceful negotiations or mediation (unless you are initiating a bold move for resolution).
 - Making irreversible decisions when emotionally charged, as conflicts can escalate.
@@ -112,11 +122,13 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 **Energy Recap:** Jupiter symbolizes expansion, growth, good fortune, opportunity, generosity, wisdom, higher education, and long-range planning. This is an auspicious time for seeking development, broadening horizons, and attracting positive resources.
 
 **Best For (Good For):**
+
 - **Career & Finances:** Exploring investment opportunities, expanding business, financial planning, applying for loans or funding, seeking mentorship or influential support, charitable giving.
 - **Learning & Wisdom:** Studying philosophy, law, or other advanced subjects; long-term planning; seeking guidance from experts; cross-cultural exchanges.
 - **Personal Growth:** Setting ambitious goals, cultivating optimism, undertaking travel or reading that broadens your perspective.
 
 **Consider Avoiding (Avoid):**
+
 - Overlooking critical details due to excessive optimism.
 - Extravagance or overindulgence.
 - Tasks requiring meticulous economizing or contraction.
@@ -128,11 +140,13 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 **Energy Recap:** Saturn represents structure, discipline, responsibility, patience, boundaries, tradition, the accumulation of experience, and overcoming hardship. This period is suited for tasks requiring focus, endurance, and a serious approach.
 
 **Best For (Good For):**
+
 - **Work & Responsibility:** Handling complex, long-term projects requiring meticulous attention; establishing rules and plans; auditing or inspection tasks; taking on responsibility; dealing with legal or official matters.
 - **Learning & Self-Discipline:** Engaging in studies that require deep concentration and self-control; consolidating existing knowledge; reflecting on and learning from past mistakes.
 - **Organizing & Concluding:** Decluttering, ending relationships or projects that are no longer beneficial, establishing healthy boundaries.
 
 **Consider Avoiding (Avoid):**
+
 - Launching brand new, speculative ventures that require quick, visible results.
 - Social activities requiring a lighthearted and spontaneous atmosphere.
 - Expecting immediate rewards or evading responsibilities.
@@ -144,22 +158,26 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 Beyond general guidelines, you can strategically select planetary hours to support specific life goals:
 
 ### Boosting Work Efficiency & Focus
+
 - **Mercury Hour:** For tasks demanding clear thought, communication, and information processing (writing, coding, data analysis, meetings).
 - **Saturn Hour:** For complex assignments requiring sustained concentration, meticulous effort, and problem-solving (deep research, project milestones, detailed planning).
 - **Mars Hour:** To kickstart a task, overcome procrastination, or for short bursts of high-intensity work.
 
 ### Enhancing Communication & Relationships
+
 - **Venus Hour:** Ideal for dates, social gatherings, resolving disagreements amicably, expressing affection, and creating a harmonious environment.
 - **Mercury Hour:** For important negotiations, discussions, explanations, ensuring clear and accurate information exchange.
 - **Moon Hour:** For heartfelt conversations with family or close friends, fostering understanding and empathy.
 
 ### Promoting Physical & Mental Well-being
+
 - **Sun Hour:** For exercises that build vitality and strength, like morning runs or weight training.
 - **Moon Hour:** For calming activities such as yoga, meditation, or a relaxing bath to nurture mind and body.
 - **Mars Hour:** For high-intensity workouts or competitive sports.
 - **Saturn Hour:** To establish healthy routines or for rehabilitation exercises requiring perseverance.
 
 ### Supporting Financial Growth & Career Advancement
+
 - **Jupiter Hour:** For investment decisions, seeking business partnerships, expanding operations, and long-term financial planning.
 - **Sun Hour:** To showcase leadership skills, bid for important projects or positions, and enhance your professional reputation.
 - **Mercury Hour:** For business negotiations, signing contracts, and handling finance-related paperwork.
@@ -178,7 +196,7 @@ Try keeping a simple journal of your activities during different planetary hours
 
 ### Flexibility Over Dogma
 
-Planetary Hours offer guidance on energetic tendencies, not absolute dictates. If circumstances don't allow you to perfectly align your schedule, don't stress. The key is to understand the underlying principle and make the most "energetically aligned" choices *when you have a choice*.
+Planetary Hours offer guidance on energetic tendencies, not absolute dictates. If circumstances don't allow you to perfectly align your schedule, don't stress. The key is to understand the underlying principle and make the most "energetically aligned" choices _when you have a choice_.
 
 ### Combine with Personal Astrology (Advanced, Optional)
 

@@ -1,4 +1,4 @@
-import { isValid, addDays, subDays } from 'date-fns';
+import { isValid, addDays, subDays } from "date-fns";
 
 export interface LocationData {
   latitude: number;
@@ -35,13 +35,13 @@ export class LocationDateService {
   }): LocationData {
     // Validate and standardize latitude
     const latitude = this.standardizeLatitude(data.latitude);
-    
+
     // Validate and standardize longitude
     const longitude = this.standardizeLongitude(data.longitude);
-    
+
     // Validate and standardize date
     const date = this.standardizeDate(data.date);
-    
+
     // Validate and standardize timezone
     const timezone = this.standardizeTimezone(data.timezone);
 
@@ -49,7 +49,7 @@ export class LocationDateService {
       latitude,
       longitude,
       date,
-      timezone
+      timezone,
     };
   }
 
@@ -57,18 +57,21 @@ export class LocationDateService {
    * Validates latitude value
    */
   public validateLatitude(latitude: number): ValidationResult {
-    if (typeof latitude !== 'number' || isNaN(latitude)) {
-      return { isValid: false, message: 'Latitude must be a valid number' };
+    if (typeof latitude !== "number" || isNaN(latitude)) {
+      return { isValid: false, message: "Latitude must be a valid number" };
     }
 
     if (latitude < -90 || latitude > 90) {
-      return { isValid: false, message: 'Latitude must be between -90 and 90 degrees' };
+      return {
+        isValid: false,
+        message: "Latitude must be between -90 and 90 degrees",
+      };
     }
 
     if (Math.abs(latitude) > 66.5) {
-      return { 
-        isValid: true, 
-        message: 'Warning: Calculations may be less accurate in polar regions'
+      return {
+        isValid: true,
+        message: "Warning: Calculations may be less accurate in polar regions",
       };
     }
 
@@ -79,12 +82,15 @@ export class LocationDateService {
    * Validates longitude value
    */
   public validateLongitude(longitude: number): ValidationResult {
-    if (typeof longitude !== 'number' || isNaN(longitude)) {
-      return { isValid: false, message: 'Longitude must be a valid number' };
+    if (typeof longitude !== "number" || isNaN(longitude)) {
+      return { isValid: false, message: "Longitude must be a valid number" };
     }
 
     if (longitude < -180 || longitude > 180) {
-      return { isValid: false, message: 'Longitude must be between -180 and 180 degrees' };
+      return {
+        isValid: false,
+        message: "Longitude must be between -180 and 180 degrees",
+      };
     }
 
     return { isValid: true };
@@ -95,7 +101,7 @@ export class LocationDateService {
    */
   public validateDate(date: Date): ValidationResult {
     if (!(date instanceof Date) || !isValid(date)) {
-      return { isValid: false, message: 'Invalid date' };
+      return { isValid: false, message: "Invalid date" };
     }
 
     const now = new Date();
@@ -103,9 +109,9 @@ export class LocationDateService {
     const oneYearFromNow = addDays(now, 365);
 
     if (date < oneYearAgo || date > oneYearFromNow) {
-      return { 
-        isValid: false, 
-        message: 'Date must be within 365 days of the current date' 
+      return {
+        isValid: false,
+        message: "Date must be within 365 days of the current date",
       };
     }
 
@@ -117,7 +123,7 @@ export class LocationDateService {
    */
   public validateTimezone(timezone: string): ValidationResult {
     if (!timezone) {
-      return { isValid: false, message: 'Timezone is required' };
+      return { isValid: false, message: "Timezone is required" };
     }
 
     try {
@@ -125,7 +131,7 @@ export class LocationDateService {
       Intl.DateTimeFormat(undefined, { timeZone: timezone });
       return { isValid: true };
     } catch {
-      return { isValid: false, message: 'Invalid timezone identifier' };
+      return { isValid: false, message: "Invalid timezone identifier" };
     }
   }
 
@@ -166,29 +172,31 @@ export class LocationDateService {
    * Standardizes timezone string
    */
   private standardizeTimezone(timezone?: string): string {
-    const validation = this.validateTimezone(timezone || 'UTC');
+    const validation = this.validateTimezone(timezone || "UTC");
     if (!validation.isValid) {
       throw new Error(validation.message);
     }
-    return timezone || 'UTC';
+    return timezone || "UTC";
   }
 
   /**
    * Converts coordinates from various formats to decimal degrees
    */
-  public parseCoordinates(input: string): { latitude: number; longitude: number } | null {
+  public parseCoordinates(
+    input: string,
+  ): { latitude: number; longitude: number } | null {
     // Remove all spaces and convert to uppercase
-    const cleanInput = input.replace(/\s+/g, '').toUpperCase();
+    const cleanInput = input.replace(/\s+/g, "").toUpperCase();
 
     // Try different coordinate formats
-    
+
     // Decimal degrees (e.g., "40.7128,-74.0060")
     const decimalRegex = /^(-?\d+\.?\d*),(-?\d+\.?\d*)$/;
     const decimalMatch = cleanInput.match(decimalRegex);
     if (decimalMatch) {
       return {
         latitude: Number(decimalMatch[1]),
-        longitude: Number(decimalMatch[2])
+        longitude: Number(decimalMatch[2]),
       };
     }
 
@@ -200,13 +208,13 @@ export class LocationDateService {
         Number(dmsMatch[1]),
         Number(dmsMatch[2]),
         Number(dmsMatch[3]),
-        dmsMatch[4]
+        dmsMatch[4],
       );
       const longitude = this.dmsToDecimal(
         Number(dmsMatch[5]),
         Number(dmsMatch[6]),
         Number(dmsMatch[7]),
-        dmsMatch[8]
+        dmsMatch[8],
       );
       return { latitude, longitude };
     }
@@ -217,9 +225,14 @@ export class LocationDateService {
   /**
    * Converts DMS (degrees, minutes, seconds) to decimal degrees
    */
-  private dmsToDecimal(degrees: number, minutes: number, seconds: number, direction: string): number {
-    let decimal = degrees + minutes/60 + seconds/3600;
-    if (direction === 'S' || direction === 'W') {
+  private dmsToDecimal(
+    degrees: number,
+    minutes: number,
+    seconds: number,
+    direction: string,
+  ): number {
+    let decimal = degrees + minutes / 60 + seconds / 3600;
+    if (direction === "S" || direction === "W") {
       decimal = -decimal;
     }
     return Number(decimal.toFixed(6));
@@ -227,4 +240,4 @@ export class LocationDateService {
 }
 
 // Export singleton instance
-export const locationDateService = LocationDateService.getInstance(); 
+export const locationDateService = LocationDateService.getInstance();
