@@ -106,6 +106,18 @@ function CalculatorCore() {
   useEffect(() => {
     const fetchTimezone = async () => {
       if (coordinates) {
+        // 如果是默认的纽约坐标，直接使用默认时区，避免API调用
+        const isDefaultCoordinates =
+          coordinates.latitude === 40.7128 &&
+          coordinates.longitude === -74.006 &&
+          coordinates.source === "input";
+
+        if (isDefaultCoordinates) {
+          console.log("🏠 [Timezone] 使用默认坐标，跳过API调用，使用默认时区");
+          setIsTimezoneUpdating(false);
+          return;
+        }
+
         try {
           // Mark timezone as updating
           setIsTimezoneUpdating(true);

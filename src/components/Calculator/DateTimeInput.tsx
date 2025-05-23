@@ -48,26 +48,8 @@ export function DateTimeInput({
           dateFormat="MMMM d, yyyy"
           className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 transition-all duration-200 pl-4 pr-10 cursor-pointer"
           wrapperClassName="w-full"
-          popperClassName="z-[100] relative"
+          popperClassName="z-[100]"
           popperPlacement="bottom-start"
-          popperModifiers={
-            [
-              {
-                name: "offset",
-                options: {
-                  offset: [0, 8],
-                },
-              },
-              {
-                name: "preventOverflow",
-                options: {
-                  boundary: "viewport",
-                  padding: 8,
-                  altAxis: true,
-                },
-              },
-            ] as any
-          }
           customInput={
             <input
               ref={inputRef}

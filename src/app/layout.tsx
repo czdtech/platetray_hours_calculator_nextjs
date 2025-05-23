@@ -4,7 +4,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Footer } from "@/components/Layout/Footer";
 import { AnalyticsWrapper } from "@/components/Analytics/Analytics";
 import { PerformanceDashboard } from "@/components/Analytics/PerformanceDashboard";
-import { StagewiseToolbar } from "@stagewise/toolbar-next";
 import { getDefaultSiteMetadata } from "@/utils/seo/metadata";
 import { getGSCVerificationMeta } from "@/config/seo-monitoring";
 
@@ -26,10 +25,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const stagewiseConfig = {
-    plugins: [],
-  };
-
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
@@ -55,9 +50,6 @@ export default function RootLayout({
         <AnalyticsWrapper />
         {/* 性能监控仪表板 - 仅在开发环境显示 */}
         <PerformanceDashboard />
-        {process.env.NODE_ENV === "development" && (
-          <StagewiseToolbar config={stagewiseConfig} />
-        )}
       </body>
     </html>
   );

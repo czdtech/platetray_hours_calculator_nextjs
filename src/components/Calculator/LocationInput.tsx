@@ -107,6 +107,12 @@ function LocationInputComponent({
     console.log("🗺️ [LocationInput] 位置输入组件挂载");
     console.log(`📍 [LocationInput] 默认位置: ${defaultLocation}`);
 
+    // 如果是默认位置（New York, NY），跳过会话令牌获取
+    if (defaultLocation === "New York, NY") {
+      console.log("🏠 [LocationInput] 使用默认位置，跳过会话令牌获取");
+      return;
+    }
+
     if (!hasFetchedSessionToken) {
       hasFetchedSessionToken = true;
       fetchNewSessionToken();
