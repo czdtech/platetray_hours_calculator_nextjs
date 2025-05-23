@@ -38,6 +38,7 @@ function CalculatorCore() {
   const [timeFormat, setTimeFormat] = useState<'12h' | '24h'>('24h');
   const [isTimezoneUpdating, setIsTimezoneUpdating] = useState(false);
   const [activeTab, setActiveTab] = useState<'day' | 'night'>('day');
+  const [hasInitialCalculated, setHasInitialCalculated] = useState(false);
 
   const {
     planetaryHoursRaw,
@@ -52,6 +53,20 @@ function CalculatorCore() {
   const loading = isLoadingHours || isTimezoneUpdating;
 
   // ---- EFFECTS ----
+  // 初始计算：使用默认坐标和时区进行第一次计算
+  useEffect(() => {
+    // 如果有默认坐标和时区，且还没有进行过初始计算，立即进行第一次计算
+    if (coordinates && timezone && !hasInitialCalculated && !isTimezoneUpdating) {
+      console.log('🚀 [Initial] 使用默认数据进行初始计算', { 
+        coordinates: `${coordinates.latitude}, ${coordinates.longitude}`, 
+        timezone, 
+        selectedDate: selectedDate.toISOString() 
+      });
+      calculate(coordinates.latitude, coordinates.longitude, selectedDate, timezone);
+      setHasInitialCalculated(true);
+    }
+  }, [coordinates, timezone, selectedDate, hasInitialCalculated, isTimezoneUpdating, calculate]); // 依赖这些变量的变化
+
   useEffect(() => {
     if (currentHour) {
       const sunrise = planetaryHoursRaw?.sunriseLocal;

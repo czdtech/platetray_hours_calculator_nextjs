@@ -80,6 +80,11 @@ export function useCurrentLivePlanetaryHour({
   }, [planetaryHoursRaw, currentCoordinatesForYesterdayCalc, dateForPlanetaryHoursRaw, timeFormat]);
 
   useEffect(() => {
+    // 只有当有基本数据时才执行计算，避免初始化时的无意义警告
+    if (!planetaryHoursRaw || !dateForPlanetaryHoursRaw) {
+      return;
+    }
+
     const nowUtc = new Date();
     calculateAndSetCurrentHour(nowUtc); // Initial call
 

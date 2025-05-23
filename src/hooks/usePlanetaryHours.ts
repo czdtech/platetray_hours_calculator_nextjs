@@ -68,10 +68,6 @@ export function usePlanetaryHours(timeFormat: '12h' | '24h' = '24h'): UsePlaneta
       // 如果时区验证通过，直接使用输入的时区
       const validTimezone = timezoneInput;
 
-      // 保存用于计算的原始日期和坐标（不要修改日期对象）
-      setCurrentCoordinates({ latitude: standardizedLatitude, longitude: standardizedLongitude });
-      setSelectedDateForCalc(clonedDate);
-
       // 确保使用的是原始日期进行计算，不要在这里做时区转换
       const result = await planetaryHoursCalculator.calculate(
         clonedDate,
@@ -83,7 +79,11 @@ export function usePlanetaryHours(timeFormat: '12h' | '24h' = '24h'): UsePlaneta
       // Add null check for result before accessing its properties
       if (result) {
         console.log(`计算结果: 日出=${result.sunrise?.toISOString()}, 日落=${result.sunset?.toISOString()}, 行星时数量=${result.planetaryHours?.length || 0}`);
+        
+        // 同时更新所有相关状态，避免中间状态触发useCurrentLivePlanetaryHour
         setPlanetaryHoursRaw(result);
+        setCurrentCoordinates({ latitude: standardizedLatitude, longitude: standardizedLongitude });
+        setSelectedDateForCalc(clonedDate);
         lastParamsRef.current = paramKey;
       } else {
         // Handle the case where result is null, perhaps set an error or clear existing data
