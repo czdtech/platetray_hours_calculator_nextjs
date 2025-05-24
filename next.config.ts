@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
-import withPWA from 'next-pwa';
+
+// 使用 require 方式导入 next-pwa 避免类型问题
+const withPWA = require('next-pwa');
 
 const nextConfig: NextConfig = {
   // 图片优化配置

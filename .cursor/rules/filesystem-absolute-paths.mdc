@@ -1,0 +1,42 @@
+---
+description: 强制 AI 在执行文件或文件夹操作时，始终获取并使用项目的绝对路径，并优先使用 mcp_filesystem_* 工具。
+alwaysApply: true
+---
+
+# Filesystem Operations with Absolute Paths Rule
+
+## 📂 文件/文件夹操作绝对路径规则
+
+**重要：在执行任何文件或文件夹操作时，必须遵循以下准则：**
+
+### 1. 使用文件系统工具 (Filesystem Tools)
+   - 所有文件和文件夹的创建、读取、更新、删除（CRUD）以及列表、移动等操作，**必须**优先使用 `mcp_filesystem_*` 系列工具。
+   - 例如：`mcp_filesystem_read_file`, `mcp_filesystem_write_file`, `mcp_filesystem_list_directory`, `mcp_filesystem_create_directory`, `mcp_filesystem_move_file`。
+
+### 2. 获取项目绝对路径
+   - 在执行任何文件系统操作之前，**必须**首先确定当前项目的根目录的绝对路径。
+   - 这个信息通常可以从用户提供的工作区信息（如 `user_info` 中的 `workspace_path`）中获取，或通过与用户确认。
+
+### 3. 始终使用绝对路径
+   - 所有传递给 `mcp_filesystem_*` 工具的路径参数（如 `path`, `source`, `destination`），**必须**是绝对路径。
+   - 这可以确保操作的准确性，避免因相对路径在不同上下文中的歧义而导致错误。
+
+### 示例场景
+
+**当需要读取 `src/components/Button.tsx` 文件时：**
+
+**❌ 错误做法：**
+   - 直接使用相对路径：`mcp_filesystem_read_file(path="src/components/Button.tsx")`
+   - 使用其他可能不强制绝对路径的API进行文件读取。
+
+**✅ 正确做法：**
+   1. 假设已获取项目绝对路径为：`E:\projects\project\nextjs`。
+   2. 构造目标文件的绝对路径：`E:\projects\project\nextjs\src\components\Button.tsx`。
+   3. 使用绝对路径调用工具：`mcp_filesystem_read_file(path="E:\\projects\\project\\nextjs\\src\\components\\Button.tsx")`。 (在作为参数传递时，请注意路径分隔符的正确表示，例如在JSON字符串中可能需要双反斜杠 `\\`。)
+
+### 理由
+   - **明确性**：绝对路径消除了关于当前工作目录的所有歧义。
+   - **可靠性**：确保文件操作作用于预期的位置，尤其是在复杂的脚本或多步骤操作中。
+   - **工具健壮性**：`mcp_filesystem_*` 工具配合绝对路径能提供更稳定和可预测的行为。
+
+**总结：文件操作 = `mcp_filesystem_*` 工具 + 绝对路径。**

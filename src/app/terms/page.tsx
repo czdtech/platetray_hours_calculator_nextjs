@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/Layout/Header";
-import { Footer } from "@/components/Layout/Footer";
 import { Article } from "@/components/semantic/Article";
 
 const SITE_URL =
@@ -24,9 +23,9 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <>
       <Header activePage="about" />
-      <main className="flex-grow container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-8 space-y-8">
         <Article className="bg-white rounded-xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Terms of Service
@@ -163,19 +162,29 @@ export default function TermsPage() {
 
           <section className="mb-8">
             <h3 className="text-xl font-semibold text-gray-700 mb-4">
-              8. Governing Law
+              8. Governing Law and Dispute Resolution
             </h3>
             <p className="text-gray-600 mb-4">
-              These terms and conditions are governed by and construed in
-              accordance with the laws of [Placeholder: Your Jurisdiction] and
-              you irrevocably submit to the exclusive jurisdiction of the courts
-              in that State or location.
+              These Terms of Service shall be governed by and construed in
+              accordance with international best practices and the laws of the
+              jurisdiction where the service is primarily operated, without
+              regard to conflict of law principles. Any disputes arising out of
+              or relating to these Terms or the use of our Service shall be
+              resolved through good faith negotiation. If such negotiation fails,
+              disputes may be submitted to binding arbitration or resolved in the
+              courts of competent jurisdiction in the user's local area, as
+              appropriate under applicable international law.
+            </p>
+            <p className="text-gray-600 mb-4">
+              For users in the European Union, any disputes shall be resolved in
+              accordance with EU consumer protection laws and may be submitted to
+              the European Online Dispute Resolution platform. Users in other
+              jurisdictions retain their rights under local consumer protection
+              laws.
             </p>
           </section>
         </Article>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </>
   );
 }

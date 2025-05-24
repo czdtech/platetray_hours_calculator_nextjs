@@ -12,19 +12,36 @@
 
 ## 🚀 快速开始
 
+### ⚠️ 重要提示：使用 Yarn 而不是 npm
+
+**本项目使用 Tailwind CSS v4，在 Windows 系统上必须使用 Yarn 来避免 LightningCSS 兼容性问题。**
+
+如果使用 npm 会遇到以下错误：
+```
+Error: Cannot find module '../lightningcss.win32-x64-msvc.node'
+```
+
+### 解决方案：
+
+1. **安装 Yarn**（如果尚未安装）：
+```bash
+npm install -g yarn
+```
+
+2. **删除现有的 npm 依赖**（如果存在）：
+```bash
+rm -rf node_modules package-lock.json
+```
+
 ### 安装依赖
 
 ```bash
-npm install
-# 或
 yarn install
 ```
 
 ### 开发环境
 
 ```bash
-npm run dev
-# 或
 yarn dev
 ```
 
@@ -33,15 +50,32 @@ yarn dev
 ### 构建生产版本
 
 ```bash
-npm run build
-npm start
+yarn build
+yarn start
+```
+
+### 其他常用命令
+
+```bash
+# 代码检查
+yarn lint
+
+# 类型检查
+yarn typecheck
+
+# 清理缓存
+yarn clean
+
+# 完全清理
+yarn clean:all
 ```
 
 ## 🔧 技术栈
 
 - **框架**: Next.js 15 (App Router)
 - **语言**: TypeScript
-- **样式**: Tailwind CSS
+- **样式**: Tailwind CSS v4 (使用 LightningCSS)
+- **包管理**: Yarn (必需，用于解决 Windows 兼容性问题)
 - **地图服务**: Google Maps API
 - **时区处理**: date-fns-tz
 - **图标**: Lucide React
@@ -157,9 +191,70 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 - [x] 安全头设置
 - [ ] 性能监控集成
 
+## 🔧 故障排除
+
+### LightningCSS 兼容性问题 (Windows)
+
+**问题描述**：在 Windows 系统上使用 npm 构建项目时出现以下错误：
+
+```
+Error: Cannot find module '../lightningcss.win32-x64-msvc.node'
+```
+
+**原因**：Tailwind CSS v4 使用 LightningCSS 作为 CSS 处理引擎，该引擎依赖原生二进制模块。npm 在 Windows 上处理这些原生模块时存在兼容性问题。
+
+**解决方案**：
+
+1. **安装 Microsoft Visual C++ Redistributable**（如果尚未安装）：
+   - 下载：https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
+   - 安装 x64 版本
+
+2. **使用 Yarn 替代 npm**：
+   ```bash
+   # 安装 Yarn
+   npm install -g yarn
+   
+   # 删除 npm 依赖
+   rm -rf node_modules package-lock.json
+   
+   # 使用 Yarn 重新安装
+   yarn install
+   
+   # 使用 Yarn 构建
+   yarn build
+   ```
+
+3. **验证解决方案**：
+   ```bash
+   yarn build  # 应该成功构建，无错误
+   ```
+
+**注意事项**：
+- 从此以后，请始终使用 Yarn 而不是 npm 来管理此项目
+- 不要混用 npm 和 Yarn，这可能导致依赖冲突
+- 如果团队成员遇到相同问题，请确保他们也使用 Yarn
+
+### 其他常见问题
+
+**构建缓存问题**：
+```bash
+yarn clean      # 清理构建缓存
+yarn clean:all  # 完全清理（包括 node_modules 缓存）
+```
+
+**TypeScript 类型错误**：
+```bash
+yarn typecheck  # 检查类型错误
+```
+
 ## 🤝 贡献
 
 欢迎提交 Issue 和 Pull Request 来改进项目。
+
+**贡献前请注意**：
+- 使用 Yarn 而不是 npm
+- 运行 `yarn lint` 和 `yarn typecheck` 确保代码质量
+- 测试构建：`yarn build`
 
 ## 📄 许可证
 

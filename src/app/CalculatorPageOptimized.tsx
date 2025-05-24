@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, Suspense, lazy } from "react";
+import { useState, useEffect, Suspense, lazy, useMemo, useCallback, useRef } from "react";
 import { DateProvider, useDateContext } from "@/contexts/DateContext";
 import { usePlanetaryHours } from "@/hooks/usePlanetaryHours";
 import { Header } from "@/components/Layout/Header";
-import { LocationInput } from "@/components/Calculator/LocationInput";
+import { EnhancedLocationInput } from "@/components/Calculator/EnhancedLocationInput";
 import { DateTimeInput } from "@/components/Calculator/DateTimeInput";
 import { CurrentHourDisplay } from "@/components/Calculator/CurrentHourDisplay";
 import { WeekNavigation } from "@/components/Calculator/WeekNavigation";
@@ -15,6 +15,7 @@ import { Section } from "@/components/semantic/Section";
 import { timeZoneService } from "@/services/TimeZoneService";
 import { formatInTimeZone as formatInTimeZoneDirect } from "date-fns-tz";
 import { subDays } from "date-fns";
+import { LayoutStabilizer } from "@/components/Performance/LayoutStabilizer";
 
 // 懒加载非关键组件
 const LazyHoursList = lazy(() => import("@/components/Calculator/HoursList").then(module => ({ default: module.HoursList })));
@@ -26,25 +27,87 @@ import { PLANET_COLOR_CLASSES as _PLANET_COLOR_CLASSES, PLANET_SYMBOLS as _PLANE
 interface Coordinates {
   latitude: number;
   longitude: number;
-  source: "browser" | "input" | "geocode" | "autocomplete";
+  source: "browser" | "input" | "geocode" | "autocomplete" | "preset";
   address?: string;
 }
+
+// 默认坐标常量
+const DEFAULT_COORDINATES = {
+  latitude: 40.7128,
+  longitude: -74.006,
+  source: "input" as const,
+};
+
+// API调用频率限制和缓存
+const timezoneCache = new Map<string, { timezone: string; timestamp: number }>();
+const pendingTimezoneRequests = new Map<string, Promise<string | null>>();
+const API_CALL_INTERVAL = 1000; // 最小间隔1秒
+const CACHE_DURATION = 5 * 60 * 1000; // 缓存5分钟
+
+// FAQ数据移到组件外部，避免重复创建
+const FAQ_DATA = [
+  {
+    question: "How are planetary hours calculated?",
+    answer:
+      'Planetary hours are calculated by dividing the time between sunrise and sunset (for daytime hours) and sunset and the next sunrise (for nighttime hours) into 12 equal parts. The length of these "hours" varies depending on the season and latitude.',
+  },
+  {
+    question: "Why are the hours not exactly 60 minutes long?",
+    answer:
+      "Because the length of daylight and nighttime changes throughout the year, the duration of each planetary hour also changes. They are only close to 60 minutes near the equinoxes.",
+  },
+  {
+    question: "Do I need to know my exact sunrise/sunset times?",
+    answer:
+      "No, this calculator handles that automatically based on the location and date you provide. It uses precise astronomical calculations.",
+  },
+  {
+    question: "Which planets are used?",
+    answer:
+      "The system uses the seven traditional astrological planets: Sun, Moon, Mercury, Venus, Mars, Jupiter, and Saturn. Uranus, Neptune, and Pluto are not part of this traditional system.",
+  },
+  {
+    question: "Is this scientifically proven?",
+    answer:
+      "Planetary hours are part of traditional astrology and are not based on modern scientific principles. They are used as a symbolic or spiritual timing system by those who follow these traditions.",
+  },
+  {
+    question: "How accurate is the location detection?",
+    answer:
+      "If you allow location access, the calculator uses your browser's geolocation capabilities, which are generally quite accurate for determining sunrise/sunset times. You can also manually enter any location worldwide.",
+  },
+  {
+    question: "Why do summer and winter hours differ in length?",
+    answer:
+      "Because planetary hours divide sunrise-to-sunset into 12 slices, the length of each slice stretches in summer and shrinks in winter. Near the equator they stay close to 60 minutes all year.",
+  },
+  {
+    question: 'Why is it still "night hours" before today\'s sunrise?',
+    answer:
+      "By tradition the planetary day starts at sunrise. Any time before sunrise belongs to the previous night set, even if the clock shows 3 AM of the new calendar date.",
+  },
+  {
+    question: "How do I choose the best hour for my task?",
+    answer:
+      "Match the symbolism: Venus for love or art, Mercury for emails or study, Mars for workouts or assertive action. Use our cheat-sheet or hover tips for quick guidance.",
+  },
+];
 
 function CalculatorCore() {
   const { selectedDate, timezone, setSelectedDate, setTimezone, formatDate } =
     useDateContext();
 
   const [location, setLocation] = useState("New York, NY");
-  const [coordinates, setCoordinates] = useState<Coordinates>({
-    latitude: 40.7128,
-    longitude: -74.006,
-    source: "input",
-  });
+  const [coordinates, setCoordinates] = useState<Coordinates>(DEFAULT_COORDINATES);
   const [timeFormat, setTimeFormat] = useState<"12h" | "24h">("24h");
   const [isTimezoneUpdating, setIsTimezoneUpdating] = useState(false);
   const [activeTab, setActiveTab] = useState<"day" | "night">("day");
   const [hasInitialCalculated, setHasInitialCalculated] = useState(false);
   const [showFAQ, setShowFAQ] = useState(false);
+
+  // 使用useRef存储函数引用，避免依赖变化
+  const lastApiCallRef = useRef<number>(0);
+  const calculationParamsRef = useRef<string>("");
 
   const {
     planetaryHoursRaw,
@@ -58,38 +121,154 @@ function CalculatorCore() {
 
   const loading = isLoadingHours || isTimezoneUpdating;
 
-  // ---- EFFECTS ----
-  // 初始计算：使用默认坐标和时区进行第一次计算
-  useEffect(() => {
-    // 如果有默认坐标和时区，且还没有进行过初始计算，立即进行第一次计算
-    if (
-      coordinates &&
-      timezone &&
-      !hasInitialCalculated &&
-      !isTimezoneUpdating
-    ) {
-      console.log("🚀 [Initial] 使用默认数据进行初始计算", {
-        coordinates: `${coordinates.latitude}, ${coordinates.longitude}`,
-        timezone,
-        selectedDate: selectedDate.toISOString(),
-      });
-      calculate(
-        coordinates.latitude,
-        coordinates.longitude,
-        selectedDate,
-        timezone,
-      );
-      setHasInitialCalculated(true);
-    }
-  }, [
-    coordinates,
-    timezone,
-    selectedDate,
-    hasInitialCalculated,
-    isTimezoneUpdating,
-    calculate,
-  ]); // 依赖这些变量的变化
+  // 检查是否为默认坐标的函数
+  const isDefaultCoordinates = useCallback((coords: Coordinates) => {
+    return (
+      coords.latitude === DEFAULT_COORDINATES.latitude &&
+      coords.longitude === DEFAULT_COORDINATES.longitude &&
+      coords.source === "input"
+    );
+  }, []);
 
+  // 优化的时区获取函数，添加频率限制和缓存
+  const fetchTimezone = useCallback(async (coords: Coordinates): Promise<string | null> => {
+    if (isDefaultCoordinates(coords)) {
+      console.log("🏠 [Timezone] 使用默认坐标，跳过API调用，使用默认时区");
+      return null;
+    }
+
+    // Skip API call for preset cities (they already have timezone set)
+    if (coords.source === "preset") {
+      console.log("🏙️ [Timezone] 跳过预设城市的时区API调用");
+      return null;
+    }
+
+    const cacheKey = `${coords.latitude.toFixed(6)}_${coords.longitude.toFixed(6)}`;
+    const now = Date.now();
+
+    // 检查缓存
+    const cached = timezoneCache.get(cacheKey);
+    if (cached && (now - cached.timestamp) < CACHE_DURATION) {
+      console.log("📋 [Timezone] 使用缓存的时区数据:", cached.timezone);
+      return cached.timezone;
+    }
+
+    // 检查是否有正在进行的请求
+    if (pendingTimezoneRequests.has(cacheKey)) {
+      console.log("⏳ [Timezone] 等待正在进行的时区请求");
+      return await pendingTimezoneRequests.get(cacheKey)!;
+    }
+
+    // 频率限制检查
+    if (now - lastApiCallRef.current < API_CALL_INTERVAL) {
+      console.log("🚫 [Timezone] API调用频率限制，跳过请求");
+      return null;
+    }
+
+    const requestPromise = (async () => {
+      try {
+        setIsTimezoneUpdating(true);
+        lastApiCallRef.current = now;
+        
+        console.log("🌍 [Timezone] 发起时区API请求:", cacheKey);
+        const timestamp = Math.floor(now / 1000);
+        const response = await fetch(
+          `/api/maps/timezone?location=${coords.latitude},${coords.longitude}&timestamp=${timestamp}`,
+        );
+        const data = await response.json();
+        
+        if (data.status === "OK") {
+          // 缓存结果
+          timezoneCache.set(cacheKey, {
+            timezone: data.timeZoneId,
+            timestamp: now
+          });
+          console.log("✅ [Timezone] 成功获取时区:", data.timeZoneId);
+          return data.timeZoneId;
+        }
+        throw new Error("Failed to fetch timezone");
+      } catch (error) {
+        console.error("❌ [Timezone] 获取时区失败:", error);
+        return null;
+      } finally {
+        setIsTimezoneUpdating(false);
+        pendingTimezoneRequests.delete(cacheKey);
+      }
+    })();
+
+    pendingTimezoneRequests.set(cacheKey, requestPromise);
+    return await requestPromise;
+  }, [isDefaultCoordinates]);
+
+  // 主要的计算逻辑 - 简化依赖数组，避免循环依赖
+  useEffect(() => {
+    let isCancelled = false;
+
+    const performCalculation = async () => {
+      // 创建计算参数标识符
+      const currentParams = `${coordinates.latitude}_${coordinates.longitude}_${selectedDate.toISOString()}_${timezone}`;
+      
+      // 避免重复计算
+      if (currentParams === calculationParamsRef.current) {
+        console.log("⚡ [Calculation] 跳过重复计算，参数未变化");
+        return;
+      }
+
+      console.log("🔄 [Calculation] 开始新的计算流程", {
+        coordinates: `${coordinates.latitude}, ${coordinates.longitude}`,
+        selectedDate: selectedDate.toISOString(),
+        timezone,
+        isDefault: isDefaultCoordinates(coordinates)
+      });
+
+      // 如果不是默认坐标且时区需要更新
+      if (!isDefaultCoordinates(coordinates)) {
+        const newTimezone = await fetchTimezone(coordinates);
+        if (isCancelled) return;
+        
+        if (newTimezone && newTimezone !== timezone) {
+          console.log("🌍 [Timezone] 时区已更新:", newTimezone);
+          setTimezone(newTimezone);
+          return; // 时区更新后会触发下一次useEffect
+        }
+      }
+
+      // 执行行星时计算
+      if (coordinates && timezone && !isTimezoneUpdating) {
+        console.log("🚀 [Calculation] 触发行星时计算", {
+          coordinates: `${coordinates.latitude}, ${coordinates.longitude}`,
+          timezone: timezone,
+          selectedDate: selectedDate.toISOString(),
+        });
+
+        try {
+          await calculate(coordinates.latitude, coordinates.longitude, selectedDate, timezone);
+          calculationParamsRef.current = currentParams;
+          
+          if (!hasInitialCalculated) {
+            setHasInitialCalculated(true);
+          }
+        } catch (error) {
+          console.error("❌ [Calculation] 计算失败:", error);
+        }
+      }
+    };
+
+    performCalculation();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [
+    // 只包含真正需要的状态，避免函数依赖
+    coordinates.latitude,
+    coordinates.longitude, 
+    coordinates.source,
+    selectedDate.getTime(), // 使用getTime()避免Date对象引用变化
+    timezone
+  ]);
+
+  // 当前小时变化时更新活动标签
   useEffect(() => {
     if (currentHour) {
       const sunrise = planetaryHoursRaw?.sunriseLocal;
@@ -102,189 +281,77 @@ function CalculatorCore() {
     }
   }, [currentHour, planetaryHoursRaw]);
 
-  // 与旧版本保持一致的时区获取逻辑
-  useEffect(() => {
-    const fetchTimezone = async () => {
-      if (coordinates) {
-        // 如果是默认的纽约坐标，直接使用默认时区，避免API调用
-        const isDefaultCoordinates =
-          coordinates.latitude === 40.7128 &&
-          coordinates.longitude === -74.006 &&
-          coordinates.source === "input";
-
-        if (isDefaultCoordinates) {
-          console.log("🏠 [Timezone] 使用默认坐标，跳过API调用，使用默认时区");
-          setIsTimezoneUpdating(false);
-          return;
-        }
-
-        try {
-          // Mark timezone as updating
-          setIsTimezoneUpdating(true);
-
-          const timestamp = Math.floor(Date.now() / 1000);
-          const response = await fetch(
-            `/api/maps/timezone?location=${coordinates.latitude},${coordinates.longitude}&timestamp=${timestamp}`,
-          );
-          const data = await response.json();
-          if (data.status === "OK") {
-            setTimezone(data.timeZoneId);
-
-            // 日志：完成时区更新后立即重新计算行星时
-            console.log("✅ [Timezone] 时区获取完成，开始重新计算行星时间");
-            calculate(
-              coordinates.latitude,
-              coordinates.longitude,
-              selectedDate,
-              data.timeZoneId,
-            );
-          }
-
-          // Mark timezone update as complete
-          setIsTimezoneUpdating(false);
-        } catch (error) {
-          console.error("Error fetching timezone:", error);
-          // Also mark as complete in case of error
-          setIsTimezoneUpdating(false);
-        }
-      }
-    };
-
-    fetchTimezone();
-  }, [coordinates, selectedDate, setTimezone, calculate]);
-
-  // 当用户仅修改日期时重新计算（坐标和时区已就绪）
-  useEffect(() => {
-    if (!isTimezoneUpdating && coordinates && timezone) {
-      calculate(
-        coordinates.latitude,
-        coordinates.longitude,
-        selectedDate,
-        timezone,
-      );
-    }
-  }, [selectedDate, calculate, coordinates, isTimezoneUpdating, timezone]);
-
   // 延迟加载FAQ部分
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowFAQ(true);
-    }, 2000); // 2秒后加载FAQ
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  const handleLocationChange = (newLocation: string) => {
+  // 优化的事件处理函数
+  const handleLocationChange = useCallback((newLocation: string) => {
     setLocation(newLocation);
-  };
+  }, []);
 
-  const handleCoordinatesUpdate = (coords: {
+  const handleCoordinatesUpdate = useCallback((coords: {
     latitude: number;
     longitude: number;
     source?: string;
     address?: string;
   }) => {
-    // Mark timezone as updating
-    setIsTimezoneUpdating(true);
-
-    setCoordinates({
+    const newCoordinates: Coordinates = {
       latitude: coords.latitude,
       longitude: coords.longitude,
       source: (coords.source as Coordinates["source"]) || "input",
       address: coords.address,
-    });
-  };
+    };
+    
+    console.log("📍 [Coordinates] 坐标更新:", newCoordinates);
+    setCoordinates(newCoordinates);
+    setHasInitialCalculated(false); // 重置计算状态，允许新的计算
+    calculationParamsRef.current = ""; // 清空参数缓存，强制重新计算
+  }, []);
 
-  const handleDateChange = (date: Date) => {
+  const handleDateChange = useCallback((date: Date) => {
+    console.log("📅 [Date] 日期更新:", date.toISOString());
     setSelectedDate(date);
-  };
+    calculationParamsRef.current = ""; // 清空参数缓存，强制重新计算
+  }, [setSelectedDate]);
 
-  const handleTimeFormatChange = (format: "12h" | "24h") => {
+  const handleTimeFormatChange = useCallback((format: "12h" | "24h") => {
     setTimeFormat(format);
-  };
+  }, []);
 
-  // ---- RENDER LOGIC ----
-  // 移除本地的 planetColors 和 planetSymbols 定义
+  // 优化的渲染逻辑计算
+  const renderData = useMemo(() => {
+    const sunriseLocal = planetaryHoursRaw?.sunriseLocal;
+    let ephemDateStr = formatInTimeZoneDirect(selectedDate, timezone, "yyyy-MM-dd");
 
-  // Determine date for display in CurrentHourDisplay (pre-sunrise logic)
-  const sunriseLocal = planetaryHoursRaw?.sunriseLocal;
-  let ephemDateStr = formatInTimeZoneDirect(
-    selectedDate,
-    timezone,
-    "yyyy-MM-dd",
-  );
+    if (sunriseLocal) {
+      const nowUtc = new Date();
+      const nowInTzDay = formatInTimeZoneDirect(nowUtc, timezone, "yyyy-MM-dd");
+      const sunriseDay = formatInTimeZoneDirect(sunriseLocal, timezone, "yyyy-MM-dd");
 
-  if (sunriseLocal) {
-    const nowUtc = new Date();
-    const nowInTzDay = formatInTimeZoneDirect(nowUtc, timezone, "yyyy-MM-dd");
-    const sunriseDay = formatInTimeZoneDirect(
-      sunriseLocal,
-      timezone,
-      "yyyy-MM-dd",
-    );
-
-    // 如果当前仍在日出之前，则行星时归属前一天
-    if (nowInTzDay === sunriseDay && nowUtc < sunriseLocal) {
-      const yesterday = subDays(sunriseLocal, 1);
-      ephemDateStr = formatInTimeZoneDirect(yesterday, timezone, "yyyy-MM-dd");
-    } else {
-      ephemDateStr = sunriseDay;
+      if (nowInTzDay === sunriseDay && nowUtc < sunriseLocal) {
+        const yesterday = subDays(sunriseLocal, 1);
+        ephemDateStr = formatInTimeZoneDirect(yesterday, timezone, "yyyy-MM-dd");
+      } else {
+        ephemDateStr = sunriseDay;
+      }
     }
-  }
 
-  const isSameDate =
-    formatInTimeZoneDirect(selectedDate, timezone, "yyyy-MM-dd") ===
-    ephemDateStr;
-  const selectedDayRuler = planetaryHoursRaw?.dayRuler;
+    const isSameDate = formatInTimeZoneDirect(selectedDate, timezone, "yyyy-MM-dd") === ephemDateStr;
+    const selectedDayRuler = planetaryHoursRaw?.dayRuler;
 
-  // FAQ数据
-  const faqs = [
-    {
-      question: "How are planetary hours calculated?",
-      answer:
-        'Planetary hours are calculated by dividing the time between sunrise and sunset (for daytime hours) and sunset and the next sunrise (for nighttime hours) into 12 equal parts. The length of these "hours" varies depending on the season and latitude.',
-    },
-    {
-      question: "Why are the hours not exactly 60 minutes long?",
-      answer:
-        "Because the length of daylight and nighttime changes throughout the year, the duration of each planetary hour also changes. They are only close to 60 minutes near the equinoxes.",
-    },
-    {
-      question: "Do I need to know my exact sunrise/sunset times?",
-      answer:
-        "No, this calculator handles that automatically based on the location and date you provide. It uses precise astronomical calculations.",
-    },
-    {
-      question: "Which planets are used?",
-      answer:
-        "The system uses the seven traditional astrological planets: Sun, Moon, Mercury, Venus, Mars, Jupiter, and Saturn. Uranus, Neptune, and Pluto are not part of this traditional system.",
-    },
-    {
-      question: "Is this scientifically proven?",
-      answer:
-        "Planetary hours are part of traditional astrology and are not based on modern scientific principles. They are used as a symbolic or spiritual timing system by those who follow these traditions.",
-    },
-    {
-      question: "How accurate is the location detection?",
-      answer:
-        "If you allow location access, the calculator uses your browser's geolocation capabilities, which are generally quite accurate for determining sunrise/sunset times. You can also manually enter any location worldwide.",
-    },
-    {
-      question: "Why do summer and winter hours differ in length?",
-      answer:
-        "Because planetary hours divide sunrise-to-sunset into 12 slices, the length of each slice stretches in summer and shrinks in winter. Near the equator they stay close to 60 minutes all year.",
-    },
-    {
-      question: 'Why is it still "night hours" before today\'s sunrise?',
-      answer:
-        "By tradition the planetary day starts at sunrise. Any time before sunrise belongs to the previous night set, even if the clock shows 3 AM of the new calendar date.",
-    },
-    {
-      question: "How do I choose the best hour for my task?",
-      answer:
-        "Match the symbolism: Venus for love or art, Mercury for emails or study, Mars for workouts or assertive action. Use our cheat-sheet or hover tips for quick guidance.",
-    },
-  ];
+    return {
+      sunriseLocal,
+      isSameDate,
+      selectedDayRuler,
+      beforeSunrise: sunriseLocal ? new Date() < sunriseLocal : false,
+    };
+  }, [planetaryHoursRaw, selectedDate, timezone]);
 
   return (
     <>
@@ -323,10 +390,12 @@ function CalculatorCore() {
               <div className="col-span-12 lg:col-span-8">
                 <div className="space-y-6 md:space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-                    <LocationInput
+                    <EnhancedLocationInput
+                      key="location-input" // 添加稳定的key防止重复挂载
                       defaultLocation={location}
                       onLocationChange={handleLocationChange}
                       onUseCurrentLocation={handleCoordinatesUpdate}
+                      onTimezoneChange={setTimezone}
                     />
                     <DateTimeInput
                       defaultDate={formatDate(selectedDate, "medium")}
@@ -338,20 +407,20 @@ function CalculatorCore() {
                 </div>
               </div>
               <div className="col-span-12 lg:col-span-4">
-                {loading ? (
-                  <CurrentHourSkeleton />
-                ) : (
-                  <CurrentHourDisplay
-                    currentHour={currentHour}
-                    dayRuler={selectedDayRuler}
-                    sunriseTime={sunriseLocal}
-                    timeFormat={timeFormat}
-                    isSameDate={isSameDate}
-                    beforeSunrise={
-                      sunriseLocal ? new Date() < sunriseLocal : false
-                    }
-                  />
-                )}
+                <LayoutStabilizer minHeight="300px">
+                  {loading ? (
+                    <CurrentHourSkeleton />
+                  ) : (
+                    <CurrentHourDisplay
+                      currentHour={currentHour}
+                      dayRuler={renderData.selectedDayRuler}
+                      sunriseTime={renderData.sunriseLocal}
+                      timeFormat={timeFormat}
+                      isSameDate={renderData.isSameDate}
+                      beforeSunrise={renderData.beforeSunrise}
+                    />
+                  )}
+                </LayoutStabilizer>
               </div>
             </div>
 
@@ -454,34 +523,38 @@ function CalculatorCore() {
                   <div
                     className={`${activeTab === "day" ? "" : "hidden"} md:block`}
                   >
-                    {loading ? (
-                      <HoursListSkeleton title="Daytime Hours" />
-                    ) : (
-                      <Suspense fallback={<HoursListSkeleton title="Daytime Hours" />}>
-                        <LazyHoursList
-                          title="Daytime Hours"
-                          hours={daytimeHours}
-                          titleColor="text-amber-600"
-                        />
-                      </Suspense>
-                    )}
+                    <LayoutStabilizer minHeight="400px">
+                      {loading ? (
+                        <HoursListSkeleton title="Daytime Hours" />
+                      ) : (
+                        <Suspense fallback={<HoursListSkeleton title="Daytime Hours" />}>
+                          <LazyHoursList
+                            title="Daytime Hours"
+                            hours={daytimeHours}
+                            titleColor="text-amber-600"
+                          />
+                        </Suspense>
+                      )}
+                    </LayoutStabilizer>
                   </div>
 
                   {/* Nighttime list */}
                   <div
                     className={`${activeTab === "night" ? "" : "hidden"} md:block`}
                   >
-                    {loading ? (
-                      <HoursListSkeleton title="Nighttime Hours" />
-                    ) : (
-                      <Suspense fallback={<HoursListSkeleton title="Nighttime Hours" />}>
-                        <LazyHoursList
-                          title="Nighttime Hours"
-                          hours={nighttimeHours}
-                          titleColor="text-indigo-600"
-                        />
-                      </Suspense>
-                    )}
+                    <LayoutStabilizer minHeight="400px">
+                      {loading ? (
+                        <HoursListSkeleton title="Nighttime Hours" />
+                      ) : (
+                        <Suspense fallback={<HoursListSkeleton title="Nighttime Hours" />}>
+                          <LazyHoursList
+                            title="Nighttime Hours"
+                            hours={nighttimeHours}
+                            titleColor="text-indigo-600"
+                          />
+                        </Suspense>
+                      )}
+                    </LayoutStabilizer>
                   </div>
                 </div>
               </div>
@@ -508,7 +581,7 @@ function CalculatorCore() {
                 </div>
               </div>
             }>
-              <LazyFAQSection faqs={faqs} />
+              <LazyFAQSection faqs={FAQ_DATA} />
             </Suspense>
           </Section>
         )}

@@ -3,7 +3,11 @@ import "./globals.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { Footer } from "@/components/Layout/Footer";
 import { AnalyticsWrapper } from "@/components/Analytics/Analytics";
-import { PerformanceDashboard } from "@/components/Analytics/PerformanceDashboard";
+// import { PerformanceDashboard } from "@/components/Analytics/PerformanceDashboard";
+// import { GlobalPerformanceMonitor } from "@/components/Performance/GlobalPerformanceMonitor";
+// import { PerformanceDebugger } from "@/components/Performance/PerformanceDebugger";
+import { ApiCallMonitor } from "@/components/Performance/ApiCallMonitor";
+import { BackToTop } from "@/components/UI/BackToTop";
 import { getDefaultSiteMetadata } from "@/utils/seo/metadata";
 import { getGSCVerificationMeta } from "@/config/seo-monitoring";
 
@@ -48,8 +52,16 @@ export default function RootLayout({
         </main>
         <Footer />
         <AnalyticsWrapper />
-        {/* 性能监控仪表板 - 仅在开发环境显示 */}
-        <PerformanceDashboard />
+        {/* 临时禁用所有性能监控组件以修复无限循环问题 */}
+        {/* <GlobalPerformanceMonitor /> */}
+        {/* <PerformanceDebugger /> */}
+        {/* <PerformanceDashboard /> */}
+        
+        {/* 添加API调用监控组件 */}
+        <ApiCallMonitor />
+        
+        {/* 返回顶部按钮 */}
+        <BackToTop />
       </body>
     </html>
   );

@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf .next .next-dev node_modules/.cache",
+    "clean:all": "rimraf .next .next-dev node_modules/.cache && yarn install"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.16",
@@ -37,6 +39,7 @@
     "@types/suncalc": "^1.8.1",
     "eslint": "^8",
     "eslint-config-next": "^15.3.2",
+    "rimraf": "^6.0.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

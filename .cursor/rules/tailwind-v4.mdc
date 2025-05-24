@@ -1,0 +1,88 @@
+---
+description: 指导 AI 正确处理 Tailwind CSS v4 的特殊配置、与 LightningCSS 的集成以及最佳实践。
+globs: ["**/*.css", "**/*.ts", "**/*.tsx", "tailwind.config.js", "postcss.config.mjs"]
+alwaysApply: false
+---
+# Tailwind CSS v4 Configuration Rule
+
+## Tailwind CSS v4 项目配置
+
+**本项目使用 Tailwind CSS v4，这是一个重大版本更新，有特殊的配置要求。**
+
+### 关键配置文件
+
+1. **[postcss.config.mjs](mdc:postcss.config.mjs)** - PostCSS 配置
+   - 使用 `@tailwindcss/postcss` 插件
+   - 配置了 LightningCSS 引擎
+
+2. **[tailwind.config.js](mdc:tailwind.config.js)** - Tailwind 配置
+   - 内容路径配置
+   - 主题自定义
+   - 插件配置
+
+3. **[next.config.ts](mdc:next.config.ts)** - Next.js 配置
+   - 包含 PWA 配置
+   - 性能优化设置
+
+### 重要注意事项
+
+1. **LightningCSS 依赖**：
+   - Tailwind CSS v4 使用 Rust 编写的 LightningCSS 引擎
+   - 需要原生二进制模块支持
+   - Windows 系统必须使用 Yarn 而不是 npm
+
+2. **配置差异**：
+   - v4 不再使用传统的 `tailwind.config.js` 中的 `plugins` 数组
+   - CSS 处理更快，但配置方式有所改变
+   - 支持新的 CSS 特性和语法
+
+3. **构建优化**：
+   - 增量构建速度提升 100x+
+   - 完整构建速度提升 5x
+   - 更好的 Tree Shaking
+
+### 开发指南
+
+1. **样式文件**：
+   - 主样式文件：`src/app/globals.css`
+   - 组件样式使用 Tailwind 类名
+   - 自定义样式通过 CSS 变量
+
+2. **类名使用**：
+   ```tsx
+   // ✅ 推荐：使用 Tailwind 类名
+   <div className="bg-blue-500 text-white p-4 rounded-lg">
+   
+   // ✅ 条件类名
+   <div className={`${isActive ? 'bg-blue-500' : 'bg-gray-500'} p-4`}>
+   
+   // ✅ 使用 clsx 或 cn 工具函数
+   <div className={cn('p-4', isActive && 'bg-blue-500')}>
+   ```
+
+3. **性能最佳实践**：
+   - 避免动态类名生成
+   - 使用 Tailwind 的内置响应式前缀
+   - 利用 CSS 变量进行主题切换
+
+### 故障排除
+
+1. **构建失败**：
+   - 确保使用 Yarn：`yarn build`
+   - 清理缓存：`yarn clean`
+   - 检查 PostCSS 配置
+
+2. **样式不生效**：
+   - 检查 `tailwind.config.js` 中的 content 路径
+   - 确认类名拼写正确
+   - 验证 CSS 导入顺序
+
+3. **开发环境问题**：
+   - 重启开发服务器：`yarn dev`
+   - 清理 `.next-dev` 目录
+   - 检查浏览器控制台错误
+
+### 相关文件
+- [src/app/globals.css](mdc:src/app/globals.css) - 全局样式文件
+- [postcss.config.mjs](mdc:postcss.config.mjs) - PostCSS 配置
+- [tailwind.config.js](mdc:tailwind.config.js) - Tailwind 配置

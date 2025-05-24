@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { DateProvider, useDateContext } from "@/contexts/DateContext";
 import { usePlanetaryHours } from "@/hooks/usePlanetaryHours";
-import { LocationInput } from "@/components/Calculator/LocationInput";
+import { EnhancedLocationInput } from "@/components/Calculator/EnhancedLocationInput";
 import { DateTimeInput } from "@/components/Calculator/DateTimeInput";
 import { CurrentHourDisplay } from "@/components/Calculator/CurrentHourDisplay";
 import { WeekNavigation } from "@/components/Calculator/WeekNavigation";
@@ -22,7 +22,7 @@ import { PLANET_COLOR_CLASSES as _PLANET_COLOR_CLASSES, PLANET_SYMBOLS as _PLANE
 interface Coordinates {
   latitude: number;
   longitude: number;
-  source: "browser" | "input" | "geocode" | "autocomplete";
+  source: "browser" | "input" | "geocode" | "autocomplete" | "preset";
   address?: string;
 }
 
@@ -97,10 +97,16 @@ function CalculatorCore() {
     }
   }, [currentHour, planetaryHoursRaw]);
 
-  // 与旧版本保持一致的时区获取逻辑
+  // 时区获取逻辑 - 跳过预设城市的API调用
   useEffect(() => {
     const fetchTimezone = async () => {
       if (coordinates) {
+        // Skip API call for preset cities (they already have timezone set)
+        if (coordinates.source === "preset") {
+          console.log("🏙️ [Timezone] 跳过预设城市的时区API调用");
+          return;
+        }
+
         try {
           // Mark timezone as updating
           setIsTimezoneUpdating(true);
@@ -167,6 +173,23 @@ function CalculatorCore() {
       source: (coords.source as Coordinates["source"]) || "input",
       address: coords.address,
     });
+  };
+
+  // Handle direct timezone updates (for popular cities)
+  const handleDirectTimezoneUpdate = (newTimezone: string) => {
+    console.log("🌍 [DirectTimezone] 直接更新时区:", newTimezone);
+    setTimezone(newTimezone);
+    setIsTimezoneUpdating(false); // Skip API call since we have the timezone
+    
+    // Immediately recalculate with the new timezone
+    if (coordinates) {
+      calculate(
+        coordinates.latitude,
+        coordinates.longitude,
+        selectedDate,
+        newTimezone,
+      );
+    }
   };
 
   const handleDateChange = (date: Date) => {
@@ -295,10 +318,11 @@ function CalculatorCore() {
             <div className="col-span-12 lg:col-span-8">
               <div className="space-y-6 md:space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-                  <LocationInput
+                  <EnhancedLocationInput
                     defaultLocation={location}
                     onLocationChange={handleLocationChange}
                     onUseCurrentLocation={handleCoordinatesUpdate}
+                    onTimezoneChange={handleDirectTimezoneUpdate}
                   />
                   <DateTimeInput
                     defaultDate={formatDate(selectedDate, "medium")}

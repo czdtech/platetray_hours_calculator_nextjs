@@ -53,6 +53,8 @@ export function CurrentHourDisplay({
 
   // 计算所选日期与今天（同一时区）的先后关系
   const isSelectedDatePast = selectedDateStr < todayStr;
+  const isSelectedDateFuture = selectedDateStr > todayStr;
+  
   // 何时显示当前行星时卡片？
   // 1) 选中日期在过去；或
   // 2) 选中日期是今天且不处于"日出前提示"状态
@@ -239,6 +241,26 @@ export function CurrentHourDisplay({
                 Planetary hours will begin after today's sunrise.
                 <br />
                 Please check {formattedYesterday} for current hour.
+              </div>
+            )}
+
+            {/* Message for non-today dates */}
+            {!isSelectedDateToday && !shouldShowPreSunriseMessage && (
+              <div className="p-3 text-center text-gray-500 text-sm">
+                {isSelectedDatePast && (
+                  <>
+                    You're viewing planetary hours for {formattedToday}.
+                    <br />
+                    "Current hour" is only shown for today's date.
+                  </>
+                )}
+                {isSelectedDateFuture && (
+                  <>
+                    You're viewing planetary hours for {formattedToday}.
+                    <br />
+                    "Current hour" will be available on this date.
+                  </>
+                )}
               </div>
             )}
           </div>

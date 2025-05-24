@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/Layout/Header";
-import { Footer } from "@/components/Layout/Footer";
 import { Breadcrumb } from "@/components/SEO/Breadcrumb";
 import { Article } from "@/components/semantic/Article";
 
@@ -30,9 +29,9 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <>
       <Header activePage="about" />
-      <main className="flex-grow container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-8 space-y-8">
         <div className="mb-4">
           <Breadcrumb items={breadcrumbItems} />
         </div>
@@ -147,9 +146,7 @@ export default function AboutPage() {
             prevailing planetary energies.
           </p>
         </Article>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </>
   );
 }

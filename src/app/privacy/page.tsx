@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/Layout/Header";
-import { Footer } from "@/components/Layout/Footer";
 import { Article } from "@/components/semantic/Article";
 
 const SITE_URL =
@@ -24,9 +23,9 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <>
       <Header activePage="about" />
-      <main className="flex-grow container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-8 space-y-8">
         <Article className="bg-white rounded-xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Privacy Policy
@@ -206,9 +205,7 @@ export default function PrivacyPage() {
             </p>
           </section>
         </Article>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </>
   );
 }

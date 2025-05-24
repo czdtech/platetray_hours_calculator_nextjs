@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   planetaryHoursCalculator,
   PlanetaryHour,
@@ -21,6 +21,10 @@ interface UseCurrentLivePlanetaryHourProps {
   timeFormat: "12h" | "24h";
 }
 
+// 前一天数据缓存
+const yesterdayCache = new Map<string, PlanetaryHoursCalculationResult>();
+const pendingRequests = new Map<string, Promise<PlanetaryHoursCalculationResult | null>>();
+
 /**
  * Hook to manage and update the current live planetary hour.
  * It determines if the provided planetaryHoursRaw data is for "today" in its timezone,
@@ -35,6 +39,9 @@ export function useCurrentLivePlanetaryHour({
 }: UseCurrentLivePlanetaryHourProps): FormattedPlanetaryHour | null {
   const [currentLiveHour, setCurrentLiveHour] =
     useState<FormattedPlanetaryHour | null>(null);
+  
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const lastCalculationRef = useRef<string>("");
 
   const calculateAndSetCurrentHour = useCallback(
     async (nowUtc: Date) => {
@@ -56,6 +63,14 @@ export function useCurrentLivePlanetaryHour({
       const { timezone, sunriseLocal, nextSunriseLocal } =
         planetaryHoursRaw as PlanetaryHoursCalculationResult;
 
+      // 创建计算标识符，避免重复计算
+      const calculationKey = `${nowUtc.getTime()}_${timezone}_${sunriseLocal?.getTime()}_${currentCoordinatesForYesterdayCalc?.latitude}_${currentCoordinatesForYesterdayCalc?.longitude}`;
+      if (calculationKey === lastCalculationRef.current) {
+        console.log("⚡ [LiveHour] 跳过重复计算");
+        return;
+      }
+      lastCalculationRef.current = calculationKey;
+
       // 直接尝试在当前数据中寻找正在进行的行星时
       let currentPhysicalHour: PlanetaryHour | null =
         planetaryHoursCalculator.getCurrentHour(planetaryHoursRaw, nowUtc);
@@ -73,12 +88,44 @@ export function useCurrentLivePlanetaryHour({
               yesterdayDate.toISOString(),
             );
 
-            const yesterdayResult = await planetaryHoursCalculator.calculate(
-              yesterdayDate,
-              currentCoordinatesForYesterdayCalc.latitude,
-              currentCoordinatesForYesterdayCalc.longitude,
-              timezone,
-            );
+            // 创建缓存键
+            const cacheKey = `${yesterdayDate.toDateString()}_${currentCoordinatesForYesterdayCalc.latitude}_${currentCoordinatesForYesterdayCalc.longitude}_${timezone}`;
+            
+            let yesterdayResult: PlanetaryHoursCalculationResult | null = null;
+            
+            // 检查缓存
+            if (yesterdayCache.has(cacheKey)) {
+              yesterdayResult = yesterdayCache.get(cacheKey)!;
+              console.log("📋 [LiveHour] 使用缓存的前一天数据");
+            } else if (pendingRequests.has(cacheKey)) {
+              // 如果有正在进行的请求，等待它完成
+              console.log("⏳ [LiveHour] 等待正在进行的前一天数据请求");
+              yesterdayResult = await pendingRequests.get(cacheKey)!;
+            } else {
+              // 创建新的请求
+              console.log("🔄 [LiveHour] 发起新的前一天数据请求");
+              const requestPromise = planetaryHoursCalculator.calculate(
+                yesterdayDate,
+                currentCoordinatesForYesterdayCalc.latitude,
+                currentCoordinatesForYesterdayCalc.longitude,
+                timezone,
+              );
+              
+              pendingRequests.set(cacheKey, requestPromise);
+              
+              try {
+                yesterdayResult = await requestPromise;
+                if (yesterdayResult) {
+                  yesterdayCache.set(cacheKey, yesterdayResult);
+                  // 设置缓存过期时间（24小时后清理）
+                  setTimeout(() => {
+                    yesterdayCache.delete(cacheKey);
+                  }, 24 * 60 * 60 * 1000);
+                }
+              } finally {
+                pendingRequests.delete(cacheKey);
+              }
+            }
 
             if (yesterdayResult) {
               currentPhysicalHour = planetaryHoursCalculator.getCurrentHour(
@@ -130,29 +177,35 @@ export function useCurrentLivePlanetaryHour({
   );
 
   useEffect(() => {
+    // 清理之前的interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
     // 只有当有基本数据时才执行计算，避免初始化时的无意义警告
     if (!planetaryHoursRaw || !dateForPlanetaryHoursRaw) {
+      setCurrentLiveHour(null);
       return;
     }
 
     const nowUtc = new Date();
     calculateAndSetCurrentHour(nowUtc); // Initial call
 
-    let interval: NodeJS.Timeout | undefined = undefined;
-
     if (
       planetaryHoursRaw &&
       planetaryHoursRaw.timezone &&
       dateForPlanetaryHoursRaw
     ) {
-      interval = setInterval(() => {
+      intervalRef.current = setInterval(() => {
         calculateAndSetCurrentHour(new Date());
       }, 60000);
     }
 
     return () => {
-      if (interval) {
-        clearInterval(interval);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
     // The dependencies of this useEffect should correctly trigger re-runs

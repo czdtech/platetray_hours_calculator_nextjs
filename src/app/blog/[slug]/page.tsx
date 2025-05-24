@@ -8,6 +8,7 @@ import { ArticleHero } from "@/components/Blog/ArticleHero";
 import { ArticleMeta } from "@/components/Blog/ArticleMeta";
 import { ArticleShare } from "@/components/Blog/ArticleShare";
 import { RelatedArticles } from "@/components/Blog/RelatedArticles";
+import { BlogBackToTop } from "@/components/Blog/BlogBackToTop";
 import { JsonLd } from "@/components/SEO/JsonLd";
 import { getArticleSchema, getBreadcrumbSchema } from "@/utils/seo/jsonld";
 
@@ -176,6 +177,9 @@ export default async function BlogPostPage({
       <div className="mt-12">
         <RelatedArticles articles={blogPosts} currentSlug={slug} />
       </div>
+      
+      {/* 博客专用返回顶部按钮 */}
+      <BlogBackToTop title={title} url={articleUrl} />
     </ArticleLayout>
   );
 }

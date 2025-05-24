@@ -8,7 +8,6 @@ import { JsonLd } from "@/components/SEO/JsonLd";
 import { getBreadcrumbSchema } from "@/utils/seo/jsonld";
 import { Section } from "@/components/semantic/Section";
 import { Header } from "@/components/Layout/Header";
-import { Footer } from "@/components/Layout/Footer";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
@@ -37,7 +36,7 @@ export default function BlogPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <>
       {/* JSON-LD 结构化数据 */}
       <JsonLd
         data={getBreadcrumbSchema([
@@ -47,8 +46,8 @@ export default function BlogPage() {
       />
 
       <Header activePage="blog" />
-      <main className="flex-grow">
-        <Section className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        <Section className="py-4">
           <div className="max-w-5xl mx-auto">
             {/* 面包屑导航 */}
             <div className="mb-6">
@@ -155,8 +154,7 @@ export default function BlogPage() {
             </div>
           </div>
         </Section>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </>
   );
 }
