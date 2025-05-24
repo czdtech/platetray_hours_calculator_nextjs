@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Calendar, ChevronLeft, ChevronRight, Clock, MapPin } from "lucide-react";
-import { format, addDays, subDays, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, isToday, isSameMonth } from "date-fns";
+import { format, addDays, subDays, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, isSameMonth } from "date-fns";
 import { timeZoneService } from "@/services/TimeZoneService";
 
 interface EnhancedDatePickerProps {

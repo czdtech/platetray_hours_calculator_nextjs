@@ -1,6 +1,14 @@
 import SunCalc from "suncalc";
-import { fromZonedTime, toZonedTime, formatInTimeZone } from "date-fns-tz";
-import { getDay, isValid, addDays, format as formatDate } from "date-fns";
+import {
+  toZonedTime,
+  fromZonedTime,
+  formatInTimeZone,
+} from "date-fns-tz";
+import { addDays, isValid, getDay } from "date-fns";
+
+import { createLogger } from '@/utils/logger';
+
+const logger = createLogger('PlanetaryHoursCalculator');
 
 // 迦勒底行星顺序 (传统顺序)
 const PLANETARY_ORDER = [
@@ -149,7 +157,7 @@ export class PlanetaryHoursCalculator {
       const dateForDayRuler = toZonedTime(baseDateForSunCalc, timezone);
 
       // 调试输出
-      console.log(
+      logger.info(
         "[PHCalc] 计算日期(当地):",
         noonStringInTimezone,
         " => UTC:",
@@ -181,7 +189,7 @@ export class PlanetaryHoursCalculator {
         !isValid(sunset) ||
         !isValid(actualSunriseTomorrow)
       ) {
-        console.error(
+        logger.error(
           "Invalid sun times received from SunCalc for the given date/location.",
           { date: baseDateForSunCalc, latitude, longitude },
         );
@@ -200,7 +208,7 @@ export class PlanetaryHoursCalculator {
       );
 
       if (!planetaryHours || planetaryHours.length === 0) {
-        console.error("Failed to calculate planetary hours.");
+        logger.error("Failed to calculate planetary hours.");
         return null;
       }
 
@@ -214,13 +222,13 @@ export class PlanetaryHoursCalculator {
         nextSunriseLocal,
         planetaryHours,
         timezone,
-        requestedDate: formatDate(dateForDayRuler, "yyyy-MM-dd"),
+        requestedDate: formatInTimeZone(dateForDayRuler, timezone, "yyyy-MM-dd"),
         dateUsedForCalculation: dateForDayRuler,
         latitude,
         longitude,
       };
     } catch (error) {
-      console.error("Error calculating planetary hours:", error);
+      logger.error("Error calculating planetary hours:", error);
       return null;
     }
   }

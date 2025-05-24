@@ -1,5 +1,8 @@
 import React from "react";
 import { AnySchemaType, isValidSchema } from "@/types/schema";
+import { createLogger } from '@/utils/logger';
+
+const logger = createLogger('JsonLd');
 
 /**
  * JsonLd组件的属性接口
@@ -72,7 +75,7 @@ export const JsonLd: React.FC<JsonLdProps> = ({ data }) => {
   const validSchemas = schemaArray.filter(isValidSchema);
 
   if (validSchemas.length === 0) {
-    console.warn("JsonLd: No valid schema objects provided");
+    logger.warn("JsonLd: No valid schema objects provided");
     return null;
   }
 

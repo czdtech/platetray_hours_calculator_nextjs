@@ -7,7 +7,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org
 export const metadata: Metadata = {
   title: "Planetary Hours Calculator - Find Your Perfect Timing",
   description:
-    "Calculate planetary hours for any location and date. Discover the best times for your activities based on ancient astrological wisdom. Free online tool with precise astronomical calculations.",
+    "Calculate planetary hours for any location with our advanced calculator. Discover optimal timing based on ancient wisdom. Free astronomical tool.",
   keywords: [
     "planetary hours",
     "astrological timing",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Planetary Hours Calculator - Find Your Perfect Timing",
     description:
-      "Calculate planetary hours for any location and date. Discover the best times for your activities based on ancient astrological wisdom.",
+      "Calculate planetary hours for any location with our advanced calculator. Discover optimal timing based on ancient wisdom.",
     type: "website",
     url: SITE_URL,
     images: [
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Planetary Hours Calculator - Find Your Perfect Timing",
     description:
-      "Calculate planetary hours for any location and date. Discover the best times for your activities based on ancient astrological wisdom.",
+      "Calculate planetary hours for any location with our advanced calculator. Discover optimal timing based on ancient wisdom.",
     images: ["/images/og-image.jpg"],
   },
   alternates: {
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   other: {
     "application-ld+json": JSON.stringify(getSoftwareApplicationSchema({
       name: "Planetary Hours Calculator",
-      description: "Calculate planetary hours for any location and date. Discover the best times for your activities based on ancient astrological wisdom. Free online tool with precise astronomical calculations.",
+      description: "Calculate planetary hours for any location with our advanced calculator. Discover optimal timing based on ancient wisdom. Free astronomical tool.",
       url: SITE_URL,
       applicationCategory: "UtilityApplication",
       featureList: [

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { createLogger } from '@/utils/logger';
 // 在 Vercel 平台或本地 .env.local 文件中配置此环境变量
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
@@ -13,12 +14,14 @@ interface TimezoneApiResponse {
 }
 
 export async function GET(request: Request) {
+  const logger = createLogger('Route');
+
   const { searchParams } = new URL(request.url);
   const location = searchParams.get("location");
   const timestamp = searchParams.get("timestamp");
 
   if (!GOOGLE_MAPS_API_KEY) {
-    console.error("Google Maps API Key is not configured for timezone API.");
+    logger.error("Google Maps API Key is not configured for timezone API.");
     return NextResponse.json(
       { error: "Server configuration error: API key missing" },
       { status: 500 },
@@ -68,7 +71,7 @@ export async function GET(request: Request) {
     const data = (await googleResponse.json()) as TimezoneApiResponse;
 
     if (!googleResponse.ok || data.status !== "OK") {
-      console.error(
+      logger.error(
         "Google Timezone API error. Status:",
         data.status,
         "Message:",
@@ -89,7 +92,7 @@ export async function GET(request: Request) {
     return NextResponse.json(data, { status: 200 });
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error("Unknown error");
-    console.error("Error in timezone proxy:", err);
+    logger.error("Error in timezone proxy:", err);
     return NextResponse.json(
       { error: "Internal server error", details: err.message },
       { status: 500 },

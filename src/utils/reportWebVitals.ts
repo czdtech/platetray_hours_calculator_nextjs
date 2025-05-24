@@ -1,5 +1,9 @@
 import { onCLS, onLCP, onINP, onFCP, onTTFB, Metric } from "web-vitals";
 
+import { createLogger } from '@/utils/logger';
+
+const logger = createLogger('ReportWebVitals');
+
 interface ExtendedMetric {
   name: string;
   value: number;
@@ -25,7 +29,7 @@ function sendToGA({ name, value, id, rating }: ExtendedMetric) {
 
 function sendToConsole({ name, value, rating }: ExtendedMetric) {
   if (process.env.NODE_ENV === 'development') {
-    console.log(`[Web Vitals] ${name}: ${value} (${rating})`);
+    logger.info(`[Web Vitals] ${name}: ${value} (${rating})`);
   }
 }
 

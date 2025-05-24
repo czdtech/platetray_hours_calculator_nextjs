@@ -1,15 +1,18 @@
 import { NextResponse } from "next/server";
 
+import { createLogger } from '@/utils/logger';
 // 在 Vercel 平台或本地 .env.local 文件中配置此环境变量
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
 export async function GET(request: Request) {
+  const logger = createLogger('Route');
+
   const { searchParams } = new URL(request.url);
   const address = searchParams.get("address");
   const latlng = searchParams.get("latlng");
 
   if (!GOOGLE_MAPS_API_KEY) {
-    console.error("Google Maps API Key is not configured.");
+    logger.error("Google Maps API Key is not configured.");
     return NextResponse.json(
       { error: "Server configuration error: API key missing" },
       { status: 500 },
@@ -67,7 +70,7 @@ export async function GET(request: Request) {
       const errorMessage =
         (data as GeocodeErrorResponse).error_message ||
         "No additional details from API.";
-      console.error(
+      logger.error(
         "Google Geocoding API error. Status:",
         errorStatus,
         "Message:",
@@ -86,7 +89,7 @@ export async function GET(request: Request) {
     return NextResponse.json(data, { status: 200 });
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error("Unknown error");
-    console.error("Error in geocode proxy:", err);
+    logger.error("Error in geocode proxy:", err);
     return NextResponse.json(
       { error: "Internal server error", details: err.message },
       { status: 500 },

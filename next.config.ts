@@ -66,16 +66,6 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      // 字体缓存
-      {
-        source: '/fonts/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
     ];
   },
 
@@ -88,31 +78,17 @@ const nextConfig: NextConfig = {
         destination: '/blog/:slug',
         permanent: true,
       },
-      // 旧URL重定向示例
-      {
-        source: '/calculator',
-        destination: '/',
-        permanent: true,
-      },
-    ];
-  },
-
-  // 重写规则
-  async rewrites() {
-    return [
-      // API代理示例
-      {
-        source: '/api/health',
-        destination: '/api/health',
-      },
     ];
   },
 
   // 实验性功能
   experimental: {
     // 启用优化的包导入
-    optimizePackageImports: ['react-icons'],
+    optimizePackageImports: ['react-icons', 'lucide-react', 'date-fns', 'lodash'],
   },
+
+  // 服务器外部包配置
+  serverExternalPackages: ['suncalc'],
 
   // 编译配置
   compiler: {
@@ -131,7 +107,7 @@ const nextConfig: NextConfig = {
   // 生成ETags
   generateEtags: true,
 
-  // Turbopack 配置（解决 PWA 插件兼容性）
+  // Turbopack 配置
   turbopack: {
     rules: {
       // SVG 作为 React 组件处理
@@ -243,7 +219,7 @@ const pwaConfig = withPWA({
           maxEntries: 16,
           maxAgeSeconds: 60 * 60 * 24, // 24 hours
         },
-        networkTimeoutSeconds: 10, // fall back to cache if api does not response within 10 seconds
+        networkTimeoutSeconds: 10,
       },
     },
     {

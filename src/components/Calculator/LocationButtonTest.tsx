@@ -2,8 +2,11 @@
 
 import { POPULAR_CITIES } from "@/constants/popularCities";
 
+import { createLogger } from '@/utils/logger';
 export function LocationButtonTest() {
-  console.log("🔍 [Debug] POPULAR_CITIES:", POPULAR_CITIES);
+  const logger = createLogger('LocationButtonTest');
+
+  logger.info("🔍 [Debug] POPULAR_CITIES:", POPULAR_CITIES);
   
   return (
     <div className="p-4 bg-gray-100 rounded-lg">

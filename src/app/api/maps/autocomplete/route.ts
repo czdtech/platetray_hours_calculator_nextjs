@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { createLogger } from '@/utils/logger';
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
 interface AutocompletePrediction {
@@ -15,12 +16,14 @@ interface AutocompleteApiResponse {
 }
 
 export async function GET(request: Request) {
+  const logger = createLogger('Route');
+
   const { searchParams } = new URL(request.url);
   const input = searchParams.get("input");
   const sessiontoken = searchParams.get("sessiontoken");
 
   if (!GOOGLE_MAPS_API_KEY) {
-    console.error("Google Maps API Key is not configured for autocomplete.");
+    logger.error("Google Maps API Key is not configured for autocomplete.");
     return NextResponse.json(
       { error: "Server configuration error: API key missing" },
       { status: 500 },
@@ -51,7 +54,7 @@ export async function GET(request: Request) {
     const data = (await googleResponse.json()) as AutocompleteApiResponse;
 
     if (!googleResponse.ok || data.status !== "OK") {
-      console.error(
+      logger.error(
         "Google Places Autocomplete API error. Status:",
         data.status,
         "Message:",
@@ -76,7 +79,7 @@ export async function GET(request: Request) {
     );
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error("Unknown error");
-    console.error("Error in autocomplete proxy:", err);
+    logger.error("Error in autocomplete proxy:", err);
     return NextResponse.json(
       { error: "Internal server error", details: err.message },
       { status: 500 },

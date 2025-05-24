@@ -1,10 +1,13 @@
 import { useEffect, useRef, useCallback } from 'react';
 
+import { createLogger } from '@/utils/logger';
 /**
  * 性能优化Hook
  * 提供防抖、节流和缓存功能
  */
 export function usePerformanceOptimization() {
+  const logger = createLogger('UsePerformanceOptimization');
+
   const cacheRef = useRef<Map<string, any>>(new Map());
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -98,6 +101,8 @@ export function usePerformanceOptimization() {
  * 组件渲染性能监控Hook
  */
 export function useRenderPerformance(componentName: string) {
+  const logger = createLogger('UseRenderPerformance');
+  
   const renderCountRef = useRef(0);
   const lastRenderTimeRef = useRef(Date.now());
 
@@ -107,7 +112,7 @@ export function useRenderPerformance(componentName: string) {
     const timeSinceLastRender = now - lastRenderTimeRef.current;
     
     if (process.env.NODE_ENV === 'development') {
-      console.log(`🎭 [${componentName}] 渲染次数: ${renderCountRef.current}, 距离上次渲染: ${timeSinceLastRender}ms`);
+      logger.info(`🎭 [${componentName}] 渲染次数: ${renderCountRef.current}, 距离上次渲染: ${timeSinceLastRender}ms`);
     }
     
     lastRenderTimeRef.current = now;

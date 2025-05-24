@@ -15,6 +15,7 @@ export function Footer() {
           |{" "}
           <Link
             href="/privacy"
+            prefetch={false}
             className="text-purple-700 underline hover:text-purple-800"
           >
             Privacy Policy
@@ -22,6 +23,7 @@ export function Footer() {
           |{" "}
           <Link
             href="/terms"
+            prefetch={false}
             className="text-purple-700 underline hover:text-purple-800"
           >
             Terms of Service

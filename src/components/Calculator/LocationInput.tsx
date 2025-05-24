@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect, useRef, memo, useMemo } from "react";
 import { MapPin, Loader2, AlertCircle } from "lucide-react";
 import debounce from "lodash/debounce";
 
+import { createLogger } from '@/utils/logger';
 interface LocationInputProps {
   defaultLocation: string;
   onLocationChange: (location: string) => void;
@@ -38,6 +39,8 @@ function LocationInputComponent({
   onLocationChange,
   onUseCurrentLocation,
 }: LocationInputProps) {
+  const logger = createLogger('LocationInput');
+  
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isFetchingToken, setIsFetchingToken] = useState(false);
@@ -64,7 +67,7 @@ function LocationInputComponent({
   >(null);
 
   const fetchNewSessionToken = useCallback(async () => {
-    console.log("🎫 [Session] 开始获取新的会话令牌");
+    logger.info("🎫 [Session] 开始获取新的会话令牌");
     setIsFetchingToken(true);
     try {
       const response = await fetch("/api/maps/session/start");
@@ -78,25 +81,25 @@ function LocationInputComponent({
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         const text = await response.text();
-        console.error("❌ [Session] 非JSON响应:", text);
+        logger.error("❌ [Session] 非JSON响应:", text);
         throw new Error("Server returned non-JSON response");
       }
 
       const data = await response.json();
 
-      console.log("🔍 [Session] API响应:", data); // 添加调试日志
+      logger.info("🔍 [Session] API响应:", data); // 添加调试日志
 
       if (data.sessionToken) {
         // 修改这里，使用sessionToken而不是token
-        console.log("✅ [Session] 成功获取会话令牌");
+        logger.info("✅ [Session] 成功获取会话令牌");
         sessionTokenRef.current = data.sessionToken;
         setIsLocationServiceReady(true);
       } else {
-        console.error("❌ [Session] API响应中没有找到sessionToken:", data);
+        logger.error("❌ [Session] API响应中没有找到sessionToken:", data);
         throw new Error("Session token not found in response");
       }
     } catch (error) {
-      console.error("❌ [Session] 获取会话令牌失败:", error);
+      logger.error("❌ [Session] 获取会话令牌失败:", error);
       setLocationServiceError("Failed to initialize location service");
     } finally {
       setIsFetchingToken(false);
@@ -104,12 +107,12 @@ function LocationInputComponent({
   }, []);
 
   useEffect(() => {
-    console.log("🗺️ [LocationInput] 位置输入组件挂载");
-    console.log(`📍 [LocationInput] 默认位置: ${defaultLocation}`);
+    logger.info("🗺️ [LocationInput] 位置输入组件挂载");
+    logger.info(`📍 [LocationInput] 默认位置: ${defaultLocation}`);
 
     // 如果是默认位置（New York, NY），跳过会话令牌获取
     if (defaultLocation === "New York, NY") {
-      console.log("🏠 [LocationInput] 使用默认位置，跳过会话令牌获取");
+      logger.info("🏠 [LocationInput] 使用默认位置，跳过会话令牌获取");
       return;
     }
 
@@ -205,7 +208,7 @@ function LocationInputComponent({
       setActivePredictionIndex(-1);
 
       if (!prediction.place_id) {
-        console.warn(
+        logger.warn(
           "Place ID missing from prediction, falling back to geocodeAddress.",
         );
         geocodeAddress(prediction.description);
@@ -268,7 +271,7 @@ function LocationInputComponent({
             longitude: coords.longitude,
           });
         } else {
-          console.error(
+          logger.error(
             "Place details from proxy missing geometry/location:",
             placeDetails,
           );
@@ -277,7 +280,7 @@ function LocationInputComponent({
         }
       } catch (err: unknown) {
         const error = err instanceof Error ? err : new Error("Unknown error");
-        console.error("Error fetching place details via proxy:", error);
+        logger.error("Error fetching place details via proxy:", error);
         setError(error.message || "Error fetching place details.");
         // Fallback to geocoding the description on error
         // geocodeAddress(prediction.description); // Or just show error
@@ -300,7 +303,7 @@ function LocationInputComponent({
         return;
       }
       if (!token) {
-        console.warn(
+        logger.warn(
           "Attempted to fetch suggestions without a session token.",
         );
         return;
@@ -308,14 +311,14 @@ function LocationInputComponent({
 
       // Ensure we only process the latest request intention.
       if (requestId !== lastRequestIdRef.current) {
-        // console.log(`Debounced function for requestId ${requestId} (${inputValue}) superseded by ${lastRequestIdRef.current}. Not fetching.`);
+        // logger.info(`Debounced function for requestId ${requestId} (${inputValue}) superseded by ${lastRequestIdRef.current}. Not fetching.`);
         return;
       }
 
       // Abort any previous in-flight autocomplete request.
       if (activeAutocompleteRequestControllerRef.current) {
         activeAutocompleteRequestControllerRef.current.abort();
-        // console.log('Aborted previous autocomplete request.');
+        // logger.info('Aborted previous autocomplete request.');
       }
 
       const controller = new AbortController();
@@ -324,7 +327,7 @@ function LocationInputComponent({
       const apiUrl = `/api/maps/autocomplete?input=${encodeURIComponent(inputValue)}&sessiontoken=${encodeURIComponent(token)}`;
 
       try {
-        // console.log(`Fetching suggestions for requestId ${requestId} (${inputValue})`);
+        // logger.info(`Fetching suggestions for requestId ${requestId} (${inputValue})`);
         const response = await fetch(apiUrl, { signal: controller.signal });
 
         // If this request was not aborted by a subsequent one, clear its controller from active ref.
@@ -349,18 +352,18 @@ function LocationInputComponent({
           setActivePredictionIndex(-1);
           setError(null); // Clear error on successful fetch of suggestions
         } else {
-          // console.log(`Response for requestId ${requestId} (${inputValue}) arrived, but current is ${lastRequestIdRef.current}. Not updating UI.`);
+          // logger.info(`Response for requestId ${requestId} (${inputValue}) arrived, but current is ${lastRequestIdRef.current}. Not updating UI.`);
         }
       } catch (err: unknown) {
         if (err instanceof DOMException && err.name === "AbortError") {
-          // console.log(`Fetch for requestId ${requestId} (${inputValue}) was aborted.`);
+          // logger.info(`Fetch for requestId ${requestId} (${inputValue}) was aborted.`);
           // No error state update needed for self-aborted requests,
           // unless it was the *very last* intended request that got aborted by unmount or similar.
           // If this specific controller was the one stored as active, it means it was aborted by a *newer* request's controller.
           // If it's still the active one after an abort error, it might be an external abort (less likely here).
         } else if (requestId === lastRequestIdRef.current) {
           // For other errors, only update UI if current
-          console.error(
+          logger.error(
             "fetchAutocompleteSuggestions (via proxy) error:",
             err,
           );

@@ -18,7 +18,7 @@ export function DateTimeInput({
   onDateChange,
   selectedDate,
 }: DateTimeInputProps) {
-  const { utcToZonedTime, zonedTimeToUtc, timezone } = useDateContext();
+  const { utcToZonedTime, zonedTimeToUtc } = useDateContext();
   const [isOpen, setIsOpen] = useState(false);
 
   const datePickerRef = useRef<DatePicker>(null);

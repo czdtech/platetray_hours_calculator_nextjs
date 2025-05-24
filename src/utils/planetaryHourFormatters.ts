@@ -3,6 +3,7 @@ import { PlanetaryHour } from "../services/PlanetaryHoursCalculator";
 // 导入全局行星颜色常量
 import { PLANET_COLOR_CLASSES } from "@/constants/planetColors";
 
+import { createLogger } from '@/utils/logger';
 // 定义格式化后的行星时间接口
 export interface FormattedPlanetaryHour {
   planet: string;
@@ -37,6 +38,8 @@ export function formatHoursToList(
   currentHourForHighlighting?: FormattedPlanetaryHour | null,
   highlightAllowed: boolean = true,
 ): FormattedPlanetaryHour[] {
+  const logger = createLogger('PlanetaryHourFormatters');
+
   if (!hours?.length || !calculationTimezone) return [];
 
   const formatPattern = timeFormat === "24h" ? "HH:mm" : "h:mm aa";
@@ -75,7 +78,7 @@ export function formatHoursToList(
     if (isCurrent) {
       const key = `${hour.ruler}_${timeRange}`;
       if (key !== lastHighlightedKey) {
-        console.log(`Highlighting hour in list: ${hour.ruler}, ${timeRange}`);
+        logger.info(`Highlighting hour in list: ${hour.ruler}, ${timeRange}`);
         lastHighlightedKey = key;
       }
     }

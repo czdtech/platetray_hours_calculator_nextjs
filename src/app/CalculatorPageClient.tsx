@@ -19,6 +19,7 @@ import { FAQSection } from "@/components/FAQ/FAQSection";
 // 导入全局行星颜色常量
 import { PLANET_COLOR_CLASSES as _PLANET_COLOR_CLASSES, PLANET_SYMBOLS as _PLANET_SYMBOLS } from "@/constants/planetColors";
 
+import { createLogger } from '@/utils/logger';
 interface Coordinates {
   latitude: number;
   longitude: number;
@@ -27,6 +28,8 @@ interface Coordinates {
 }
 
 function CalculatorCore() {
+  const logger = createLogger('CalculatorPageClient');
+  
   const { selectedDate, timezone, setSelectedDate, setTimezone, formatDate } =
     useDateContext();
 
@@ -63,7 +66,7 @@ function CalculatorCore() {
       !hasInitialCalculated &&
       !isTimezoneUpdating
     ) {
-      console.log("🚀 [Initial] 使用默认数据进行初始计算", {
+      logger.info("🚀 [Initial] 使用默认数据进行初始计算", {
         coordinates: `${coordinates.latitude}, ${coordinates.longitude}`,
         timezone,
         selectedDate: selectedDate.toISOString(),
@@ -103,7 +106,7 @@ function CalculatorCore() {
       if (coordinates) {
         // Skip API call for preset cities (they already have timezone set)
         if (coordinates.source === "preset") {
-          console.log("🏙️ [Timezone] 跳过预设城市的时区API调用");
+          logger.info("🏙️ [Timezone] 跳过预设城市的时区API调用");
           return;
         }
 
@@ -120,7 +123,7 @@ function CalculatorCore() {
             setTimezone(data.timeZoneId);
 
             // 日志：完成时区更新后立即重新计算行星时
-            console.log("✅ [Timezone] 时区获取完成，开始重新计算行星时间");
+            logger.info("✅ [Timezone] 时区获取完成，开始重新计算行星时间");
             calculate(
               coordinates.latitude,
               coordinates.longitude,
@@ -132,7 +135,7 @@ function CalculatorCore() {
           // Mark timezone update as complete
           setIsTimezoneUpdating(false);
         } catch (error) {
-          console.error("Error fetching timezone:", error);
+          logger.error("Error fetching timezone:", error);
           // Also mark as complete in case of error
           setIsTimezoneUpdating(false);
         }
@@ -177,7 +180,7 @@ function CalculatorCore() {
 
   // Handle direct timezone updates (for popular cities)
   const handleDirectTimezoneUpdate = (newTimezone: string) => {
-    console.log("🌍 [DirectTimezone] 直接更新时区:", newTimezone);
+    logger.info("🌍 [DirectTimezone] 直接更新时区:", newTimezone);
     setTimezone(newTimezone);
     setIsTimezoneUpdating(false); // Skip API call since we have the timezone
     
@@ -489,6 +492,8 @@ function CalculatorCore() {
 }
 
 export default function CalculatorPageClient() {
+  const logger = createLogger('CalculatorPageClient');
+
   const initialDate = new Date();
   const initialTimezone = "America/New_York";
 

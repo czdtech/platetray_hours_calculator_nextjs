@@ -18,6 +18,7 @@ import {
 import { dateService, WeekDay } from "../services/DateService";
 import { timeZoneService } from "../services/TimeZoneService";
 
+import { createLogger } from '@/utils/logger';
 interface DateContextType {
   // 当前选中的日期（UTC）
   selectedDate: Date;
@@ -35,6 +36,10 @@ interface DateContextType {
   goToNextWeek: () => void;
   // 格式化日期
   formatDate: (date: Date, format?: "short" | "medium" | "long") => string;
+  // 格式化日期，如果是今天则添加前缀
+  formatDateWithTodayPrefix: (date: Date, format?: "short" | "medium" | "long") => string;
+  // 检查是否为今天
+  isToday: (date: Date) => boolean;
   // 将UTC日期转换为时区日期
   utcToZonedTime: (date: Date) => Date;
   // 将时区日期转换为UTC日期
@@ -58,6 +63,8 @@ export function DateProvider({
   initialDate = new Date(),
   initialTimezone = "America/New_York", // 默认时区可以后续调整或从配置读取
 }: DateProviderProps) {
+  const logger = createLogger('DateContext');
+  
   // 状态
   const [selectedDate, setSelectedDateState] = useState<Date>(initialDate);
   const [timezone, setTimezoneState] = useState<string>(initialTimezone);
@@ -80,7 +87,7 @@ export function DateProvider({
     if (validation.isValid) {
       setSelectedDateState(date);
     } else {
-      console.error(validation.message);
+      logger.error(validation.message || 'Invalid date');
     }
   };
 
@@ -90,7 +97,7 @@ export function DateProvider({
     if (validation.isValid) {
       setTimezoneState(newTimezone);
     } else {
-      console.error(validation.message);
+      logger.error(validation.message || 'Invalid timezone');
     }
   };
 
@@ -129,6 +136,23 @@ export function DateProvider({
     return timeZoneService.formatInTimeZone(date, timezone, pattern);
   };
 
+  // 检查是否为今天
+  const isToday = (date: Date) => {
+    const today = new Date();
+    const todayInTimezone = timeZoneService.formatInTimeZone(today, timezone, "yyyy-MM-dd");
+    const dateInTimezone = timeZoneService.formatInTimeZone(date, timezone, "yyyy-MM-dd");
+    return todayInTimezone === dateInTimezone;
+  };
+
+  // 格式化日期，如果是今天则添加前缀
+  const formatDateWithTodayPrefix = (date: Date, format: "short" | "medium" | "long" = "medium") => {
+    const formattedDate = dateService.formatDate(date, timezone, format);
+    if (isToday(date)) {
+      return `planetary hours today, ${formattedDate}`;
+    }
+    return formattedDate;
+  };
+
   // 上下文值
   const value = {
     selectedDate,
@@ -139,6 +163,8 @@ export function DateProvider({
     goToPreviousWeek,
     goToNextWeek,
     formatDate,
+    formatDateWithTodayPrefix,
+    isToday,
     utcToZonedTime,
     zonedTimeToUtc,
     formatDateWithPattern,

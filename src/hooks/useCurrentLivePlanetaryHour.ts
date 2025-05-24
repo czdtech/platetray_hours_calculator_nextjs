@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { createLogger } from '@/utils/logger';
 import {
   planetaryHoursCalculator,
   PlanetaryHour,
@@ -37,6 +38,8 @@ export function useCurrentLivePlanetaryHour({
   dateForPlanetaryHoursRaw, // 传入用于计算 planetaryHoursRaw 的原始Date对象
   timeFormat,
 }: UseCurrentLivePlanetaryHourProps): FormattedPlanetaryHour | null {
+  const logger = createLogger('UseCurrentLivePlanetaryHour');
+  
   const [currentLiveHour, setCurrentLiveHour] =
     useState<FormattedPlanetaryHour | null>(null);
   
@@ -45,13 +48,13 @@ export function useCurrentLivePlanetaryHour({
 
   const calculateAndSetCurrentHour = useCallback(
     async (nowUtc: Date) => {
-      console.log("🧮 [LiveHour] 开始计算实时当前行星时");
+      logger.info("🧮 [LiveHour] 开始计算实时当前行星时");
       if (
         !planetaryHoursRaw ||
         !planetaryHoursRaw.timezone ||
         !dateForPlanetaryHoursRaw
       ) {
-        console.log("⚠️ [LiveHour] 缺少必要数据，无法计算", {
+        logger.info("⚠️ [LiveHour] 缺少必要数据，无法计算", {
           planetaryHoursRawExists: !!planetaryHoursRaw,
           timezone: planetaryHoursRaw?.timezone,
           dateForPlanetaryHoursRaw,
@@ -66,7 +69,7 @@ export function useCurrentLivePlanetaryHour({
       // 创建计算标识符，避免重复计算
       const calculationKey = `${nowUtc.getTime()}_${timezone}_${sunriseLocal?.getTime()}_${currentCoordinatesForYesterdayCalc?.latitude}_${currentCoordinatesForYesterdayCalc?.longitude}`;
       if (calculationKey === lastCalculationRef.current) {
-        console.log("⚡ [LiveHour] 跳过重复计算");
+        logger.info("⚡ [LiveHour] 跳过重复计算");
         return;
       }
       lastCalculationRef.current = calculationKey;
@@ -74,16 +77,16 @@ export function useCurrentLivePlanetaryHour({
       // 直接尝试在当前数据中寻找正在进行的行星时
       let currentPhysicalHour: PlanetaryHour | null =
         planetaryHoursCalculator.getCurrentHour(planetaryHoursRaw, nowUtc);
-      console.log("🔍 [LiveHour] 当前物理行星时: ", currentPhysicalHour);
+      logger.info("🔍 [LiveHour] 当前物理行星时: ", currentPhysicalHour);
 
       // 如果未找到且当前时间在 "日出前" 的夜间，则尝试用前一天的数据再算一次
       if (!currentPhysicalHour && sunriseLocal && nowUtc < sunriseLocal) {
-        console.log("🌄 [LiveHour] 当前时间在日出前，尝试计算前一天的夜间小时");
+        logger.info("🌄 [LiveHour] 当前时间在日出前，尝试计算前一天的夜间小时");
         if (currentCoordinatesForYesterdayCalc) {
           try {
             const yesterdayDate = new Date(sunriseLocal);
             yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-            console.log(
+            logger.info(
               "📆 [LiveHour] 前一天日期: ",
               yesterdayDate.toISOString(),
             );
@@ -96,14 +99,14 @@ export function useCurrentLivePlanetaryHour({
             // 检查缓存
             if (yesterdayCache.has(cacheKey)) {
               yesterdayResult = yesterdayCache.get(cacheKey)!;
-              console.log("📋 [LiveHour] 使用缓存的前一天数据");
+              logger.info("📋 [LiveHour] 使用缓存的前一天数据");
             } else if (pendingRequests.has(cacheKey)) {
               // 如果有正在进行的请求，等待它完成
-              console.log("⏳ [LiveHour] 等待正在进行的前一天数据请求");
+              logger.info("⏳ [LiveHour] 等待正在进行的前一天数据请求");
               yesterdayResult = await pendingRequests.get(cacheKey)!;
             } else {
               // 创建新的请求
-              console.log("🔄 [LiveHour] 发起新的前一天数据请求");
+              logger.info("🔄 [LiveHour] 发起新的前一天数据请求");
               const requestPromise = planetaryHoursCalculator.calculate(
                 yesterdayDate,
                 currentCoordinatesForYesterdayCalc.latitude,
@@ -132,16 +135,16 @@ export function useCurrentLivePlanetaryHour({
                 yesterdayResult,
                 nowUtc,
               );
-              console.log(
+              logger.info(
                 "🔍 [LiveHour] 前一天计算结果中的当前小时: ",
                 currentPhysicalHour,
               );
             }
           } catch (err: unknown) {
-            console.error("❌ [LiveHour] 计算前一天行星时出错:", err);
+            logger.error("❌ [LiveHour] 计算前一天行星时出错:", err);
           }
         } else {
-          console.warn("⚠️ [LiveHour] 缺少前一天计算所需坐标");
+          logger.warn("⚠️ [LiveHour] 缺少前一天计算所需坐标");
         }
       }
 
@@ -165,7 +168,7 @@ export function useCurrentLivePlanetaryHour({
         timeFormat,
         true,
       );
-      console.log("🎨 [LiveHour] 格式化后的当前行星时: ", formatted);
+      logger.info("🎨 [LiveHour] 格式化后的当前行星时: ", formatted);
       setCurrentLiveHour(formatted);
     },
     [

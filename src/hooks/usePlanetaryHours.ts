@@ -15,6 +15,7 @@ import {
 import { useCurrentLivePlanetaryHour } from "./useCurrentLivePlanetaryHour";
 import { usePerformanceOptimization, useNetworkOptimization } from "./usePerformanceOptimization";
 
+import { createLogger } from '@/utils/logger';
 // 定义钩子返回的结果接口
 export interface UsePlanetaryHoursResult {
   planetaryHoursRaw: PlanetaryHoursCalculationResult | null;
@@ -40,6 +41,8 @@ export interface UsePlanetaryHoursResult {
 export function usePlanetaryHours(
   timeFormat: "12h" | "24h" = "24h",
 ): UsePlanetaryHoursResult {
+  const logger = createLogger('UsePlanetaryHours');
+
   const [planetaryHoursRaw, setPlanetaryHoursRaw] =
     useState<PlanetaryHoursCalculationResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -80,14 +83,14 @@ export function usePlanetaryHours(
 
         // 若与上一次计算参数完全一致，则直接跳过
         if (paramKey === lastParamsRef.current) {
-          console.log("⚡ [Performance] 跳过重复计算，参数未变化");
+          logger.info("⚡ [Performance] 跳过重复计算，参数未变化");
           return;
         }
 
         setIsLoading(true);
         setError(null);
 
-        console.log(
+        logger.info(
           `计算行星时: 日期=${date.toISOString()}, 时区=${timezoneInput}, 坐标=[${latitude}, ${longitude}]`,
         );
 
@@ -114,7 +117,7 @@ export function usePlanetaryHours(
 
         // Add null check for result before accessing its properties
         if (result) {
-          console.log(
+          logger.info(
             `计算结果: 日出=${result.sunrise?.toISOString()}, 日落=${result.sunset?.toISOString()}, 行星时数量=${result.planetaryHours?.length || 0}`,
           );
 
@@ -135,7 +138,7 @@ export function usePlanetaryHours(
           lastParamsRef.current = null; // Clear last params if calculation failed
         }
       } catch (err) {
-        console.error("计算行星时出错:", err);
+        logger.error("计算行星时出错:", err);
         setError(
           err instanceof Error
             ? err.message

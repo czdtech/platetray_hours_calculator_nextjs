@@ -4,7 +4,10 @@ import { useState } from "react";
 import { EnhancedLocationInput } from "@/components/Calculator/EnhancedLocationInput";
 import { LocationButtonTest } from "@/components/Calculator/LocationButtonTest";
 
+import { createLogger } from '@/utils/logger';
 export default function TestLocationPage() {
+  const logger = createLogger('Page');
+
   const [location, setLocation] = useState("New York, NY");
   const [coordinates, setCoordinates] = useState({
     latitude: 40.7128,
@@ -13,7 +16,7 @@ export default function TestLocationPage() {
   const [timezone, setTimezone] = useState("America/New_York");
 
   const handleLocationChange = (newLocation: string) => {
-    console.log("Location changed:", newLocation);
+    logger.info("Location changed:", newLocation);
     setLocation(newLocation);
   };
 
@@ -21,12 +24,12 @@ export default function TestLocationPage() {
     latitude: number;
     longitude: number;
   }) => {
-    console.log("Coordinates updated:", coords);
+    logger.info("Coordinates updated:", coords);
     setCoordinates(coords);
   };
 
   const handleTimezoneChange = (newTimezone: string) => {
-    console.log("Timezone changed:", newTimezone);
+    logger.info("Timezone changed:", newTimezone);
     setTimezone(newTimezone);
   };
 

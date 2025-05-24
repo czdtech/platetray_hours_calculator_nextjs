@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { createLogger } from '@/utils/logger';
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
 // 根据 Google Places API Details 响应定义接口
@@ -30,12 +31,14 @@ interface PlaceDetailsApiResponse {
 }
 
 export async function GET(request: Request) {
+  const logger = createLogger('Route');
+
   const { searchParams } = new URL(request.url);
   const placeid = searchParams.get("placeid");
   const sessiontoken = searchParams.get("sessiontoken");
 
   if (!GOOGLE_MAPS_API_KEY) {
-    console.error("Google Maps API Key is not configured for place details.");
+    logger.error("Google Maps API Key is not configured for place details.");
     return NextResponse.json(
       { error: "Server configuration error: API key missing" },
       { status: 500 },
@@ -68,7 +71,7 @@ export async function GET(request: Request) {
     const data = (await googleResponse.json()) as PlaceDetailsApiResponse;
 
     if (!googleResponse.ok || data.status !== "OK") {
-      console.error(
+      logger.error(
         "Google Places Details API error. Status:",
         data.status,
         "Message:",
@@ -89,7 +92,7 @@ export async function GET(request: Request) {
     return NextResponse.json(data.result, { status: 200 });
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error("Unknown error");
-    console.error("Error in placeDetails proxy:", err);
+    logger.error("Error in placeDetails proxy:", err);
     return NextResponse.json(
       { error: "Internal server error", details: err.message },
       { status: 500 },

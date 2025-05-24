@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import { remark } from "remark";
 import html from "remark-html";
 
+import { createLogger } from '@/utils/logger';
 const contentDirectory = path.join(process.cwd(), "src/content");
 
 export interface MarkdownContent {
@@ -19,6 +20,8 @@ export async function getMarkdownContent(
   slug: string,
   folder: string = "blog",
 ): Promise<MarkdownContent | null> {
+  const logger = createLogger('Markdown');
+
   try {
     const fullPath = path.join(contentDirectory, folder, `${slug}.md`);
 
@@ -45,7 +48,7 @@ export async function getMarkdownContent(
       contentHtml,
     };
   } catch (error) {
-    console.error(`Error reading markdown file for slug ${slug}:`, error);
+    logger.error(`Error reading markdown file for slug ${slug}:`, error);
     return null;
   }
 }

@@ -1,6 +1,9 @@
 import { planetaryHoursCalculator } from "../services/PlanetaryHoursCalculator";
 import { formatSingleHour } from "./planetaryHourFormatters";
 import { formatInTimeZone } from "date-fns-tz";
+import { createLogger } from '@/utils/logger';
+
+const logger = createLogger('DebugPlanetary');
 
 /**
  * 此脚本用于调试行星时间计算
@@ -15,11 +18,11 @@ async function debugPlanetaryHours() {
   // 使用指定时间 - 2025-05-13，为星期二
   const testDate = new Date("2025-05-13T23:47:00");
 
-  console.log(
+  logger.info(
     "测试日期:",
     formatInTimeZone(testDate, timezone, "yyyy-MM-dd HH:mm:ss"),
   );
-  console.log("星期几:", testDate.getDay()); // 应该返回2，代表星期二
+  logger.info("星期几:", testDate.getDay()); // 应该返回2，代表星期二
 
   const result = await planetaryHoursCalculator.calculate(
     testDate,
@@ -29,36 +32,36 @@ async function debugPlanetaryHours() {
   );
 
   if (!result) {
-    console.error("计算失败");
+    logger.error("计算失败");
     return;
   }
 
-  console.log("日期:", result.requestedDate);
-  console.log("Day Ruler:", result.dayRuler); // 应该是 Mars
+  logger.info("日期:", result.requestedDate);
+  logger.info("Day Ruler:", result.dayRuler); // 应该是 Mars
 
   // 获取当前时间的行星时
   const currentHour = planetaryHoursCalculator.getCurrentHour(result, testDate);
-  console.log("当前行星时数据:", currentHour);
+  logger.info("当前行星时数据:", currentHour);
 
   if (currentHour) {
     // 格式化为UI显示的格式
     const formattedHour = formatSingleHour(currentHour, timezone, "24h");
-    console.log("格式化后的当前行星时:");
-    console.log("- 行星:", formattedHour?.planet); // 应该是 Venus
-    console.log("- 时间范围:", formattedHour?.timeRange);
-    console.log("- 类型:", formattedHour?.type);
-    console.log("- 适合做:", formattedHour?.goodFor);
-    console.log("- 避免做:", formattedHour?.avoid);
+    logger.info("格式化后的当前行星时:");
+    logger.info("- 行星:", formattedHour?.planet); // 应该是 Venus
+    logger.info("- 时间范围:", formattedHour?.timeRange);
+    logger.info("- 类型:", formattedHour?.type);
+    logger.info("- 适合做:", formattedHour?.goodFor);
+    logger.info("- 避免做:", formattedHour?.avoid);
   }
 
   // 输出完整的行星时列表
-  console.log("\n所有行星时:");
+  logger.info("\n所有行星时:");
   result.planetaryHours.forEach((hour, index) => {
-    console.log(
+    logger.info(
       `${index + 1}. ${hour.ruler} (${hour.type}): ${formatInTimeZone(hour.startTime, timezone, "HH:mm")} - ${formatInTimeZone(hour.endTime, timezone, "HH:mm")}`,
     );
   });
 }
 
-console.log("开始调试行星时间计算...");
+logger.info("开始调试行星时间计算...");
 debugPlanetaryHours().catch(console.error);

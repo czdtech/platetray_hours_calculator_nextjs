@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { FormattedPlanetaryHour } from "@/utils/planetaryHourFormatters";
 // 导入全局行星颜色常量
 import {
@@ -15,7 +16,7 @@ interface HourItemProps {
   onToggle: (index: number) => void;
 }
 
-export function HourItem({ hour, index, isOpen, onToggle }: HourItemProps) {
+function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
   const handleClick = () => {
     const isCoarse = window.matchMedia("(pointer: coarse)").matches;
     if (isCoarse) {
@@ -106,3 +107,14 @@ export function HourItem({ hour, index, isOpen, onToggle }: HourItemProps) {
     </div>
   );
 }
+
+// 使用 memo 优化组件，只在 props 真正改变时重新渲染
+export const HourItem = memo(HourItemComponent, (prevProps, nextProps) => {
+  return (
+    prevProps.hour.planet === nextProps.hour.planet &&
+    prevProps.hour.timeRange === nextProps.hour.timeRange &&
+    prevProps.hour.current === nextProps.hour.current &&
+    prevProps.index === nextProps.index &&
+    prevProps.isOpen === nextProps.isOpen
+  );
+});

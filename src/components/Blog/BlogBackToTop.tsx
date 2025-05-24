@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronUp, MessageCircle, Share2 } from 'lucide-react';
+import { ChevronUp, Share2 } from 'lucide-react';
 
 interface BlogBackToTopProps {
   /** 文章标题，用于分享 */
@@ -58,13 +58,6 @@ export function BlogBackToTop({
     }
   };
 
-  const scrollToComments = () => {
-    const commentsSection = document.getElementById('comments');
-    if (commentsSection) {
-      commentsSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   if (!isVisible) {
     return null;
   }
@@ -117,18 +110,6 @@ export function BlogBackToTop({
           <Share2 className="w-5 h-5" />
         </button>
       )}
-
-      {/* 跳转到评论按钮 */}
-      <button
-        onClick={scrollToComments}
-        className="bg-green-600 hover:bg-green-700 text-white rounded-full p-3
-                   shadow-lg hover:shadow-xl transition-all duration-200
-                   focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-        aria-label="跳转到评论"
-        title="跳转到评论"
-      >
-        <MessageCircle className="w-5 h-5" />
-      </button>
     </div>
   );
 }

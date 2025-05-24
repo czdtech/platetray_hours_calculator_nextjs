@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect, useRef, memo, useMemo } from "react";
 import { MapPin, Loader2, AlertCircle } from "lucide-react";
 import debounce from "lodash/debounce";
 import { POPULAR_CITIES, DEFAULT_CITY, type PopularCity } from "@/constants/popularCities";
+import { createLogger } from "@/utils/logger";
 
 interface LocationInputProps {
   defaultLocation: string;
@@ -10,6 +11,8 @@ interface LocationInputProps {
   onUseCurrentLocation: (coords: {
     latitude: number;
     longitude: number;
+    source?: string;
+    address?: string;
   }) => void;
   onTimezoneChange?: (timezone: string) => void; // New prop for direct timezone updates
 }
@@ -41,6 +44,7 @@ function EnhancedLocationInputComponent({
   onUseCurrentLocation,
   onTimezoneChange,
 }: LocationInputProps) {
+  const logger = createLogger('LocationInput');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isFetchingToken, setIsFetchingToken] = useState(false);
@@ -67,7 +71,7 @@ function EnhancedLocationInputComponent({
   >(null);
 
   // Check if current location matches any popular city
-  const isCurrentLocationPopular = useMemo(() => {
+  const _isCurrentLocationPopular = useMemo(() => {
     // Show buttons when no coordinates are set yet
     if (!currentCoords) {
       return false;
@@ -85,7 +89,7 @@ function EnhancedLocationInputComponent({
   }, [currentCoords]);
 
   const fetchNewSessionToken = useCallback(async () => {
-    console.log("🎫 [Session] 开始获取新的会话令牌");
+    logger.debug("🎫 开始获取新的会话令牌");
     setIsFetchingToken(true);
     try {
       const response = await fetch("/api/maps/session/start");
@@ -97,36 +101,36 @@ function EnhancedLocationInputComponent({
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         const text = await response.text();
-        console.error("❌ [Session] 非JSON响应:", text);
+        logger.error("❌ 非JSON响应:", text);
         throw new Error("Server returned non-JSON response");
       }
 
       const data = await response.json();
-      console.log("🔍 [Session] API响应:", data);
+      logger.debug("🔍 API响应:", data);
 
       if (data.sessionToken) {
-        console.log("✅ [Session] 成功获取会话令牌");
+        logger.info("✅ 成功获取会话令牌");
         sessionTokenRef.current = data.sessionToken;
         setIsLocationServiceReady(true);
       } else {
-        console.error("❌ [Session] API响应中没有找到sessionToken:", data);
+        logger.error("❌ API响应中没有找到sessionToken:", data);
         throw new Error("Session token not found in response");
       }
     } catch (error) {
-      console.error("❌ [Session] 获取会话令牌失败:", error);
+      logger.error("❌ 获取会话令牌失败:", error);
       setLocationServiceError("Failed to initialize location service");
     } finally {
       setIsFetchingToken(false);
     }
-  }, []);
+  }, [logger]);
 
   useEffect(() => {
-    console.log("🗺️ [LocationInput] 位置输入组件挂载");
-    console.log(`📍 [LocationInput] 默认位置: ${defaultLocation}`);
+    logger.debug("🗺️ 位置输入组件挂载");
+    logger.debug(`📍 默认位置: ${defaultLocation}`);
 
     // 如果是默认位置（New York, NY），跳过会话令牌获取
     if (defaultLocation === "New York, NY") {
-      console.log("🏠 [LocationInput] 使用默认位置，跳过会话令牌获取");
+      logger.debug("🏠 使用默认位置，跳过会话令牌获取");
       return;
     }
 
@@ -134,7 +138,7 @@ function EnhancedLocationInputComponent({
       hasFetchedSessionToken = true;
       fetchNewSessionToken();
     }
-  }, [defaultLocation, fetchNewSessionToken]);
+  }, [defaultLocation, fetchNewSessionToken, logger]);
 
   const isCoordinates = (
     input: string,
@@ -168,6 +172,8 @@ function EnhancedLocationInputComponent({
     onUseCurrentLocation({
       latitude: city.latitude,
       longitude: city.longitude,
+      source: "preset",
+      address: city.displayName,
     });
 
     // If timezone change callback is provided, use it for immediate timezone update
@@ -175,7 +181,7 @@ function EnhancedLocationInputComponent({
       onTimezoneChange(city.timezone);
     }
 
-    console.log(`🏙️ [PopularCity] 选择城市: ${city.displayName}`, {
+    logger.info(`🏙️ 选择城市: ${city.displayName}`, {
       coordinates: `${city.latitude}, ${city.longitude}`,
       timezone: city.timezone,
     });
@@ -254,9 +260,7 @@ function EnhancedLocationInputComponent({
       setActivePredictionIndex(-1);
 
       if (!prediction.place_id) {
-        console.warn(
-          "Place ID missing from prediction, falling back to geocodeAddress.",
-        );
+        logger.warn("Place ID missing from prediction, falling back to geocodeAddress.");
         geocodeAddress(prediction.description);
         return;
       }
@@ -317,15 +321,12 @@ function EnhancedLocationInputComponent({
             longitude: coords.longitude,
           });
         } else {
-          console.error(
-            "Place details from proxy missing geometry/location:",
-            placeDetails,
-          );
+          logger.error("Place details from proxy missing geometry/location:", placeDetails);
           throw new Error("Could not retrieve location details from proxy.");
         }
       } catch (err: unknown) {
         const error = err instanceof Error ? err : new Error("Unknown error");
-        console.error("Error fetching place details via proxy:", error);
+        logger.error("Error fetching place details via proxy:", error);
         setError(error.message || "Error fetching place details.");
       }
     },
@@ -346,9 +347,7 @@ function EnhancedLocationInputComponent({
         return;
       }
       if (!token) {
-        console.warn(
-          "Attempted to fetch suggestions without a session token.",
-        );
+        logger.warn("Attempted to fetch suggestions without a session token.");
         return;
       }
 
@@ -392,10 +391,7 @@ function EnhancedLocationInputComponent({
         if (err instanceof DOMException && err.name === "AbortError") {
           // Aborted request, no action needed
         } else if (requestId === lastRequestIdRef.current) {
-          console.error(
-            "fetchAutocompleteSuggestions (via proxy) error:",
-            err,
-          );
+          logger.error("fetchAutocompleteSuggestions (via proxy) error:", err);
           setPredictions([]);
           setShowPredictions(false);
           const error =

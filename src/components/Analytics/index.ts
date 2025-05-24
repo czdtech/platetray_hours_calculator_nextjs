@@ -1,2 +1,1 @@
-export { Analytics, AnalyticsWrapper } from './Analytics';
-export { PerformanceDashboard } from './PerformanceDashboard'; 
+export { Analytics, AnalyticsWrapper } from './Analytics'; 

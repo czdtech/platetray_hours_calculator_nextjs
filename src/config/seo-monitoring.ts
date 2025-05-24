@@ -44,10 +44,6 @@ export interface SEOMonitoringConfig {
             enabled: boolean;
             measurementId?: string;
         };
-        googleTagManager: {
-            enabled: boolean;
-            containerId?: string;
-        };
         lighthouse: {
             enabled: boolean;
             schedule: string; // cron expression
@@ -98,10 +94,6 @@ export const seoMonitoringConfig: SEOMonitoringConfig = {
         googleAnalytics: {
             enabled: !!process.env.NEXT_PUBLIC_GA_ID,
             measurementId: process.env.NEXT_PUBLIC_GA_ID,
-        },
-        googleTagManager: {
-            enabled: !!process.env.NEXT_PUBLIC_GTM_ID,
-            containerId: process.env.NEXT_PUBLIC_GTM_ID,
         },
         lighthouse: {
             enabled: process.env.NODE_ENV === 'production',

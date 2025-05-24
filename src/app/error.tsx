@@ -4,15 +4,19 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { AlertCircle, RefreshCw } from "lucide-react";
 
+import { createLogger } from '@/utils/logger';
+
 interface ErrorPageProps {
   error: Error & { digest?: string };
   reset: () => void;
 }
 
 export default function ErrorPage({ error, reset }: ErrorPageProps) {
+  const logger = createLogger('Error');
+  
   useEffect(() => {
     // 可以在这里记录错误到监控服务
-    console.error("Application error:", error);
+    logger.error("Application error:", error);
   }, [error]);
 
   return (
