@@ -15,7 +15,7 @@
 
 ## 🚀 快速开始
 
-### ⚠️ 重要提示：使用 Yarn 而不是 npm
+### ⚠️ 重要提示：使用 Yarn 而不是 npm/pnpm
 
 **本项目使用 Tailwind CSS v4，它依赖 LightningCSS 引擎。在 Windows 系统上，npm 处理 LightningCSS 的原生二进制模块时存在兼容性问题，可能导致构建失败。强烈建议使用 Yarn。**
 
