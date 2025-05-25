@@ -6,14 +6,15 @@ import { AlertCircle, RefreshCw } from "lucide-react";
 
 import { createLogger } from '@/utils/logger';
 
+// 将 logger 创建移到组件外部，避免每次渲染时重新创建
+const logger = createLogger('Error');
+
 interface ErrorPageProps {
   error: Error & { digest?: string };
   reset: () => void;
 }
 
 export default function ErrorPage({ error, reset }: ErrorPageProps) {
-  const logger = createLogger('Error');
-  
   useEffect(() => {
     // 可以在这里记录错误到监控服务
     logger.error("Application error:", error);

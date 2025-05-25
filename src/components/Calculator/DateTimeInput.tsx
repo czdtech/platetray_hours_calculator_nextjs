@@ -58,7 +58,13 @@ export function DateTimeInput({
     increaseMonth,
     prevMonthButtonDisabled,
     nextMonthButtonDisabled,
-  }: any) => (
+  }: {
+    date: Date;
+    decreaseMonth: () => void;
+    increaseMonth: () => void;
+    prevMonthButtonDisabled: boolean;
+    nextMonthButtonDisabled: boolean;
+  }) => (
     <div className="flex items-center justify-between px-2 py-1">
       <button
         type="button"

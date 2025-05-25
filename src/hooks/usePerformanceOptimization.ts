@@ -6,9 +6,7 @@ import { createLogger } from '@/utils/logger';
  * 提供防抖、节流和缓存功能
  */
 export function usePerformanceOptimization() {
-  const logger = createLogger('UsePerformanceOptimization');
-
-  const cacheRef = useRef<Map<string, any>>(new Map());
+  const cacheRef = useRef<Map<string, { value: unknown; timestamp: number }>>(new Map());
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   /**
@@ -42,7 +40,7 @@ export function usePerformanceOptimization() {
     const now = Date.now();
 
     if (cached && (now - cached.timestamp) < ttl) {
-      return cached.value;
+      return cached.value as T;
     }
 
     const value = computeFn();
@@ -127,7 +125,7 @@ export function useRenderPerformance(componentName: string) {
  * 网络请求优化Hook
  */
 export function useNetworkOptimization() {
-  const requestCacheRef = useRef<Map<string, Promise<any>>>(new Map());
+  const requestCacheRef = useRef<Map<string, Promise<unknown>>>(new Map());
 
   /**
    * 防重复请求
@@ -141,7 +139,7 @@ export function useNetworkOptimization() {
     const existingRequest = requestCacheRef.current.get(key);
     
     if (existingRequest) {
-      return existingRequest;
+      return existingRequest as Promise<T>;
     }
 
     const request = requestFn().finally(() => {

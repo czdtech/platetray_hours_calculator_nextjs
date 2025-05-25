@@ -184,13 +184,13 @@ export const timezoneCache = new AdvancedCache<string>({
   strategy: 'LRU',
 });
 
-export const geocodeCache = new AdvancedCache<any>({
+export const geocodeCache = new AdvancedCache<unknown>({
   ttl: 30 * 60 * 1000, // 地理编码缓存30分钟
   maxSize: 100,
   strategy: 'LFU',
 });
 
-export const planetaryHoursCache = new AdvancedCache<any>({
+export const planetaryHoursCache = new AdvancedCache<unknown>({
   ttl: 2 * 60 * 1000, // 行星时缓存2分钟
   maxSize: 20,
   strategy: 'LRU',

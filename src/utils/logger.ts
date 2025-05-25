@@ -25,7 +25,7 @@ interface LoggerConfig {
 function getEnvVar(name: string): string | undefined {
   if (typeof window !== 'undefined') {
     // 客户端环境
-    return (window as any).__NEXT_DATA__?.env?.[name] || process.env[name];
+    return (window as { __NEXT_DATA__?: { env?: Record<string, string> } }).__NEXT_DATA__?.env?.[name] || process.env[name];
   } else {
     // 服务端环境
     return process.env[name];
@@ -291,11 +291,11 @@ if (isProduction) {
 // 开发环境下的全局日志控制
 if (isDevelopment && typeof window !== 'undefined') {
   // 添加全局控制方法到 window 对象，方便调试
-  (window as any).loggerControl = {
+  (window as { loggerControl?: unknown }).loggerControl = {
     enableAll: () => Logger.enableAll(),
     disableAll: () => Logger.disableAll(),
     enableErrorsOnly: () => Logger.enableErrorsOnly(),
     getConfig: () => Logger.getGlobalConfig(),
     setConfig: (config: Partial<LoggerConfig>) => Logger.setGlobalConfig(config)
   };
-} 
+}

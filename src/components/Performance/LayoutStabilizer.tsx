@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
+import Image from 'next/image';
 
 interface LayoutStabilizerProps {
   children: ReactNode;
@@ -89,7 +90,7 @@ export function OptimizedImage({
       }}
     >
       {isInView && (
-        <img
+        <Image
           src={src}
           alt={alt}
           width={width}
@@ -98,7 +99,8 @@ export function OptimizedImage({
             isLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           onLoad={() => setIsLoaded(true)}
-          loading={priority ? 'eager' : 'lazy'}
+          priority={priority}
+          fill={false}
         />
       )}
       {!isLoaded && (

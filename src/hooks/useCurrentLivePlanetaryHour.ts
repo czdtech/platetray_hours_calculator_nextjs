@@ -10,6 +10,9 @@ import {
   formatSingleHour,
 } from "../utils/planetaryHourFormatters";
 
+// 将 logger 创建移到组件外部，避免每次渲染时重新创建
+const logger = createLogger('UseCurrentLivePlanetaryHour');
+
 interface UseCurrentLivePlanetaryHourProps {
   planetaryHoursRaw: PlanetaryHoursCalculationResult | null;
   // 明确需要用于昨日计算的坐标，因为 planetaryHoursRaw 可能对应不同的日期/位置
@@ -38,8 +41,6 @@ export function useCurrentLivePlanetaryHour({
   dateForPlanetaryHoursRaw, // 传入用于计算 planetaryHoursRaw 的原始Date对象
   timeFormat,
 }: UseCurrentLivePlanetaryHourProps): FormattedPlanetaryHour | null {
-  const logger = createLogger('UseCurrentLivePlanetaryHour');
-  
   const [currentLiveHour, setCurrentLiveHour] =
     useState<FormattedPlanetaryHour | null>(null);
   

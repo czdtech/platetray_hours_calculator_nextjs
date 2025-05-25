@@ -16,6 +16,10 @@ import { useCurrentLivePlanetaryHour } from "./useCurrentLivePlanetaryHour";
 import { usePerformanceOptimization, useNetworkOptimization } from "./usePerformanceOptimization";
 
 import { createLogger } from '@/utils/logger';
+
+// 将 logger 创建移到组件外部，避免每次渲染时重新创建
+const logger = createLogger('UsePlanetaryHours');
+
 // 定义钩子返回的结果接口
 export interface UsePlanetaryHoursResult {
   planetaryHoursRaw: PlanetaryHoursCalculationResult | null;
@@ -41,8 +45,6 @@ export interface UsePlanetaryHoursResult {
 export function usePlanetaryHours(
   timeFormat: "12h" | "24h" = "24h",
 ): UsePlanetaryHoursResult {
-  const logger = createLogger('UsePlanetaryHours');
-
   const [planetaryHoursRaw, setPlanetaryHoursRaw] =
     useState<PlanetaryHoursCalculationResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);

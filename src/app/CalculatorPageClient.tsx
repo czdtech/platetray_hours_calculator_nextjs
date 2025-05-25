@@ -20,6 +20,10 @@ import { FAQSection } from "@/components/FAQ/FAQSection";
 import { PLANET_COLOR_CLASSES as _PLANET_COLOR_CLASSES, PLANET_SYMBOLS as _PLANET_SYMBOLS } from "@/constants/planetColors";
 
 import { createLogger } from '@/utils/logger';
+
+// 将 logger 创建移到组件外部，避免每次渲染时重新创建
+const logger = createLogger('CalculatorPageClient');
+
 interface Coordinates {
   latitude: number;
   longitude: number;
@@ -28,7 +32,6 @@ interface Coordinates {
 }
 
 function CalculatorCore() {
-  const logger = createLogger('CalculatorPageClient');
   
   const { selectedDate, timezone, setSelectedDate, setTimezone, formatDate } =
     useDateContext();
@@ -492,8 +495,6 @@ function CalculatorCore() {
 }
 
 export default function CalculatorPageClient() {
-  const logger = createLogger('CalculatorPageClient');
-
   const initialDate = new Date();
   const initialTimezone = "America/New_York";
 

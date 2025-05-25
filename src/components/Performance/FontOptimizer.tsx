@@ -3,13 +3,15 @@
 import { useEffect } from 'react';
 
 import { createLogger } from '@/utils/logger';
+
+// 将 logger 创建移到组件外部，避免每次渲染时重新创建
+const logger = createLogger('FontOptimizer');
+
 /**
  * 字体优化组件
  * 优化字体加载性能，减少 CLS
  */
 export function FontOptimizer() {
-  const logger = createLogger('FontOptimizer');
-
   useEffect(() => {
     // 检查字体是否已加载
     const checkFontLoaded = async () => {

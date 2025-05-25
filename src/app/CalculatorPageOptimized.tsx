@@ -18,6 +18,9 @@ import { subDays } from "date-fns";
 import { LayoutStabilizer } from "@/components/Performance/LayoutStabilizer";
 import { createLogger } from '@/utils/logger';
 
+// 将 logger 创建移到组件外部，避免每次渲染时重新创建
+const logger = createLogger('CalculatorPageOptimized');
+
 // 懒加载非关键组件
 const LazyHoursList = lazy(() => import("@/components/Calculator/HoursList").then(module => ({ default: module.HoursList })));
 const LazyFAQSection = lazy(() => import("@/components/FAQ/FAQSection").then(module => ({ default: module.FAQSection })));
@@ -95,8 +98,6 @@ const FAQ_DATA = [
 ];
 
 function CalculatorCore() {
-  const logger = createLogger('CalculatorPageOptimized');
-  
   const { selectedDate, timezone, setSelectedDate, setTimezone, formatDate, formatDateWithTodayPrefix } =
     useDateContext();
 
@@ -681,8 +682,6 @@ function CalculatorCore() {
 }
 
 export default function CalculatorPageOptimized() {
-  const logger = createLogger('CalculatorPageOptimized');
-
   const initialDate = new Date();
   const initialTimezone = "America/New_York";
 

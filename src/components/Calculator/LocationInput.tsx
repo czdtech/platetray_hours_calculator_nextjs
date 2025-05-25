@@ -4,6 +4,10 @@ import { MapPin, Loader2, AlertCircle } from "lucide-react";
 import debounce from "lodash/debounce";
 
 import { createLogger } from '@/utils/logger';
+
+// 将 logger 创建移到组件外部，避免每次渲染时重新创建
+const logger = createLogger('LocationInput');
+
 interface LocationInputProps {
   defaultLocation: string;
   onLocationChange: (location: string) => void;
@@ -39,8 +43,6 @@ function LocationInputComponent({
   onLocationChange,
   onUseCurrentLocation,
 }: LocationInputProps) {
-  const logger = createLogger('LocationInput');
-  
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isFetchingToken, setIsFetchingToken] = useState(false);

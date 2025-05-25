@@ -5,6 +5,9 @@ import debounce from "lodash/debounce";
 import { POPULAR_CITIES, DEFAULT_CITY, type PopularCity } from "@/constants/popularCities";
 import { createLogger } from "@/utils/logger";
 
+// 将 logger 创建移到组件外部，避免每次渲染时重新创建
+const logger = createLogger('LocationInput');
+
 interface LocationInputProps {
   defaultLocation: string;
   onLocationChange: (location: string) => void;
@@ -44,7 +47,6 @@ function EnhancedLocationInputComponent({
   onUseCurrentLocation,
   onTimezoneChange,
 }: LocationInputProps) {
-  const logger = createLogger('LocationInput');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isFetchingToken, setIsFetchingToken] = useState(false);
@@ -122,7 +124,7 @@ function EnhancedLocationInputComponent({
     } finally {
       setIsFetchingToken(false);
     }
-  }, [logger]);
+  }, []);
 
   useEffect(() => {
     logger.debug("🗺️ 位置输入组件挂载");
@@ -138,7 +140,7 @@ function EnhancedLocationInputComponent({
       hasFetchedSessionToken = true;
       fetchNewSessionToken();
     }
-  }, [defaultLocation, fetchNewSessionToken, logger]);
+  }, [defaultLocation, fetchNewSessionToken]);
 
   const isCoordinates = (
     input: string,

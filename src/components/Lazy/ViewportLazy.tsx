@@ -72,7 +72,7 @@ export function ViewportLazy<P = Record<string, unknown>>({
     <div ref={containerRef}>
       {LoadedComponent ? (
         <Suspense fallback={fallback}>
-          <LoadedComponent {...(componentProps as any)} />
+          <LoadedComponent {...(componentProps || {} as any)} />
         </Suspense>
       ) : (
         fallback
