@@ -23,13 +23,9 @@ interface LoggerConfig {
 
 // 环境变量读取函数（支持客户端和服务端）
 function getEnvVar(name: string): string | undefined {
-  if (typeof window !== 'undefined') {
-    // 客户端环境
-    return (window as { __NEXT_DATA__?: { env?: Record<string, string> } }).__NEXT_DATA__?.env?.[name] || process.env[name];
-  } else {
-    // 服务端环境
-    return process.env[name];
-  }
+  // Next.js 会将 NEXT_PUBLIC_ 前缀的环境变量直接注入到 process.env 中
+  // 无论是客户端还是服务端都可以直接通过 process.env 访问
+  return process.env[name];
 }
 
 // 默认配置
@@ -143,10 +139,6 @@ export class Logger {
     };
   }
 
-  private shouldLog(level: LogLevel): boolean {
-    return this.config.enableConsole && level >= this.config.level;
-  }
-
   private formatMessage(level: string, message: string, ...args: any[]): [string, ...any[]] {
     const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
     const prefix = this.config.prefix ? `[${this.config.prefix}] ` : '';
@@ -158,7 +150,7 @@ export class Logger {
    * 调试日志
    */
   debug(message: string, ...args: any[]) {
-    if (this.shouldLog(LogLevel.DEBUG) && this.config.enableDebug) {
+    if (globalConfig.enableConsole && LogLevel.DEBUG >= globalConfig.level && globalConfig.enableDebug) {
       console.log(...this.formatMessage('DEBUG', message, ...args));
     }
   }
@@ -167,7 +159,7 @@ export class Logger {
    * 信息日志
    */
   info(message: string, ...args: any[]) {
-    if (this.shouldLog(LogLevel.INFO)) {
+    if (globalConfig.enableConsole && LogLevel.INFO >= globalConfig.level) {
       console.log(...this.formatMessage('INFO', message, ...args));
     }
   }
@@ -176,7 +168,7 @@ export class Logger {
    * 警告日志
    */
   warn(message: string, ...args: any[]) {
-    if (this.shouldLog(LogLevel.WARN)) {
+    if (globalConfig.enableConsole && LogLevel.WARN >= globalConfig.level) {
       console.warn(...this.formatMessage('WARN', message, ...args));
     }
   }
@@ -185,7 +177,7 @@ export class Logger {
    * 错误日志
    */
   error(message: string, ...args: any[]) {
-    if (this.shouldLog(LogLevel.ERROR)) {
+    if (globalConfig.enableConsole && LogLevel.ERROR >= globalConfig.level) {
       console.error(...this.formatMessage('ERROR', message, ...args));
     }
   }
@@ -194,7 +186,7 @@ export class Logger {
    * 性能日志
    */
   performance(message: string, ...args: any[]) {
-    if (this.config.enablePerformance && this.shouldLog(LogLevel.INFO)) {
+    if (globalConfig.enablePerformance && globalConfig.enableConsole && LogLevel.INFO >= globalConfig.level) {
       console.log(...this.formatMessage('PERF', `⚡ ${message}`, ...args));
     }
   }
@@ -221,7 +213,7 @@ export class Logger {
    * 分组开始
    */
   group(label: string) {
-    if (this.shouldLog(LogLevel.DEBUG)) {
+    if (globalConfig.enableConsole && LogLevel.DEBUG >= globalConfig.level && globalConfig.enableDebug) {
       console.group(label);
     }
   }
@@ -230,7 +222,7 @@ export class Logger {
    * 分组结束
    */
   groupEnd() {
-    if (this.shouldLog(LogLevel.DEBUG)) {
+    if (globalConfig.enableConsole && LogLevel.DEBUG >= globalConfig.level && globalConfig.enableDebug) {
       console.groupEnd();
     }
   }
