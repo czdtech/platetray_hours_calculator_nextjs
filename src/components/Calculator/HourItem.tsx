@@ -1,6 +1,7 @@
 "use client";
 
 import { memo } from "react";
+import { ChevronRight } from "lucide-react";
 import { FormattedPlanetaryHour } from "@/utils/planetaryHourFormatters";
 // 导入全局行星颜色常量
 import {
@@ -46,10 +47,9 @@ function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
         type="button"
         className={`
           w-full text-left flex items-center p-3 rounded-lg border transition-all duration-200 cursor-pointer
-          ${
-            hour.current
-              ? "border-l-4 border-purple-600 bg-purple-50"
-              : "border-gray-200 hover:border-gray-300 hover:shadow-sm hover:-translate-y-0.5"
+          ${hour.current
+            ? "border-l-4 border-purple-600 bg-purple-50"
+            : "border-gray-200 hover:border-gray-300 hover:shadow-sm hover:-translate-y-0.5"
           }
         `}
         onClick={handleClick}
@@ -82,6 +82,10 @@ function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
           >
             {planetSymbol}
           </span>
+          <ChevronRight
+            size={16}
+            className="chevron-mobile ml-2 text-gray-300 transition-colors duration-200 group-hover:text-gray-400"
+          />
         </div>
       </button>
 

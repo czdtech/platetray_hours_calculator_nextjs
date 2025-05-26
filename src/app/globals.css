@@ -245,3 +245,14 @@ body {
 .dark .react-datepicker__day--weekend {
   color: #f87171;
 }
+
+/* 控制 Chevron 图标仅在触屏设备显示的样式 */
+.chevron-mobile {
+  display: none !important; /* 默认隐藏 */
+}
+
+@media (pointer: coarse) {
+  .chevron-mobile {
+    display: inline !important; /* 触屏设备上显示为 inline */
+  }
+}
