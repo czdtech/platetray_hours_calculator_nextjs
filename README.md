@@ -1,6 +1,6 @@
 # Planetary Hours Calculator
 
-一个基于 Next.js 构建的行星时计算器，帮助用户根据地理位置和日期计算行星时，探索古老的占星智慧。
+一个基于 Next.js 构建的行星时计算器，帮助用户根据地理位置和日期计算行星时，探索古老的占星智慧。在线网站 [https://planetaryhours.org](https://planetaryhours.org) 。
 
 ## 🌟 功能特性
 
@@ -256,7 +256,7 @@ NEXT_PUBLIC_GA_ID=your_google_analytics_id
 
 ## 📄 许可证
 
-MIT License
+GPLv3 License
 
 ---
 **注意**: 行星时是传统占星学的一部分，不基于现代科学原理。本工具仅供那些遵循这些传统的用户使用。
