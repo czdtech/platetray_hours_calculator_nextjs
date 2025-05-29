@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from 'next/script';
 import "./globals.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { Footer } from "@/components/Layout/Footer";
@@ -31,6 +32,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {/* Google AdSense 脚本 */}
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1444054360166733"
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
       <body className="flex flex-col min-h-screen">
         {/* 只添加跳过导航链接，不修改main标签结构 */}
         <a
