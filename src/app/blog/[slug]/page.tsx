@@ -15,6 +15,9 @@ import { getArticleSchema, getBreadcrumbSchema } from "@/utils/seo/jsonld";
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
 
+// 禁用动态参数，只允许静态生成的参数
+export const dynamicParams = false;
+
 // 生成静态参数
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   return blogPosts.map((post) => ({
