@@ -27,12 +27,12 @@ export const POPULAR_CITIES: PopularCity[] = [
     country: "United Arab Emirates"
   },
   {
-    name: "Glasgow",
-    displayName: "Glasgow, UK",
-    latitude: 55.8642,
-    longitude: -4.2518,
-    timezone: "Europe/London",
-    country: "United Kingdom"
+    name: "Sydney",
+    displayName: "Sydney, AU",
+    latitude: -33.8688,
+    longitude: 151.2093,
+    timezone: "Australia/Sydney",
+    country: "Australia"
   }
 ];
 
