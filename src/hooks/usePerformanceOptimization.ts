@@ -18,7 +18,7 @@ export function usePerformanceOptimization() {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    
+
     timeoutRef.current = setTimeout(() => {
       callback();
       timeoutRef.current = null;
@@ -26,17 +26,21 @@ export function usePerformanceOptimization() {
   }, []);
 
   /**
-   * 缓存函数结果
+   * 缓存函数结果 (添加日期键避免跨日期缓存污染)
    * @param key 缓存键
    * @param computeFn 计算函数
    * @param ttl 缓存时间（毫秒），默认5分钟
    */
   const memoize = useCallback(<T>(
-    key: string, 
-    computeFn: () => T, 
+    key: string,
+    computeFn: () => T,
     ttl: number = 5 * 60 * 1000
   ): T => {
-    const cached = cacheRef.current.get(key);
+    // 在缓存键中包含当前日期，避免跨日期的缓存问题
+    const dateKey = new Date().toISOString().split('T')[0];
+    const fullKey = `${dateKey}_${key}`;
+
+    const cached = cacheRef.current.get(fullKey);
     const now = Date.now();
 
     if (cached && (now - cached.timestamp) < ttl) {
@@ -44,7 +48,7 @@ export function usePerformanceOptimization() {
     }
 
     const value = computeFn();
-    cacheRef.current.set(key, {
+    cacheRef.current.set(fullKey, {
       value,
       timestamp: now
     });
@@ -65,7 +69,7 @@ export function usePerformanceOptimization() {
   const cleanupExpiredCache = useCallback((ttl: number = 5 * 60 * 1000) => {
     const now = Date.now();
     const cache = cacheRef.current;
-    
+
     for (const [key, value] of cache.entries()) {
       if ((now - value.timestamp) >= ttl) {
         cache.delete(key);
@@ -100,7 +104,7 @@ export function usePerformanceOptimization() {
  */
 export function useRenderPerformance(componentName: string) {
   const logger = createLogger('UseRenderPerformance');
-  
+
   const renderCountRef = useRef(0);
   const lastRenderTimeRef = useRef(Date.now());
 
@@ -108,11 +112,11 @@ export function useRenderPerformance(componentName: string) {
     renderCountRef.current += 1;
     const now = Date.now();
     const timeSinceLastRender = now - lastRenderTimeRef.current;
-    
+
     if (process.env.NODE_ENV === 'development') {
       logger.info(`🎭 [${componentName}] 渲染次数: ${renderCountRef.current}, 距离上次渲染: ${timeSinceLastRender}ms`);
     }
-    
+
     lastRenderTimeRef.current = now;
   });
 
@@ -137,7 +141,7 @@ export function useNetworkOptimization() {
     requestFn: () => Promise<T>
   ): Promise<T> => {
     const existingRequest = requestCacheRef.current.get(key);
-    
+
     if (existingRequest) {
       return existingRequest as Promise<T>;
     }

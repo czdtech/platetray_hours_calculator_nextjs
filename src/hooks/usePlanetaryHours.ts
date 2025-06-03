@@ -13,7 +13,7 @@ import {
   FormattedPlanetaryHour,
 } from "../utils/planetaryHourFormatters";
 import { useCurrentLivePlanetaryHour } from "./useCurrentLivePlanetaryHour";
-import { usePerformanceOptimization, useNetworkOptimization } from "./usePerformanceOptimization";
+import { useNetworkOptimization } from "./usePerformanceOptimization";
 
 import { createLogger } from '@/utils/logger';
 
@@ -58,7 +58,6 @@ export function usePlanetaryHours(
   );
 
   const lastParamsRef = useRef<string | null>(null);
-  const { memoize } = usePerformanceOptimization();
   const { dedupeRequest: networkDedupe } = useNetworkOptimization();
 
   // 使用新的 Hook 获取实时当前行星时
@@ -81,7 +80,9 @@ export function usePlanetaryHours(
         const standardizedLongitude = Number(longitude.toFixed(6));
         const clonedDate = new Date(date);
 
-        const paramKey = `${standardizedLatitude}_${standardizedLongitude}_${clonedDate.toISOString()}_${timezoneInput}`;
+        // 修复：使用日期字符串而不是完整时间戳来创建参数键，避免缓存问题
+        const dateStr = timeZoneService.formatInTimeZone(clonedDate, timezoneInput, "yyyy-MM-dd");
+        const paramKey = `${standardizedLatitude}_${standardizedLongitude}_${dateStr}_${timezoneInput}`;
 
         // 若与上一次计算参数完全一致，则直接跳过
         if (paramKey === lastParamsRef.current) {
@@ -93,7 +94,7 @@ export function usePlanetaryHours(
         setError(null);
 
         logger.info(
-          `计算行星时: 日期=${date.toISOString()}, 时区=${timezoneInput}, 坐标=[${latitude}, ${longitude}]`,
+          `计算行星时: 日期=${dateStr}, 时区=${timezoneInput}, 坐标=[${latitude}, ${longitude}]`,
         );
 
         // 使用网络请求去重
@@ -120,7 +121,7 @@ export function usePlanetaryHours(
         // Add null check for result before accessing its properties
         if (result) {
           logger.info(
-            `计算结果: 日出=${result.sunrise?.toISOString()}, 日落=${result.sunset?.toISOString()}, 行星时数量=${result.planetaryHours?.length || 0}`,
+            `计算结果: 日出=${result.sunrise?.toISOString()}, 日落=${result.sunset?.toISOString()}, 行星时数量=${result.planetaryHours?.length || 0}, 请求日期=${result.requestedDate}`,
           );
 
           // 同时更新所有相关状态，避免中间状态触发useCurrentLivePlanetaryHour
@@ -157,50 +158,38 @@ export function usePlanetaryHours(
     [networkDedupe],
   );
 
-  // 使用useMemo优化格式化计算
+  // 使用useMemo优化格式化计算 - 移除 memoize 缓存，直接使用 useMemo 避免缓存问题
   const daytimeHours = useMemo(() => {
     if (!planetaryHoursRaw?.planetaryHours || !planetaryHoursRaw.timezone) {
       return [];
     }
-    
-    // 在缓存键中包含日期信息，确保不同日期的数据不会被错误缓存
-    const dateKey = planetaryHoursRaw.requestedDate || selectedDateForCalc?.toISOString().split('T')[0] || 'unknown';
-    
-    return memoize(
-      `daytime_${planetaryHoursRaw.timezone}_${timeFormat}_${dateKey}_${currentHour?.planet || 'none'}`,
-      () => formatHoursToList(
-        planetaryHoursRaw.planetaryHours.filter(
-          (h: PlanetaryHour) => h.type === "day",
-        ),
-        planetaryHoursRaw.timezone,
-        timeFormat,
-        currentHour,
+
+    logger.info("🔄 [Formatting] 重新计算白天行星时列表");
+    return formatHoursToList(
+      planetaryHoursRaw.planetaryHours.filter(
+        (h: PlanetaryHour) => h.type === "day",
       ),
-      2 * 60 * 1000 // 2分钟缓存
+      planetaryHoursRaw.timezone,
+      timeFormat,
+      currentHour,
     );
-  }, [planetaryHoursRaw, timeFormat, currentHour, selectedDateForCalc, memoize]);
+  }, [planetaryHoursRaw, timeFormat, currentHour]);
 
   const nighttimeHours = useMemo(() => {
     if (!planetaryHoursRaw?.planetaryHours || !planetaryHoursRaw.timezone) {
       return [];
     }
-    
-    // 在缓存键中包含日期信息，确保不同日期的数据不会被错误缓存
-    const dateKey = planetaryHoursRaw.requestedDate || selectedDateForCalc?.toISOString().split('T')[0] || 'unknown';
-    
-    return memoize(
-      `nighttime_${planetaryHoursRaw.timezone}_${timeFormat}_${dateKey}_${currentHour?.planet || 'none'}`,
-      () => formatHoursToList(
-        planetaryHoursRaw.planetaryHours.filter(
-          (h: PlanetaryHour) => h.type === "night",
-        ),
-        planetaryHoursRaw.timezone,
-        timeFormat,
-        currentHour,
+
+    logger.info("🔄 [Formatting] 重新计算夜间行星时列表");
+    return formatHoursToList(
+      planetaryHoursRaw.planetaryHours.filter(
+        (h: PlanetaryHour) => h.type === "night",
       ),
-      2 * 60 * 1000 // 2分钟缓存
+      planetaryHoursRaw.timezone,
+      timeFormat,
+      currentHour,
     );
-  }, [planetaryHoursRaw, timeFormat, currentHour, selectedDateForCalc, memoize]);
+  }, [planetaryHoursRaw, timeFormat, currentHour]);
 
   return {
     planetaryHoursRaw,

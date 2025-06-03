@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { DateProvider, useDateContext } from "@/contexts/DateContext";
 import { usePlanetaryHours } from "@/hooks/usePlanetaryHours";
 import { EnhancedLocationInput } from "@/components/Calculator/EnhancedLocationInput";
@@ -32,7 +32,7 @@ interface Coordinates {
 }
 
 function CalculatorCore() {
-  
+
   const { selectedDate, timezone, setSelectedDate, setTimezone, formatDate } =
     useDateContext();
 
@@ -186,7 +186,7 @@ function CalculatorCore() {
     logger.info("🌍 [DirectTimezone] 直接更新时区:", newTimezone);
     setTimezone(newTimezone);
     setIsTimezoneUpdating(false); // Skip API call since we have the timezone
-    
+
     // Immediately recalculate with the new timezone
     if (coordinates) {
       calculate(
@@ -198,13 +198,30 @@ function CalculatorCore() {
     }
   };
 
-  const handleDateChange = (date: Date) => {
-    setSelectedDate(date);
-  };
+  const handleDateChange = useCallback((date: Date) => {
+    const startTime = performance.now();
 
-  const handleTimeFormatChange = (format: "12h" | "24h") => {
+    // 使用 requestAnimationFrame 进行异步处理，避免阻塞主线程
+    requestAnimationFrame(() => {
+      try {
+        setSelectedDate(date);
+
+        // 性能监控（开发环境）
+        if (process.env.NODE_ENV === 'development') {
+          const duration = performance.now() - startTime;
+          if (duration > 100) {
+            console.warn(`⚡ [INP Warning] handleDateChange took ${duration.toFixed(2)}ms`);
+          }
+        }
+      } catch (error) {
+        console.error('Error in handleDateChange:', error);
+      }
+    });
+  }, [setSelectedDate]);
+
+  const handleTimeFormatChange = useCallback((format: "12h" | "24h") => {
     setTimeFormat(format);
-  };
+  }, []);
 
   // ---- RENDER LOGIC ----
   // 移除本地的 planetColors 和 planetSymbols 定义
@@ -313,11 +330,7 @@ function CalculatorCore() {
           </div>
         )}
 
-        {loading && (
-          <div className="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg text-purple-700">
-            Calculating planetary hours...
-          </div>
-        )}
+
 
         <div className="space-y-8">
           <div className="grid grid-cols-12 gap-4 md:gap-8">

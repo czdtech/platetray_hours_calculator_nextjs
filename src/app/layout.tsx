@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Script from 'next/script';
 import "./globals.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { Footer } from "@/components/Layout/Footer";
 import { AnalyticsWrapper } from "@/components/Analytics/Analytics";
+import { AdSense } from "@/components/Analytics/AdSense";
 
 import { BackToTop } from "@/components/UI/BackToTop";
 import { ResourcePreloader, SmartPrefetcher } from "@/components/Performance/ResourcePreloader";
@@ -32,13 +32,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* Google AdSense 脚本 */}
-      <Script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1444054360166733"
-        crossOrigin="anonymous"
-        strategy="afterInteractive"
-      />
       <body className="flex flex-col min-h-screen">
         {/* 只添加跳过导航链接，不修改main标签结构 */}
         <a
@@ -60,12 +53,14 @@ export default function RootLayout({
         </main>
         <Footer />
         <AnalyticsWrapper />
+        {/* Google AdSense 优化加载 */}
+        <AdSense />
         {/* 性能优化组件 */}
         <ResourcePreloader />
         <SmartPrefetcher />
         <FontOptimizer />
         <FontDisplayCSS />
-        
+
         {/* 返回顶部按钮 */}
         <BackToTop />
       </body>

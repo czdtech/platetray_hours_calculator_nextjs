@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useId, useState } from "react";
+import { useRef, useId, useState, useCallback } from "react";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -27,6 +27,74 @@ export function DateTimeInput({
 
   // Convert UTC date to zoned date for DatePicker
   const zonedDate = utcToZonedTime(selectedDate);
+
+  // 计算哪个日期按钮应该被选中
+  const getSelectedDateType = useCallback(() => {
+    const now = new Date();
+    const todayInTimezone = utcToZonedTime(now);
+    const selectedInTimezone = utcToZonedTime(selectedDate);
+
+    // 比较日期部分（忽略时间）
+    const todayDateStr = todayInTimezone.toDateString();
+    const selectedDateStr = selectedInTimezone.toDateString();
+
+    // 计算昨天
+    const yesterday = new Date(todayInTimezone);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayDateStr = yesterday.toDateString();
+
+    // 计算明天
+    const tomorrow = new Date(todayInTimezone);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowDateStr = tomorrow.toDateString();
+
+    if (selectedDateStr === todayDateStr) {
+      return 'today';
+    } else if (selectedDateStr === yesterdayDateStr) {
+      return 'yesterday';
+    } else if (selectedDateStr === tomorrowDateStr) {
+      return 'tomorrow';
+    }
+
+    return null;
+  }, [selectedDate, utcToZonedTime]);
+
+  // 优化快捷选择按钮的性能处理
+  const handleQuickSelect = useCallback((days: number) => {
+    const startTime = performance.now();
+
+    // 使用 requestAnimationFrame 进行异步处理，避免阻塞主线程
+    requestAnimationFrame(() => {
+      try {
+        // 获取当前时区的今天日期
+        const now = new Date();
+        const todayInTimezone = utcToZonedTime(now);
+
+        // 设置为指定天数后的开始时间
+        todayInTimezone.setDate(todayInTimezone.getDate() + days);
+        todayInTimezone.setHours(0, 0, 0, 0);
+
+        // 转换回 UTC 时间
+        const utcDate = zonedTimeToUtc(todayInTimezone);
+
+        // 使用异步调用来避免阻塞
+        setTimeout(() => {
+          onDateChange(utcDate);
+
+          // 性能监控（开发环境）
+          if (process.env.NODE_ENV === 'development') {
+            const duration = performance.now() - startTime;
+            if (duration > 100) {
+              console.warn(`⚡ [INP Warning] Quick select took ${duration.toFixed(2)}ms`);
+            }
+          }
+        }, 0);
+
+      } catch (error) {
+        console.error('Error in handleQuickSelect:', error);
+      }
+    });
+  }, [utcToZonedTime, zonedTimeToUtc, onDateChange]);
 
   const handleDateChange = (date: Date | null) => {
     if (date) {
@@ -75,14 +143,14 @@ export function DateTimeInput({
       >
         <ChevronLeft size={16} className="text-gray-600 dark:text-gray-300" />
       </button>
-      
+
       <div className="font-semibold text-gray-900 dark:text-gray-100">
-        {date.toLocaleDateString('en-US', { 
-          month: 'long', 
-          year: 'numeric' 
+        {date.toLocaleDateString('en-US', {
+          month: 'long',
+          year: 'numeric'
         })}
       </div>
-      
+
       <button
         type="button"
         onClick={increaseMonth}
@@ -101,59 +169,35 @@ export function DateTimeInput({
         <label htmlFor={inputId} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Date
         </label>
-        
-        {/* 快捷选择按钮 - 一直显示以保持UI一致性 */}
+
+        {/* 快捷选择按钮 - 优化性能 */}
         <div className="flex gap-1.5">
-          <button
-            type="button"
-            onClick={() => {
-              // 获取当前时区的今天日期
-              const now = new Date();
-              const todayInTimezone = utcToZonedTime(now);
-              // 设置为当天的开始时间 (00:00:00)
-              todayInTimezone.setHours(0, 0, 0, 0);
-              // 转换回 UTC 时间
-              const utcToday = zonedTimeToUtc(todayInTimezone);
-              onDateChange(utcToday);
-            }}
-            className="px-2.5 py-1 text-xs font-medium text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 rounded-md transition-all duration-200 border border-purple-200 dark:border-purple-700 hover:scale-105 active:scale-95 hover:shadow-md active:shadow-sm transform"
-          >
-            Today
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              // 获取当前时区的今天日期
-              const now = new Date();
-              const todayInTimezone = utcToZonedTime(now);
-              // 设置为昨天的开始时间
-              todayInTimezone.setDate(todayInTimezone.getDate() - 1);
-              todayInTimezone.setHours(0, 0, 0, 0);
-              // 转换回 UTC 时间
-              const utcYesterday = zonedTimeToUtc(todayInTimezone);
-              onDateChange(utcYesterday);
-            }}
-            className="px-2.5 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-all duration-200 border border-gray-200 dark:border-gray-600 hover:scale-105 active:scale-95 hover:shadow-md active:shadow-sm transform"
-          >
-            Yesterday
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              // 获取当前时区的今天日期
-              const now = new Date();
-              const todayInTimezone = utcToZonedTime(now);
-              // 设置为明天的开始时间
-              todayInTimezone.setDate(todayInTimezone.getDate() + 1);
-              todayInTimezone.setHours(0, 0, 0, 0);
-              // 转换回 UTC 时间
-              const utcTomorrow = zonedTimeToUtc(todayInTimezone);
-              onDateChange(utcTomorrow);
-            }}
-            className="px-2.5 py-1 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-all duration-200 border border-gray-200 dark:border-gray-600 hover:scale-105 active:scale-95 hover:shadow-md active:shadow-sm transform"
-          >
-            Tomorrow
-          </button>
+          {[
+            { days: 0, label: 'Today', type: 'today' },
+            { days: -1, label: 'Yesterday', type: 'yesterday' },
+            { days: 1, label: 'Tomorrow', type: 'tomorrow' }
+          ].map((dateButton) => {
+            const isSelected = getSelectedDateType() === dateButton.type;
+            const isToday = dateButton.type === 'today';
+
+            return (
+              <button
+                key={dateButton.type}
+                type="button"
+                onClick={() => handleQuickSelect(dateButton.days)}
+                className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all duration-200 ease-in-out border hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500/30 transform ${isSelected
+                  ? 'text-white bg-purple-600 dark:bg-purple-500 border-purple-600 dark:border-purple-500 shadow-md ring-2 ring-purple-400 dark:ring-purple-300'
+                  : isToday
+                    ? 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 border-purple-200 dark:border-purple-700 hover:scale-105 active:scale-95'
+                    : 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-600 hover:scale-105 active:scale-95'
+                  }`}
+                aria-label={`Select ${dateButton.label.toLowerCase()}`}
+                aria-pressed={isSelected}
+              >
+                {dateButton.label}
+              </button>
+            );
+          })}
         </div>
       </div>
       <div className="relative">
@@ -192,37 +236,36 @@ export function DateTimeInput({
             const isToday = date.toDateString() === today.toDateString();
             const isSelected = date.toDateString() === zonedDate.toDateString();
             const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-            
+
             let classes = "react-datepicker__day";
-            
+
             if (isSelected) {
               classes += " react-datepicker__day--selected";
             }
-            
+
             if (isToday) {
               classes += " react-datepicker__day--today";
             }
-            
+
             if (isWeekend) {
               classes += " react-datepicker__day--weekend";
             }
-            
+
             return classes;
           }}
         />
-        
+
         {/* 日历图标 */}
         <div
-          className={`absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none transition-colors duration-200 ${
-            isOpen 
-              ? "text-purple-500" 
-              : "text-gray-400 dark:text-gray-500"
-          }`}
+          className={`absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none transition-colors duration-200 ${isOpen
+            ? "text-purple-500"
+            : "text-gray-400 dark:text-gray-500"
+            }`}
           aria-hidden="true"
         >
           <Calendar size={18} />
         </div>
-        
+
         {/* 焦点指示器 */}
         {isOpen && (
           <div className="absolute inset-0 rounded-lg ring-2 ring-purple-500/30 pointer-events-none" />

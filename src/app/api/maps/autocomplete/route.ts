@@ -3,16 +3,23 @@ import { NextResponse } from "next/server";
 import { createLogger } from '@/utils/logger';
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
-interface AutocompletePrediction {
-  description: string;
-  place_id: string;
-  // 根据需要可以添加 structured_formatting, terms, types 等
-}
+// 添加简单的内存缓存
+const cache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
+
+// 移除未使用的接口定义
 
 interface AutocompleteApiResponse {
-  predictions: AutocompletePrediction[];
-  status: string; // e.g., "OK", "ZERO_RESULTS", "INVALID_REQUEST", etc.
-  error_message?: string; // Present if status is not "OK"
+  predictions: Array<{
+    description: string;
+    place_id: string;
+    structured_formatting: {
+      main_text: string;
+      secondary_text: string;
+    };
+  }>;
+  status: string;
+  error_message?: string;
 }
 
 export async function GET(request: Request) {
@@ -37,6 +44,14 @@ export async function GET(request: Request) {
     );
   }
 
+  // 检查缓存
+  const cacheKey = `autocomplete_${input}_${sessiontoken || 'no-session'}`;
+  const cachedResult = cache.get(cacheKey);
+  if (cachedResult && Date.now() - cachedResult.timestamp < CACHE_DURATION) {
+    logger.info(`Cache hit for autocomplete: ${input}`);
+    return NextResponse.json(cachedResult.data, { status: 200 });
+  }
+
   let apiUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(input)}&key=${GOOGLE_MAPS_API_KEY}&types=locality`;
 
   if (sessiontoken && typeof sessiontoken === "string") {
@@ -46,9 +61,16 @@ export async function GET(request: Request) {
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20秒超时
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 减少到 8秒超时
 
-    const googleResponse = await fetch(apiUrl, { signal: controller.signal });
+    const googleResponse = await fetch(apiUrl, {
+      signal: controller.signal,
+      // 添加性能优化的请求头
+      headers: {
+        'Accept': 'application/json',
+        'Accept-Encoding': 'gzip, deflate, br'
+      }
+    });
     clearTimeout(timeoutId);
 
     const data = (await googleResponse.json()) as AutocompleteApiResponse;
@@ -71,12 +93,30 @@ export async function GET(request: Request) {
       );
     }
 
-    // 返回 Google API 的原始 predictions 数组或适配后的数组
-    // 前端将需要适配这个结构，因为它不同于 JS SDK 的 PlacePrediction
-    return NextResponse.json(
-      { predictions: data.predictions },
-      { status: 200 },
-    );
+    const responseData = { predictions: data.predictions };
+
+    // 存入缓存
+    cache.set(cacheKey, {
+      data: responseData,
+      timestamp: Date.now()
+    });
+
+    // 清理过期缓存
+    if (cache.size > 100) { // 限制缓存大小
+      const now = Date.now();
+      for (const [key, value] of cache.entries()) {
+        if (now - value.timestamp > CACHE_DURATION) {
+          cache.delete(key);
+        }
+      }
+    }
+
+    return NextResponse.json(responseData, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'public, max-age=300', // 5分钟浏览器缓存
+      }
+    });
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error("Unknown error");
     logger.error("Error in autocomplete proxy:", err);

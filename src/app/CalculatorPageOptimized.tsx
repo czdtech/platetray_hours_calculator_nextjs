@@ -173,14 +173,14 @@ function CalculatorCore() {
       try {
         setIsTimezoneUpdating(true);
         lastApiCallRef.current = now;
-        
+
         logger.info("🌍 [Timezone] 发起时区API请求:", cacheKey);
         const timestamp = Math.floor(now / 1000);
         const response = await fetch(
           `/api/maps/timezone?location=${coords.latitude},${coords.longitude}&timestamp=${timestamp}`,
         );
         const data = await response.json();
-        
+
         if (data.status === "OK") {
           // 缓存结果
           timezoneCache.set(cacheKey, {
@@ -205,14 +205,14 @@ function CalculatorCore() {
   }, [isDefaultCoordinates]);
 
   // 主要的计算逻辑 - 使用 useMemo 缓存 coordinates 对象
-  const coordinatesKey = useMemo(() => 
+  const coordinatesKey = useMemo(() =>
     `${coordinates.latitude}_${coordinates.longitude}_${coordinates.source}`,
     [coordinates.latitude, coordinates.longitude, coordinates.source]
   );
 
-  const selectedDateKey = useMemo(() => 
-    selectedDate.toISOString(),
-    [selectedDate]
+  const selectedDateKey = useMemo(() =>
+    formatInTimeZoneDirect(selectedDate, timezone, "yyyy-MM-dd"),
+    [selectedDate, timezone]
   );
 
   useEffect(() => {
@@ -221,7 +221,7 @@ function CalculatorCore() {
     const performCalculation = async () => {
       // 创建计算参数标识符
       const currentParams = `${coordinatesKey}_${selectedDateKey}_${timezone}`;
-      
+
       // 避免重复计算
       if (currentParams === calculationParamsRef.current) {
         logger.info("⚡ [Calculation] 跳过重复计算，参数未变化");
@@ -239,7 +239,7 @@ function CalculatorCore() {
       if (!isDefaultCoordinates(coordinates)) {
         const newTimezone = await fetchTimezone(coordinates);
         if (isCancelled) return;
-        
+
         if (newTimezone && newTimezone !== timezone) {
           logger.info("🌍 [Timezone] 时区已更新:", newTimezone);
           setTimezone(newTimezone);
@@ -258,7 +258,7 @@ function CalculatorCore() {
         try {
           await calculate(coordinates.latitude, coordinates.longitude, selectedDate, timezone);
           calculationParamsRef.current = currentParams;
-          
+
           if (!hasInitialCalculated) {
             setHasInitialCalculated(true);
           }
@@ -322,18 +322,80 @@ function CalculatorCore() {
     source?: string;
     address?: string;
   }) => {
-    const newCoordinates: Coordinates = {
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-      source: (coords.source as Coordinates["source"]) || "input",
-      address: coords.address,
-    };
-    
-    logger.info("📍 [Coordinates] 坐标更新:", newCoordinates);
-    setCoordinates(newCoordinates);
-    setHasInitialCalculated(false); // 重置计算状态，允许新的计算
-    calculationParamsRef.current = ""; // 清空参数缓存，强制重新计算
+    const startTime = performance.now();
+
+    // 使用 requestAnimationFrame 进行异步处理，避免阻塞主线程
+    requestAnimationFrame(() => {
+      try {
+        const newCoordinates: Coordinates = {
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          source: (coords.source as Coordinates["source"]) || "input",
+          address: coords.address,
+        };
+
+        logger.info("📍 [Coordinates] 坐标更新:", newCoordinates);
+        setCoordinates(newCoordinates);
+        setHasInitialCalculated(false); // 重置计算状态，允许新的计算
+        calculationParamsRef.current = ""; // 清空参数缓存，强制重新计算
+
+        // 性能监控（开发环境）
+        if (process.env.NODE_ENV === 'development') {
+          const duration = performance.now() - startTime;
+          if (duration > 100) {
+            console.warn(`⚡ [INP Warning] Coordinates update took ${duration.toFixed(2)}ms`);
+          }
+        }
+      } catch (error) {
+        console.error('Error in handleCoordinatesUpdate:', error);
+      }
+    });
   }, []);
+
+  // 新增：城市选择回调，同时更新坐标和时区
+  const handleCitySelect = useCallback((cityData: {
+    latitude: number;
+    longitude: number;
+    timezone: string;
+    displayName: string;
+  }) => {
+    const startTime = performance.now();
+
+    // 使用 requestAnimationFrame 进行异步处理，避免阻塞主线程
+    requestAnimationFrame(() => {
+      try {
+        const newCoordinates: Coordinates = {
+          latitude: cityData.latitude,
+          longitude: cityData.longitude,
+          source: "preset" as const,
+          address: cityData.displayName,
+        };
+
+        logger.info("🏙️ [CitySelect] 同时更新坐标和时区:", {
+          coordinates: newCoordinates,
+          timezone: cityData.timezone,
+          displayName: cityData.displayName
+        });
+
+        // 同时更新坐标、位置和时区，确保状态同步
+        setCoordinates(newCoordinates);
+        setLocation(cityData.displayName);
+        setTimezone(cityData.timezone);
+        setHasInitialCalculated(false);
+        calculationParamsRef.current = "";
+
+        // 性能监控（开发环境）
+        if (process.env.NODE_ENV === 'development') {
+          const duration = performance.now() - startTime;
+          if (duration > 100) {
+            console.warn(`⚡ [INP Warning] City select took ${duration.toFixed(2)}ms`);
+          }
+        }
+      } catch (error) {
+        console.error('Error in handleCitySelect:', error);
+      }
+    });
+  }, [setTimezone]);
 
   const handleDateChange = useCallback((date: Date) => {
     logger.info("📅 [Date] 日期更新:", date.toISOString());
@@ -386,23 +448,17 @@ function CalculatorCore() {
                 Planetary Hours Calculator
               </h1>
             </div>
-                          <div className="w-full md:w-3/5 mt-3 md:mt-0 md:pl-6 md:border-l border-gray-200">
-                <p className="text-gray-600 text-base md:text-lg leading-relaxed">
-                  Find the perfect timing for your activities based on ancient planetary wisdom. 
-                  Enter your location and date below to get started.
-                </p>
-              </div>
+            <div className="w-full md:w-3/5 mt-3 md:mt-0 md:pl-6 md:border-l border-gray-200">
+              <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+                Find the perfect timing for your activities based on ancient planetary wisdom.
+                Enter your location and date below to get started.
+              </p>
+            </div>
           </div>
 
           {hoursError && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
               {hoursError}
-            </div>
-          )}
-
-          {loading && (
-            <div className="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg text-purple-700">
-              Calculating planetary hours with our advanced calculator...
             </div>
           )}
 
@@ -417,6 +473,7 @@ function CalculatorCore() {
                       onLocationChange={handleLocationChange}
                       onUseCurrentLocation={handleCoordinatesUpdate}
                       onTimezoneChange={setTimezone}
+                      onCitySelect={handleCitySelect}
                       aria-label="Enter location for planetary hours calculation"
                     />
                     <DateTimeInput
@@ -430,7 +487,7 @@ function CalculatorCore() {
                 </div>
               </div>
               <div className="col-span-12 lg:col-span-4">
-                <LayoutStabilizer minHeight="300px">
+                <LayoutStabilizer minHeight="180px">
                   {loading ? (
                     <CurrentHourSkeleton />
                   ) : (

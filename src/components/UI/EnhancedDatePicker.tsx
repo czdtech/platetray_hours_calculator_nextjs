@@ -25,7 +25,7 @@ export function EnhancedDatePicker({
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(selectedDate);
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -87,19 +87,41 @@ export function EnhancedDatePicker({
   };
 
   const handleQuickSelect = (days: number) => {
-    // 获取当前时区的今天日期
-    const now = new Date();
-    const todayInTimezone = timeZoneService.utcToZonedTime(now, timezone);
-    // 设置为指定天数后的开始时间
-    todayInTimezone.setDate(todayInTimezone.getDate() + days);
-    todayInTimezone.setHours(0, 0, 0, 0);
-    // 转换回 UTC 时间
-    const utcDate = timeZoneService.zonedTimeToUtc(todayInTimezone, timezone);
-    onDateChange(utcDate);
+    const startTime = performance.now();
+
+    // 使用 requestAnimationFrame 进行异步处理，避免阻塞主线程
+    requestAnimationFrame(() => {
+      try {
+        // 获取当前时区的今天日期
+        const now = new Date();
+        const todayInTimezone = timeZoneService.utcToZonedTime(now, timezone);
+        // 设置为指定天数后的开始时间
+        todayInTimezone.setDate(todayInTimezone.getDate() + days);
+        todayInTimezone.setHours(0, 0, 0, 0);
+        // 转换回 UTC 时间
+        const utcDate = timeZoneService.zonedTimeToUtc(todayInTimezone, timezone);
+
+        // 使用异步调用来避免阻塞
+        setTimeout(() => {
+          onDateChange(utcDate);
+
+          // 性能监控（开发环境）
+          if (process.env.NODE_ENV === 'development') {
+            const duration = performance.now() - startTime;
+            if (duration > 100) {
+              console.warn(`⚡ [INP Warning] Date picker quick select took ${duration.toFixed(2)}ms`);
+            }
+          }
+        }, 0);
+
+      } catch (error) {
+        console.error('Error in handleQuickSelect:', error);
+      }
+    });
   };
 
   const navigateMonth = (direction: "prev" | "next") => {
-    const newMonth = direction === "prev" 
+    const newMonth = direction === "prev"
       ? subDays(currentMonth, 30)
       : addDays(currentMonth, 30);
     setCurrentMonth(newMonth);
@@ -136,17 +158,15 @@ export function EnhancedDatePicker({
           placeholder={placeholder}
           readOnly
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md transform hover:scale-[1.02] active:scale-[0.98] ${
-            isOpen ? "ring-2 ring-purple-500/30 border-purple-500" : ""
-          }`}
+          className={`w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md transform hover:scale-[1.02] active:scale-[0.98] ${isOpen ? "ring-2 ring-purple-500/30 border-purple-500" : ""
+            }`}
         />
-        
+
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-          <Calendar 
-            size={20} 
-            className={`transition-colors duration-200 ${
-              isOpen ? "text-purple-500" : "text-gray-400 dark:text-gray-500"
-            }`} 
+          <Calendar
+            size={20}
+            className={`transition-colors duration-200 ${isOpen ? "text-purple-500" : "text-gray-400 dark:text-gray-500"
+              }`}
           />
         </div>
       </div>
@@ -160,31 +180,31 @@ export function EnhancedDatePicker({
             const now = new Date();
             const todayInTimezone = timeZoneService.utcToZonedTime(now, timezone);
             const selectedInTimezone = timeZoneService.utcToZonedTime(selectedDate, timezone);
-            
+
             // 比较日期部分（忽略时间）
-            const isSelectedToday = 
+            const isSelectedToday =
               todayInTimezone.getFullYear() === selectedInTimezone.getFullYear() &&
               todayInTimezone.getMonth() === selectedInTimezone.getMonth() &&
               todayInTimezone.getDate() === selectedInTimezone.getDate();
-            
+
             return isSelectedToday ? (
               <div className="p-4 border-b border-gray-100 dark:border-gray-700">
                 <div className="flex gap-2 flex-wrap">
                   <button
                     onClick={() => handleQuickSelect(0)}
-                    className="px-3 py-1.5 text-xs font-medium text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-md active:shadow-sm transform"
+                    className="px-3 py-1.5 text-xs font-medium text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 rounded-lg transition-colors duration-150 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500/30"
                   >
                     Today
                   </button>
                   <button
                     onClick={() => handleQuickSelect(-1)}
-                    className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-md active:shadow-sm transform"
+                    className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors duration-150 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500/30"
                   >
                     Yesterday
                   </button>
                   <button
                     onClick={() => handleQuickSelect(1)}
-                    className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-md active:shadow-sm transform"
+                    className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors duration-150 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500/30"
                   >
                     Tomorrow
                   </button>
@@ -202,11 +222,11 @@ export function EnhancedDatePicker({
               >
                 <ChevronLeft size={18} className="text-gray-600 dark:text-gray-400" />
               </button>
-              
+
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                 {format(currentMonth, "MMMM yyyy")}
               </h3>
-              
+
               <button
                 onClick={() => navigateMonth("next")}
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 hover:scale-110 active:scale-95 transform hover:shadow-sm"
@@ -247,22 +267,22 @@ export function EnhancedDatePicker({
                     onMouseLeave={() => setHoveredDate(null)}
                     className={`
                       h-10 w-10 rounded-lg text-sm font-medium transition-all duration-200 relative transform
-                      ${isSelected 
-                        ? "bg-purple-600 text-white shadow-lg scale-105" 
+                      ${isSelected
+                        ? "bg-purple-600 text-white shadow-lg scale-105"
                         : isHovered
-                        ? "bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 scale-105 shadow-md"
-                        : isTodayDate
-                        ? "bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 border-2 border-amber-400 hover:scale-105"
-                        : isCurrentMonth
-                        ? "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:scale-105 hover:shadow-sm"
-                        : "text-gray-400 dark:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 hover:scale-105"
+                          ? "bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 scale-105 shadow-md"
+                          : isTodayDate
+                            ? "bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 border-2 border-amber-400 hover:scale-105"
+                            : isCurrentMonth
+                              ? "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:scale-105 hover:shadow-sm"
+                              : "text-gray-400 dark:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 hover:scale-105"
                       }
                       ${isWeekend && isCurrentMonth ? "text-red-600 dark:text-red-400" : ""}
                       active:scale-95
                     `}
                   >
                     {format(date, "d")}
-                    
+
                     {/* 今天指示器 */}
                     {isTodayDate && !isSelected && (
                       <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-amber-500 rounded-full" />

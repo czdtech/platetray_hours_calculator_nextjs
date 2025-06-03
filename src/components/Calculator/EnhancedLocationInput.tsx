@@ -18,6 +18,12 @@ interface LocationInputProps {
     address?: string;
   }) => void;
   onTimezoneChange?: (timezone: string) => void; // New prop for direct timezone updates
+  onCitySelect?: (cityData: {
+    latitude: number;
+    longitude: number;
+    timezone: string;
+    displayName: string;
+  }) => void; // New prop for synchronized city selection
 }
 
 interface Coordinates {
@@ -46,6 +52,7 @@ function EnhancedLocationInputComponent({
   onLocationChange,
   onUseCurrentLocation,
   onTimezoneChange,
+  onCitySelect,
 }: LocationInputProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,6 +65,7 @@ function EnhancedLocationInputComponent({
   );
   const [showPredictions, setShowPredictions] = useState(false);
   const [activePredictionIndex, setActivePredictionIndex] = useState(-1);
+  const [processingCitySelect, setProcessingCitySelect] = useState<string | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const sessionTokenRef = useRef<string | undefined>(undefined);
@@ -72,22 +80,29 @@ function EnhancedLocationInputComponent({
     string | null
   >(null);
 
-  // Check if current location matches any popular city
-  const _isCurrentLocationPopular = useMemo(() => {
-    // Show buttons when no coordinates are set yet
+  // 检查当前选中的城市
+  const getCurrentSelectedCity = useMemo(() => {
     if (!currentCoords) {
-      return false;
+      return null;
     }
-    
-    // Check if current location matches any popular city (within reasonable tolerance)
+
     const tolerance = 0.1; // degrees
-    return POPULAR_CITIES.some(city => 
-      Math.abs(city.latitude - currentCoords.latitude) < tolerance &&
-      Math.abs(city.longitude - currentCoords.longitude) < tolerance
-    ) || (
-      Math.abs(DEFAULT_CITY.latitude - currentCoords.latitude) < tolerance &&
-      Math.abs(DEFAULT_CITY.longitude - currentCoords.longitude) < tolerance
-    );
+
+    // 检查是否匹配默认城市
+    if (Math.abs(DEFAULT_CITY.latitude - currentCoords.latitude) < tolerance &&
+      Math.abs(DEFAULT_CITY.longitude - currentCoords.longitude) < tolerance) {
+      return DEFAULT_CITY.name;
+    }
+
+    // 检查是否匹配热门城市
+    for (const city of POPULAR_CITIES) {
+      if (Math.abs(city.latitude - currentCoords.latitude) < tolerance &&
+        Math.abs(city.longitude - currentCoords.longitude) < tolerance) {
+        return city.name;
+      }
+    }
+
+    return null;
   }, [currentCoords]);
 
   const fetchNewSessionToken = useCallback(async () => {
@@ -154,40 +169,100 @@ function EnhancedLocationInputComponent({
     return { isValid: false };
   };
 
-  // Handle popular city selection
+  // 防抖处理，避免快速连续点击
+  const lastCitySelectRef = useRef<number>(0);
+  const CITY_SELECT_DEBOUNCE = 300; // 300ms防抖
+
+  // Handle popular city selection - 优化性能，避免INP问题
   const handlePopularCitySelect = useCallback((city: PopularCity) => {
-    setError(null);
-    setSearchInput(city.displayName);
-    setPredictions([]);
-    setShowPredictions(false);
-    setActivePredictionIndex(-1);
+    const now = Date.now();
 
-    const coords = {
-      latitude: city.latitude,
-      longitude: city.longitude,
-      source: "preset" as const,
-      address: city.displayName,
-    };
-
-    setCurrentCoords(coords);
-    onLocationChange(city.displayName);
-    onUseCurrentLocation({
-      latitude: city.latitude,
-      longitude: city.longitude,
-      source: "preset",
-      address: city.displayName,
-    });
-
-    // If timezone change callback is provided, use it for immediate timezone update
-    if (onTimezoneChange) {
-      onTimezoneChange(city.timezone);
+    // 防抖检查
+    if (now - lastCitySelectRef.current < CITY_SELECT_DEBOUNCE) {
+      logger.info(`🚫 [Debounce] 跳过快速连续的城市选择`);
+      return;
     }
+    lastCitySelectRef.current = now;
 
-    logger.info(`🏙️ 选择城市: ${city.displayName}`, {
-      coordinates: `${city.latitude}, ${city.longitude}`,
-      timezone: city.timezone,
+    const startTime = performance.now();
+
+    // 使用 requestAnimationFrame 进行异步处理，避免阻塞主线程
+    requestAnimationFrame(() => {
+      try {
+        // 立即设置基本UI状态和处理状态
+        setError(null);
+        setProcessingCitySelect(city.name);
+        setSearchInput(city.displayName);
+        setPredictions([]);
+        setShowPredictions(false);
+        setActivePredictionIndex(-1);
+
+        // 使用 setTimeout 延迟非关键操作
+        setTimeout(() => {
+          const coords = {
+            latitude: city.latitude,
+            longitude: city.longitude,
+            source: "preset" as const,
+            address: city.displayName,
+          };
+
+          setCurrentCoords(coords);
+          setSearchInput(city.displayName);
+          setPredictions([]);
+          setShowPredictions(false);
+          setActivePredictionIndex(-1);
+
+          // 批量处理回调
+          requestAnimationFrame(() => {
+            // 优先使用新的 onCitySelect 回调，确保坐标和时区同步更新
+            if (onCitySelect) {
+              onCitySelect({
+                latitude: city.latitude,
+                longitude: city.longitude,
+                timezone: city.timezone,
+                displayName: city.displayName,
+              });
+            } else {
+              // 回退到分别调用（保持向后兼容）
+              onLocationChange(city.displayName);
+              onUseCurrentLocation({
+                latitude: city.latitude,
+                longitude: city.longitude,
+                source: "preset",
+                address: city.displayName,
+              });
+
+              // If timezone change callback is provided, use it for immediate timezone update
+              if (onTimezoneChange) {
+                onTimezoneChange(city.timezone);
+              }
+            }
+
+            logger.info(`🏙️ 选择城市: ${city.displayName}`, {
+              coordinates: `${city.latitude}, ${city.longitude}`,
+              timezone: city.timezone,
+            });
+
+            // 性能监控（开发环境）
+            if (process.env.NODE_ENV === 'development') {
+              const duration = performance.now() - startTime;
+              if (duration > 100) {
+                console.warn(`⚡ [INP Warning] City selection took ${duration.toFixed(2)}ms`);
+              }
+            }
+
+            // 清除处理状态
+            setProcessingCitySelect(null);
+          });
+        }, 0);
+
+      } catch (error) {
+        console.error('Error in handlePopularCitySelect:', error);
+        setError('Failed to select city');
+        setProcessingCitySelect(null);
+      }
     });
-  }, [onLocationChange, onUseCurrentLocation, onTimezoneChange]);
+  }, [onLocationChange, onUseCurrentLocation, onTimezoneChange, onCitySelect]);
 
   const geocodeAddress = useCallback(
     async (address: string) => {
@@ -408,24 +483,36 @@ function EnhancedLocationInputComponent({
     [isLocationServiceReady, locationServiceError],
   );
 
+  // 增加防抖延迟以减少 INP 问题
   const debouncedFetchSuggestions = useMemo(
-    () => debounce(fetchSuggestions, 150),
+    () => debounce(fetchSuggestions, 300), // 增加到 300ms 减少频繁 API 调用
     [fetchSuggestions],
   );
 
   const handleInputChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const startTime = performance.now(); // 性能监控开始
+
       const value = e.target.value;
       setSearchInput(value);
       setError(null);
 
-      if (value.trim().length < 3) {
+      // 性能优化：更严格的最小字符要求
+      if (value.trim().length < 4) { // 从 3 增加到 4
         setPredictions([]);
         setShowPredictions(false);
         setActivePredictionIndex(-1);
         if (activeAutocompleteRequestControllerRef.current) {
           activeAutocompleteRequestControllerRef.current.abort();
           activeAutocompleteRequestControllerRef.current = null;
+        }
+
+        // 记录性能（开发环境）
+        if (process.env.NODE_ENV === 'development') {
+          const duration = performance.now() - startTime;
+          if (duration > 16) { // 超过一帧时间
+            console.warn(`⚡ [INP Warning] Input change took ${duration.toFixed(2)}ms`);
+          }
         }
         return;
       }
@@ -438,24 +525,35 @@ function EnhancedLocationInputComponent({
         return;
       }
 
-      if (!sessionTokenRef.current && !isFetchingToken) {
-        await fetchNewSessionToken();
-      }
+      // 性能优化：延迟 API 调用
+      setTimeout(async () => {
+        if (!sessionTokenRef.current && !isFetchingToken) {
+          await fetchNewSessionToken();
+        }
 
-      if (sessionTokenRef.current) {
-        debouncedFetchSuggestions(
-          value,
-          sessionTokenRef.current,
-          currentRequestId,
-        );
-      } else {
-        setError(
-          locationServiceError ||
-          "Location suggestions unavailable: session not ready.",
-        );
-        setPredictions([]);
-        setShowPredictions(false);
-      }
+        if (sessionTokenRef.current) {
+          debouncedFetchSuggestions(
+            value,
+            sessionTokenRef.current,
+            currentRequestId,
+          );
+        } else {
+          setError(
+            locationServiceError ||
+            "Location suggestions unavailable: session not ready.",
+          );
+          setPredictions([]);
+          setShowPredictions(false);
+        }
+
+        // 记录性能（开发环境）
+        if (process.env.NODE_ENV === 'development') {
+          const duration = performance.now() - startTime;
+          if (duration > 50) { // 超过 50ms 认为慢
+            console.warn(`⚡ [INP Warning] Full input processing took ${duration.toFixed(2)}ms`);
+          }
+        }
+      }, 16); // 延迟一帧，让 UI 更新先完成
     },
     [
       fetchNewSessionToken,
@@ -675,24 +773,46 @@ function EnhancedLocationInputComponent({
         </label>
         {/* Popular cities quick buttons - always show for easy access */}
         <div className="flex items-center gap-1">
-          {POPULAR_CITIES.map((city) => (
-            <button
-              key={city.name}
-              onClick={() => handlePopularCitySelect(city)}
-              className="px-2.5 py-1 text-xs font-medium text-purple-600 dark:text-purple-400 
-                       bg-purple-50 dark:bg-purple-900/30 
-                       hover:bg-purple-100 dark:hover:bg-purple-900/50 
-                       rounded-md transition-all duration-200 
-                       hover:scale-105 active:scale-95 
-                       border border-purple-200 dark:border-purple-700
-                       hover:shadow-md active:shadow-sm transform
-                       focus:outline-none focus:ring-2 focus:ring-purple-500/30"
-              type="button"
-              aria-label={`Switch to ${city.displayName}`}
-            >
-              {city.name}
-            </button>
-          ))}
+          {POPULAR_CITIES.map((city) => {
+            const isProcessing = processingCitySelect === city.name;
+            const isSelected = getCurrentSelectedCity === city.name;
+            return (
+              <button
+                key={city.name}
+                onClick={() => handlePopularCitySelect(city)}
+                disabled={isProcessing}
+                className={`px-2.5 py-1 text-xs font-medium 
+                         ${isProcessing
+                    ? 'text-purple-400 bg-purple-100 cursor-wait'
+                    : isSelected
+                      ? 'text-white bg-purple-600 dark:bg-purple-500 shadow-md ring-2 ring-purple-400 dark:ring-purple-300'
+                      : 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50'
+                  }
+                         rounded-md transition-all duration-200 ease-in-out
+                         border ${isSelected ? 'border-purple-600 dark:border-purple-500' : 'border-purple-200 dark:border-purple-700'}
+                         focus:outline-none focus:ring-2 focus:ring-purple-500/30
+                         ${!isProcessing && !isSelected && 'active:bg-purple-200 dark:active:bg-purple-800 active:scale-95'}
+                         ${!isSelected && 'hover:scale-105'} transform
+                         will-change-transform touch-manipulation
+                         disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100`}
+                type="button"
+                aria-label={`Switch to ${city.displayName}`}
+                aria-pressed={isSelected}
+              >
+                {isProcessing ? (
+                  <span className="flex items-center gap-1">
+                    <svg className="w-3 h-3 animate-spin" viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" className="opacity-25" />
+                      <path fill="currentColor" className="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    {city.name}
+                  </span>
+                ) : (
+                  city.name
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
       <div className="relative">

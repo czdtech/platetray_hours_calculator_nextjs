@@ -54,7 +54,7 @@ export function CurrentHourDisplay({
   // 计算所选日期与今天（同一时区）的先后关系
   const isSelectedDatePast = selectedDateStr < todayStr;
   const isSelectedDateFuture = selectedDateStr > todayStr;
-  
+
   // 何时显示当前行星时卡片？
   // 1) 选中日期在过去；或
   // 2) 选中日期是今天且不处于"日出前提示"状态
@@ -108,7 +108,7 @@ export function CurrentHourDisplay({
           >
             {/* Day Ruler Row */}
             {dayRuler && (
-              <div className="p-3 flex justify-between items-center bg-gray-50">
+              <div className="p-2.5 flex justify-between items-center bg-gray-50">
                 <span className="text-sm font-medium text-purple-700">
                   Day Ruler
                 </span>
@@ -140,7 +140,7 @@ export function CurrentHourDisplay({
             )}
 
             {/* Current Hour Row */}
-            <div className="p-3 flex items-center">
+            <div className="p-2.5 flex items-center">
               <div
                 className={`text-2xl ${currentHour?.planetColor || "text-gray-500"}`}
                 style={{ color: currentPlanetColor }}
@@ -169,7 +169,7 @@ export function CurrentHourDisplay({
 
             {/* Good For / Avoid Row */}
             <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-gray-200">
-              <div className="p-3 flex-1">
+              <div className="p-2.5 flex-1">
                 <div className="text-xs font-medium text-green-700 uppercase mb-1">
                   Good For
                 </div>
@@ -177,7 +177,7 @@ export function CurrentHourDisplay({
                   {currentHour?.goodFor}
                 </div>
               </div>
-              <div className="p-3 flex-1">
+              <div className="p-2.5 flex-1">
                 <div className="text-xs font-medium text-red-600 uppercase mb-1">
                   Avoid
                 </div>
@@ -189,7 +189,7 @@ export function CurrentHourDisplay({
 
             {/* Before Sunrise Message Row */}
             {shouldShowPreSunriseMessage && (
-              <div className="p-3 text-center text-indigo-600 text-sm italic">
+              <div className="p-2.5 text-center text-indigo-600 text-sm italic">
                 It's early morning, before today's sunrise (
                 {formattedSunriseTime}). You're seeing the night hours from{" "}
                 {formattedYesterday}, continuing until sunrise on{" "}
@@ -204,7 +204,7 @@ export function CurrentHourDisplay({
           >
             {/* Day Ruler Row */}
             {dayRuler && (
-              <div className="p-3 flex justify-between items-center bg-gray-50">
+              <div className="p-2.5 flex justify-between items-center bg-gray-50">
                 <span className="text-sm font-medium text-purple-700">
                   Day Ruler
                 </span>
@@ -237,7 +237,7 @@ export function CurrentHourDisplay({
 
             {/* Message for before sunrise */}
             {shouldShowPreSunriseMessage && (
-              <div className="p-3 text-center text-gray-500 text-sm">
+              <div className="p-2.5 text-center text-gray-500 text-sm">
                 Planetary hours will begin after today's sunrise.
                 <br />
                 Please check {formattedYesterday} for current hour.
@@ -246,7 +246,7 @@ export function CurrentHourDisplay({
 
             {/* Message for non-today dates */}
             {!isSelectedDateToday && !shouldShowPreSunriseMessage && (
-              <div className="p-3 text-center text-gray-500 text-sm">
+              <div className="p-2.5 text-center text-gray-500 text-sm">
                 {isSelectedDatePast && (
                   <>
                     You're viewing planetary hours for {formattedToday}.

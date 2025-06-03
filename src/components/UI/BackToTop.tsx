@@ -13,19 +13,25 @@ interface BackToTopProps {
   className?: string;
 }
 
-export function BackToTop({ 
-  threshold = 300, 
+export function BackToTop({
+  threshold = 300,
   position = 'bottom-right',
   className = ''
 }: BackToTopProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
-  
+
+  // 防止 hydration 错误
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // 如果是博客文章页面，不显示通用返回顶部按钮
   const isBlogPost = pathname?.startsWith('/blog/') && pathname !== '/blog';
-  
+
   useEffect(() => {
-    if (isBlogPost) {
+    if (!isMounted || isBlogPost) {
       return;
     }
     const toggleVisibility = () => {
@@ -41,9 +47,9 @@ export function BackToTop({
     return () => {
       window.removeEventListener('scroll', toggleVisibility);
     };
-  }, [threshold, isBlogPost]);
-  
-  if (isBlogPost) {
+  }, [threshold, isBlogPost, isMounted]);
+
+  if (!isMounted || isBlogPost) {
     return null;
   }
 

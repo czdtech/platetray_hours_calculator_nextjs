@@ -1,11 +1,21 @@
 "use client";
 
 import Script from "next/script";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { reportWebVitals, reportSEOMetrics } from "@/utils/reportWebVitals";
 
 export function Analytics() {
+  const [isMounted, setIsMounted] = useState(false);
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // 防止 hydration 错误
+  if (!isMounted) {
+    return null;
+  }
 
   if (!gaId) {
     return null;
@@ -33,13 +43,21 @@ export function Analytics() {
 }
 
 export function AnalyticsWrapper() {
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
     // 启动Web Vitals监控
     reportWebVitals();
 
     // 启动SEO性能监控
     reportSEOMetrics();
-  }, []);
+  }, [isMounted]);
 
   return <Analytics />;
 }

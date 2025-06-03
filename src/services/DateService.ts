@@ -46,8 +46,12 @@ export const PLANET_SYMBOLS = {
 
 export class DateService {
   private static instance: DateService;
+  // 添加缓存机制优化性能
+  private weekDaysCache = new Map<string, WeekDay[]>();
+  private formattedDateCache = new Map<string, string>();
+  private readonly CACHE_SIZE_LIMIT = 100; // 限制缓存大小防止内存泄漏
 
-  private constructor() {}
+  private constructor() { }
 
   /**
    * 获取单例实例
@@ -57,6 +61,40 @@ export class DateService {
       DateService.instance = new DateService();
     }
     return DateService.instance;
+  }
+
+  /**
+   * 清理缓存
+   */
+  private clearOldCache(cache: Map<string, any>) {
+    if (cache.size > this.CACHE_SIZE_LIMIT) {
+      // 保留最近的一半缓存项
+      const entries = Array.from(cache.entries());
+      cache.clear();
+      entries.slice(-Math.floor(this.CACHE_SIZE_LIMIT / 2)).forEach(([key, value]) => {
+        cache.set(key, value);
+      });
+    }
+  }
+
+  /**
+   * 清理所有缓存（用于调试和故障排除）
+   */
+  public clearAllCache() {
+    this.weekDaysCache.clear();
+    this.formattedDateCache.clear();
+    console.log('📦 [DateService] All caches cleared');
+  }
+
+  /**
+   * 获取缓存统计信息（用于调试）
+   */
+  public getCacheStats() {
+    return {
+      weekDaysCache: this.weekDaysCache.size,
+      formattedDateCache: this.formattedDateCache.size,
+      limit: this.CACHE_SIZE_LIMIT
+    };
   }
 
   /**
@@ -129,6 +167,19 @@ export class DateService {
     timezone: string,
     selectedDateForHighlight: Date,
   ): WeekDay[] {
+    // 修复缓存键生成：使用日期字符串而不是时间戳，确保相同日期的不同时间不会产生不同的缓存键
+    const baseDateStr = timeZoneService.formatInTimeZone(baseDate, timezone, "yyyy-MM-dd");
+    const selectedDateStr = timeZoneService.formatInTimeZone(selectedDateForHighlight, timezone, "yyyy-MM-dd");
+    const cacheKey = `${baseDateStr}-${timezone}-${selectedDateStr}`;
+
+    // 检查缓存
+    if (this.weekDaysCache.has(cacheKey)) {
+      return this.weekDaysCache.get(cacheKey)!;
+    }
+
+    // 如果没有缓存，进行计算
+    const startTime = performance.now();
+
     // 1. 确定 baseDate 在目标时区的 YYYY-MM-DD 字符串表示
     const baseDateInTimezoneStr = timeZoneService.formatInTimeZone(
       baseDate,
@@ -203,6 +254,17 @@ export class DateService {
         active: isActive,
       });
     }
+
+    // 保存到缓存
+    this.weekDaysCache.set(cacheKey, weekDaysArray);
+    this.clearOldCache(this.weekDaysCache);
+
+    // 性能监控
+    const duration = performance.now() - startTime;
+    if (duration > 50) {
+      console.warn(`⚡ [Performance] generateWeekDays took ${duration.toFixed(2)}ms`);
+    }
+
     return weekDaysArray;
   }
 
@@ -236,15 +298,42 @@ export class DateService {
     timezone: string,
     format: "short" | "medium" | "long" = "medium",
   ): string {
+    // 修复缓存键生成：使用日期字符串而不是时间戳
+    const dateStr = timeZoneService.formatInTimeZone(date, timezone, "yyyy-MM-dd");
+    const cacheKey = `${dateStr}-${timezone}-${format}`;
+
+    // 检查缓存
+    if (this.formattedDateCache.has(cacheKey)) {
+      return this.formattedDateCache.get(cacheKey)!;
+    }
+
     const formatMap = {
       short: "MMM d",
       medium: "MMMM d, yyyy",
       long: "EEEE, MMMM d, yyyy",
     };
 
-    return timeZoneService.formatInTimeZone(date, timezone, formatMap[format]);
+    const result = timeZoneService.formatInTimeZone(date, timezone, formatMap[format]);
+
+    // 保存到缓存
+    this.formattedDateCache.set(cacheKey, result);
+    this.clearOldCache(this.formattedDateCache);
+
+    return result;
   }
 }
 
 // 导出单例实例
 export const dateService = DateService.getInstance();
+
+// 在开发环境中将 dateService 暴露到全局 window 对象，方便调试
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  (window as any).dateService = dateService;
+  // 添加全局缓存清理函数，方便调试
+  (window as any).clearAllCaches = () => {
+    dateService.clearAllCache();
+    console.log('🧹 [Debug] All DateService caches cleared');
+  };
+  console.log('🔧 [Debug] dateService available at window.dateService');
+  console.log('🔧 [Debug] clearAllCaches() available at window.clearAllCaches()');
+}

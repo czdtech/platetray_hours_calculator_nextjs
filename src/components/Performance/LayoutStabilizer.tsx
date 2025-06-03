@@ -11,10 +11,10 @@ interface LayoutStabilizerProps {
  * 布局稳定器组件
  * 用于减少累积布局偏移(CLS)
  */
-export function LayoutStabilizer({ 
-  children, 
-  minHeight = "200px", 
-  className = "" 
+export function LayoutStabilizer({
+  children,
+  minHeight = "200px",
+  className = ""
 }: LayoutStabilizerProps) {
   const [isClient, setIsClient] = useState(false);
 
@@ -23,11 +23,12 @@ export function LayoutStabilizer({
   }, []);
 
   return (
-    <div 
+    <div
       className={`transition-all duration-200 ${className}`}
-      style={{ 
-        minHeight: isClient ? 'auto' : minHeight,
-        contain: 'layout style paint'
+      style={{
+        minHeight: minHeight,
+        contain: 'layout style paint',
+        ...({ '--transition-timing': isClient ? '200ms' : '0ms' } as any)
       }}
     >
       {children}
@@ -47,13 +48,13 @@ interface OptimizedImageProps {
   priority?: boolean;
 }
 
-export function OptimizedImage({ 
-  src, 
-  alt, 
-  width, 
-  height, 
+export function OptimizedImage({
+  src,
+  alt,
+  width,
+  height,
   className = "",
-  priority = false 
+  priority = false
 }: OptimizedImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority);
@@ -80,11 +81,11 @@ export function OptimizedImage({
   }, [src, priority]);
 
   return (
-    <div 
+    <div
       id={`img-${src}`}
       className={`relative overflow-hidden ${className}`}
-      style={{ 
-        width, 
+      style={{
+        width,
         height,
         backgroundColor: '#f3f4f6' // 占位背景色
       }}
@@ -95,9 +96,8 @@ export function OptimizedImage({
           alt={alt}
           width={width}
           height={height}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
-            isLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
           onLoad={() => setIsLoaded(true)}
           priority={priority}
           fill={false}
@@ -126,9 +126,8 @@ export function ContentSkeleton({ lines = 3, className = "" }: ContentSkeletonPr
       {Array.from({ length: lines }).map((_, index) => (
         <div
           key={index}
-          className={`h-4 bg-gray-200 rounded ${
-            index === lines - 1 ? 'w-3/4' : 'w-full'
-          }`}
+          className={`h-4 bg-gray-200 rounded ${index === lines - 1 ? 'w-3/4' : 'w-full'
+            }`}
         />
       ))}
     </div>

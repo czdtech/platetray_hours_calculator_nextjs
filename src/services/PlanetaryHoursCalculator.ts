@@ -107,17 +107,37 @@ export class PlanetaryHoursCalculator {
     return PlanetaryHoursCalculator.instance;
   }
 
+  /**
+   * 清理缓存（用于调试）
+   */
+  public clearCache(): void {
+    this.cache.clear();
+    logger.info('🧹 [Cache] PlanetaryHoursCalculator 缓存已清空');
+  }
+
+  /**
+   * 获取缓存统计信息（用于调试）
+   */
+  public getCacheStats(): { size: number; keys: string[] } {
+    return {
+      size: this.cache.size,
+      keys: Array.from(this.cache.keys())
+    };
+  }
+
   private getCacheKey(
     date: Date,
     latitude: number,
     longitude: number,
     timezone: string,
   ): string {
-    const localYear = date.getFullYear();
-    const localMonth = date.getMonth() + 1;
-    const localDay = date.getDate();
-    const dateStringForCache = `${localYear}-${String(localMonth).padStart(2, "0")}-${String(localDay).padStart(2, "0")}`;
-    return `${dateStringForCache}_${latitude.toFixed(4)}_${longitude.toFixed(4)}_${timezone}`;
+    // 修复：使用目标时区的日期字符串，而不是本地时区
+    // 这确保不同UTC日期在目标时区产生不同的缓存键
+    const dateStringForCache = formatInTimeZone(date, timezone, "yyyy-MM-dd");
+    const cacheKey = `${dateStringForCache}_${latitude.toFixed(4)}_${longitude.toFixed(4)}_${timezone}`;
+
+    logger.info(`🔑 [Cache] 生成缓存键: ${cacheKey} (UTC日期: ${date.toISOString()})`);
+    return cacheKey;
   }
 
   private getDayRuler(localDate: Date): string {
@@ -148,6 +168,16 @@ export class PlanetaryHoursCalculator {
     elevation: number = 0,
   ): Promise<PlanetaryHoursCalculationResult | null> {
     try {
+      // 检查缓存
+      const cacheKey = this.getCacheKey(date, latitude, longitude, timezone);
+      const cachedResult = this.cache.get(cacheKey);
+      if (cachedResult) {
+        logger.info(`📋 [Cache] 使用缓存结果: ${cacheKey}`);
+        return cachedResult;
+      }
+
+      logger.info(`🔄 [Calculate] 开始新计算: ${cacheKey}`);
+
       // 以目标时区解析日期，避免受浏览器本地时区影响
       const localDateString = formatInTimeZone(date, timezone, "yyyy-MM-dd");
       const noonStringInTimezone = `${localDateString}T12:00:00`;
@@ -212,7 +242,7 @@ export class PlanetaryHoursCalculator {
         return null;
       }
 
-      return {
+      const result = {
         dayRuler,
         sunrise,
         sunset,
@@ -227,6 +257,12 @@ export class PlanetaryHoursCalculator {
         latitude,
         longitude,
       };
+
+      // 保存到缓存
+      this.cache.set(cacheKey, result);
+      logger.info(`💾 [Cache] 结果已缓存: ${cacheKey}`);
+
+      return result;
     } catch (error) {
       logger.error("Error calculating planetary hours:", error);
       return null;
@@ -380,3 +416,16 @@ export class PlanetaryHoursCalculator {
 }
 
 export const planetaryHoursCalculator = PlanetaryHoursCalculator.getInstance();
+
+// 在开发环境中暴露到全局，方便调试
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  (window as any).planetaryHoursCalculator = planetaryHoursCalculator;
+  // 扩展全局缓存清理函数
+  const originalClearAllCaches = (window as any).clearAllCaches;
+  (window as any).clearAllCaches = () => {
+    if (originalClearAllCaches) originalClearAllCaches();
+    planetaryHoursCalculator.clearCache();
+    console.log('🧹 [Debug] All caches cleared including PlanetaryHoursCalculator');
+  };
+  console.log('🔧 [Debug] planetaryHoursCalculator available at window.planetaryHoursCalculator');
+}

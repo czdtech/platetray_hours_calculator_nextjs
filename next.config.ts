@@ -1,7 +1,5 @@
 import type { NextConfig } from "next";
-
-// 使用 require 方式导入 next-pwa 避免类型问题
-const withPWA = require('next-pwa');
+import withPWA from 'next-pwa';
 
 const nextConfig: NextConfig = {
   // 图片优化配置
@@ -85,6 +83,8 @@ const nextConfig: NextConfig = {
   experimental: {
     // 启用优化的包导入
     optimizePackageImports: ['react-icons', 'lucide-react', 'date-fns', 'lodash'],
+    // 禁用可能导致 hydration 问题的特性
+    optimisticClientCache: false,
   },
 
   // 服务器外部包配置
@@ -237,4 +237,4 @@ const pwaConfig = withPWA({
   ],
 });
 
-export default pwaConfig(nextConfig as any);
+export default pwaConfig(nextConfig as unknown as Parameters<typeof pwaConfig>[0]);
