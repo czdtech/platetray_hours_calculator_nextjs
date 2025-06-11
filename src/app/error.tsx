@@ -31,7 +31,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
       </h1>
 
       <p className="text-lg text-gray-600 max-w-md mb-8">
-        We're sorry, an unexpected error has occurred. Our team has been
+        We&apos;re sorry, an unexpected error has occurred. Our team has been
         notified.
       </p>
 

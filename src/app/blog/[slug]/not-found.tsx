@@ -13,7 +13,7 @@ export default function BlogNotFound() {
           Blog Post Not Found
         </p>
         <p className="text-lg text-gray-600 max-w-md mb-8">
-          The blog post you are looking for doesn't exist or has been moved.
+          The blog post you are looking for doesn&apos;t exist or has been moved.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">
           <Link

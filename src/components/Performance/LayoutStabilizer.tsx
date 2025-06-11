@@ -28,7 +28,7 @@ export function LayoutStabilizer({
       style={{
         minHeight: minHeight,
         contain: 'layout style paint',
-        ...({ '--transition-timing': isClient ? '200ms' : '0ms' } as any)
+        ...( { ['--transition-timing' as string]: isClient ? '200ms' : '0ms' } as React.CSSProperties)
       }}
     >
       {children}

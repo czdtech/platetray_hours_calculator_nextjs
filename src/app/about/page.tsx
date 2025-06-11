@@ -48,13 +48,13 @@ export default function AboutPage() {
             <p className="text-gray-600 mb-4">
               Planetary hours are an ancient astrological system that divides
               the time between sunrise and sunset, and sunset and sunrise, into
-              12 unequal "hours." Each hour is ruled by one of the seven
+              12 unequal &quot;hours.&quot; Each hour is ruled by one of the seven
               traditional planets (Sun, Moon, Mercury, Venus, Mars, Jupiter,
               Saturn).
             </p>
             <p className="text-gray-600 mb-4">
               The sequence of rulers follows the Chaldean order of the planets,
-              based on their apparent speed from Earth's perspective. The planet
+              based on their apparent speed from Earth&apos;s perspective. The planet
               ruling the first hour of the day (starting at sunrise) is the
               ruler of that day.
             </p>

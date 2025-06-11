@@ -4,7 +4,11 @@ import { createLogger } from '@/utils/logger';
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
 // 添加简单的内存缓存
-const cache = new Map<string, { data: any; timestamp: number }>();
+interface AutocompleteCacheData {
+  predictions: AutocompleteApiResponse["predictions"];
+}
+
+const cache = new Map<string, { data: AutocompleteCacheData; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
 
 // 移除未使用的接口定义

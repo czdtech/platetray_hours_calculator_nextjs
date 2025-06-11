@@ -60,7 +60,6 @@ function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
           }
         }}
         aria-expanded={isOpen}
-        role="button"
       >
         <span className="w-8 text-sm text-gray-500 font-medium">
           {String(index + 1).padStart(2, "0")}

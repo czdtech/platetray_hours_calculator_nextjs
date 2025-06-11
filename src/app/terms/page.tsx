@@ -39,10 +39,7 @@ export default function TermsPage() {
               1. Agreement to Terms
             </h3>
             <p className="text-gray-600 mb-4">
-              By accessing and using our Planetary Hours Calculator service (the
-              "Service"), you agree to be bound by these Terms of Service
-              ("Terms"). If you disagree with any part of the terms, then you
-              may not access the Service.
+              By accessing and using our Planetary Hours Calculator service (&quot;Service&quot;), you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you disagree with any part of the terms, then you may not access the Service.
             </p>
           </section>
 
@@ -52,7 +49,7 @@ export default function TermsPage() {
             </h3>
             <p className="text-gray-600 mb-4">
               Permission is granted to temporarily use the calculator and view
-              the materials on Planetary Hours Calculator's website for
+              the materials on Planetary Hours Calculator&apos;s website for
               personal, non-commercial transitory viewing only. This is the
               grant of a license, not a transfer of title, and under this
               license you may not:
@@ -72,7 +69,7 @@ export default function TermsPage() {
                 materials;
               </li>
               <li>
-                transfer the materials to another person or "mirror" the
+                transfer the materials to another person or &quot;mirror&quot; the
                 materials on any other server.
               </li>
             </ul>
@@ -88,8 +85,8 @@ export default function TermsPage() {
               3. Disclaimer
             </h3>
             <p className="text-gray-600 mb-4">
-              The materials and calculations on Planetary Hours Calculator's
-              website are provided on an 'as is' basis. We make no warranties,
+              The materials and calculations on Planetary Hours Calculator&apos;s
+              website are provided on an &apos;as is&apos; basis. We make no warranties,
               expressed or implied, and hereby disclaim and negate all other
               warranties including, without limitation, implied warranties or
               conditions of merchantability, fitness for a particular purpose,
@@ -117,7 +114,7 @@ export default function TermsPage() {
               liable for any damages (including, without limitation, damages for
               loss of data or profit, or due to business interruption) arising
               out of the use or inability to use the materials on Planetary
-              Hours Calculator's website, even if Planetary Hours Calculator or
+              Hours Calculator&apos;s website, even if Planetary Hours Calculator or
               a Planetary Hours Calculator authorized representative has been
               notified orally or in writing of the possibility of such damage.
             </p>
@@ -128,7 +125,7 @@ export default function TermsPage() {
               5. Accuracy of Materials
             </h3>
             <p className="text-gray-600 mb-4">
-              The materials appearing on Planetary Hours Calculator's website
+              The materials appearing on Planetary Hours Calculator&apos;s website
               could include technical, typographical, or photographic errors.
               Planetary Hours Calculator does not warrant that any of the
               materials on its website are accurate, complete or current.
@@ -144,7 +141,7 @@ export default function TermsPage() {
               linked to its website and is not responsible for the contents of
               any such linked site. The inclusion of any link does not imply
               endorsement by Planetary Hours Calculator of the site. Use of any
-              such linked website is at the user's own risk.
+              such linked website is at the user&apos;s own risk.
             </p>
           </section>
 
@@ -172,7 +169,7 @@ export default function TermsPage() {
               or relating to these Terms or the use of our Service shall be
               resolved through good faith negotiation. If such negotiation fails,
               disputes may be submitted to binding arbitration or resolved in the
-              courts of competent jurisdiction in the user's local area, as
+              courts of competent jurisdiction in the user&apos;s local area, as
               appropriate under applicable international law.
             </p>
             <p className="text-gray-600 mb-4">

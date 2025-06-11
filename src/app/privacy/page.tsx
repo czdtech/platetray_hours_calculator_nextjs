@@ -54,7 +54,7 @@ export default function PrivacyPage() {
             <p className="text-gray-600 mb-4">
               We collect personal information that you voluntarily provide to us
               when you use our services, such as location data if you grant
-              permission through your browser's geolocation features. This
+              permission through your browser&apos;s geolocation features. This
               location data (latitude and longitude) is used solely for the
               purpose of calculating accurate sunrise and sunset times required
               for determining planetary hours at your specific location.
@@ -125,7 +125,7 @@ export default function PrivacyPage() {
             </h3>
             <p className="text-gray-600 mb-4">
               We may update this privacy policy from time to time. The updated
-              version will be indicated by an updated "Last updated" date.
+              version will be indicated by an updated &quot;Last updated&quot; date.
             </p>
           </section>
 
@@ -142,7 +142,7 @@ export default function PrivacyPage() {
                 <strong>Google Maps Platform</strong> – used for location
                 auto-complete, geocoding, reverse geocoding and timezone lookup.
                 When you search for or select a place, the relevant query (e.g.
-                text input, latitude/longitude) is forwarded to Google's
+                text input, latitude/longitude) is forwarded to Google&apos;s
                 servers. Google may temporarily log this request in accordance
                 with their own{" "}
                 <a

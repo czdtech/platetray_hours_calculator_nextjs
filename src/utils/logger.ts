@@ -139,7 +139,7 @@ export class Logger {
     };
   }
 
-  private formatMessage(level: string, message: string, ...args: any[]): [string, ...any[]] {
+  private formatMessage(level: string, message: string, ...args: unknown[]): [string, ...unknown[]] {
     const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
     const prefix = this.config.prefix ? `[${this.config.prefix}] ` : '';
     const context = this.context ? `[${this.context}] ` : '';
@@ -149,7 +149,7 @@ export class Logger {
   /**
    * 调试日志
    */
-  debug(message: string, ...args: any[]) {
+  debug(message: string, ...args: unknown[]) {
     if (globalConfig.enableConsole && LogLevel.DEBUG >= globalConfig.level && globalConfig.enableDebug) {
       console.log(...this.formatMessage('DEBUG', message, ...args));
     }
@@ -158,7 +158,7 @@ export class Logger {
   /**
    * 信息日志
    */
-  info(message: string, ...args: any[]) {
+  info(message: string, ...args: unknown[]) {
     if (globalConfig.enableConsole && LogLevel.INFO >= globalConfig.level) {
       console.log(...this.formatMessage('INFO', message, ...args));
     }
@@ -167,7 +167,7 @@ export class Logger {
   /**
    * 警告日志
    */
-  warn(message: string, ...args: any[]) {
+  warn(message: string, ...args: unknown[]) {
     if (globalConfig.enableConsole && LogLevel.WARN >= globalConfig.level) {
       console.warn(...this.formatMessage('WARN', message, ...args));
     }
@@ -176,7 +176,7 @@ export class Logger {
   /**
    * 错误日志
    */
-  error(message: string, ...args: any[]) {
+  error(message: string, ...args: unknown[]) {
     if (globalConfig.enableConsole && LogLevel.ERROR >= globalConfig.level) {
       console.error(...this.formatMessage('ERROR', message, ...args));
     }
@@ -185,7 +185,7 @@ export class Logger {
   /**
    * 性能日志
    */
-  performance(message: string, ...args: any[]) {
+  performance(message: string, ...args: unknown[]) {
     if (globalConfig.enablePerformance && globalConfig.enableConsole && LogLevel.INFO >= globalConfig.level) {
       console.log(...this.formatMessage('PERF', `⚡ ${message}`, ...args));
     }
@@ -244,11 +244,11 @@ export const logger = new Logger();
  * 快捷方法 - 用于替换现有的 console.log
  */
 export const log = {
-  debug: (message: string, ...args: any[]) => logger.debug(message, ...args),
-  info: (message: string, ...args: any[]) => logger.info(message, ...args),
-  warn: (message: string, ...args: any[]) => logger.warn(message, ...args),
-  error: (message: string, ...args: any[]) => logger.error(message, ...args),
-  performance: (message: string, ...args: any[]) => logger.performance(message, ...args),
+  debug: (message: string, ...args: unknown[]) => logger.debug(message, ...args),
+  info: (message: string, ...args: unknown[]) => logger.info(message, ...args),
+  warn: (message: string, ...args: unknown[]) => logger.warn(message, ...args),
+  error: (message: string, ...args: unknown[]) => logger.error(message, ...args),
+  performance: (message: string, ...args: unknown[]) => logger.performance(message, ...args),
 };
 
 /**

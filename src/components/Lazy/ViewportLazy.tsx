@@ -30,7 +30,7 @@ interface ViewportLazyProps<P> {
 /**
  * 当元素进入视口时才动态加载对应组件，避免首屏无关资源提前下载。
  */
-export function ViewportLazy<P = Record<string, unknown>>({
+export function ViewportLazy<P extends Record<string, unknown> = Record<string, unknown>>({
   loader,
   fallback = null,
   componentProps,
@@ -72,7 +72,8 @@ export function ViewportLazy<P = Record<string, unknown>>({
     <div ref={containerRef}>
       {LoadedComponent ? (
         <Suspense fallback={fallback}>
-          <LoadedComponent {...(componentProps || {} as any)} />
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          <LoadedComponent {...(componentProps ?? ({} as any))} />
         </Suspense>
       ) : (
         fallback

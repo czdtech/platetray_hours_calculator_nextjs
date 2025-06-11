@@ -857,6 +857,7 @@ function EnhancedLocationInputComponent({
             className="absolute z-10 w-full left-0 right-0 bg-white dark:bg-gray-800 
                      border border-gray-300 dark:border-gray-600 rounded-md shadow-lg mt-1 
                      max-h-60 overflow-y-auto"
+            tabIndex={0}
             role="listbox"
             aria-activedescendant={
               activePredictionIndex >= 0

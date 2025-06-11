@@ -190,8 +190,8 @@ export function CurrentHourDisplay({
             {/* Before Sunrise Message Row */}
             {shouldShowPreSunriseMessage && (
               <div className="p-2.5 text-center text-indigo-600 text-sm italic">
-                It's early morning, before today's sunrise (
-                {formattedSunriseTime}). You're seeing the night hours from{" "}
+                It&apos;s early morning, before today&apos;s sunrise (
+                {formattedSunriseTime}). You&apos;re seeing the night hours from{" "}
                 {formattedYesterday}, continuing until sunrise on{" "}
                 {formattedToday}
               </div>
@@ -238,7 +238,7 @@ export function CurrentHourDisplay({
             {/* Message for before sunrise */}
             {shouldShowPreSunriseMessage && (
               <div className="p-2.5 text-center text-gray-500 text-sm">
-                Planetary hours will begin after today's sunrise.
+                Planetary hours will begin after today&apos;s sunrise.
                 <br />
                 Please check {formattedYesterday} for current hour.
               </div>
@@ -249,16 +249,16 @@ export function CurrentHourDisplay({
               <div className="p-2.5 text-center text-gray-500 text-sm">
                 {isSelectedDatePast && (
                   <>
-                    You're viewing planetary hours for {formattedToday}.
+                    You&apos;re viewing planetary hours for {formattedToday}.
                     <br />
-                    "Current hour" is only shown for today's date.
+                    &quot;Current hour&quot; is only shown for today&apos;s date.
                   </>
                 )}
                 {isSelectedDateFuture && (
                   <>
-                    You're viewing planetary hours for {formattedToday}.
+                    You&apos;re viewing planetary hours for {formattedToday}.
                     <br />
-                    "Current hour" will be available on this date.
+                    &quot;Current hour&quot; will be available on this date.
                   </>
                 )}
               </div>

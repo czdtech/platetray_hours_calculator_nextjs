@@ -419,10 +419,16 @@ export const planetaryHoursCalculator = PlanetaryHoursCalculator.getInstance();
 
 // 在开发环境中暴露到全局，方便调试
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-  (window as any).planetaryHoursCalculator = planetaryHoursCalculator;
+  interface WindowWithPHCalculator extends Window {
+    planetaryHoursCalculator: PlanetaryHoursCalculator;
+    clearAllCaches?: () => void;
+  }
+
+  const w = window as unknown as WindowWithPHCalculator;
+  w.planetaryHoursCalculator = planetaryHoursCalculator;
   // 扩展全局缓存清理函数
-  const originalClearAllCaches = (window as any).clearAllCaches;
-  (window as any).clearAllCaches = () => {
+  const originalClearAllCaches = w.clearAllCaches;
+  w.clearAllCaches = () => {
     if (originalClearAllCaches) originalClearAllCaches();
     planetaryHoursCalculator.clearCache();
     console.log('🧹 [Debug] All caches cleared including PlanetaryHoursCalculator');

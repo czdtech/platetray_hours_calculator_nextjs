@@ -66,7 +66,7 @@ export class DateService {
   /**
    * 清理缓存
    */
-  private clearOldCache(cache: Map<string, any>) {
+  private clearOldCache<T>(cache: Map<string, T>) {
     if (cache.size > this.CACHE_SIZE_LIMIT) {
       // 保留最近的一半缓存项
       const entries = Array.from(cache.entries());
@@ -328,9 +328,15 @@ export const dateService = DateService.getInstance();
 
 // 在开发环境中将 dateService 暴露到全局 window 对象，方便调试
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-  (window as any).dateService = dateService;
+  interface WindowWithDateService extends Window {
+    dateService: DateService;
+    clearAllCaches: () => void;
+  }
+
+  const w = window as unknown as WindowWithDateService;
+  w.dateService = dateService;
   // 添加全局缓存清理函数，方便调试
-  (window as any).clearAllCaches = () => {
+  w.clearAllCaches = () => {
     dateService.clearAllCache();
     console.log('🧹 [Debug] All DateService caches cleared');
   };

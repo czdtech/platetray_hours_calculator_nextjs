@@ -707,6 +707,7 @@ function LocationInputComponent({
                 ? `prediction-item-${activePredictionIndex}`
                 : undefined
             }
+            tabIndex={0}
           >
             {predictions.map((prediction, index) => (
               <li

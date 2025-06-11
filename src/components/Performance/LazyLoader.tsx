@@ -31,6 +31,7 @@ export function createLazyComponent<T extends ComponentType<Record<string, unkno
   return function WrappedLazyComponent(props: React.ComponentProps<T>) {
     return (
       <Suspense fallback={fallback || <div>Loading...</div>}>
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <LazyComponent {...(props as any)} />
       </Suspense>
     );
