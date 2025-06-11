@@ -159,3 +159,13 @@
 | `redirects()` | 仅处理 `/blog/:slug/` → 无尾斜杠 | 👍 |
 | `experimental.optimizePackageImports` | 已按需引入 React Icons、lodash 等 | ⚠️ 属实验特性，升级 Next 版本后需验证。 |
 | `compiler.removeConsole`
+
+### Progress (2025-06-11)
+- **安全头已强化**：新增 `Content-Security-Policy` 与 `Strict-Transport-Security` 并保留原有安全头，已通过本地与生产构建验证。
+- **日志策略优化**：`compiler.removeConsole` 仅排除 `error`，确保生产日志简洁且关键错误仍可追踪。
+- **PostCSS 链稳定**：`postcss.config.mjs` 采用单一 `@tailwindcss/postcss` 插件，解决 Tailwind v4 与 LightningCSS 冲突，`yarn build` 编译成功。
+- **ESLint 配置扩展**：加入 `plugin:react-hooks/recommended` 与 `react-hooks` 插件，`yarn lint --max-warnings=0` 通过。
+- **依赖更新**：新增 `autoprefixer@10` 为 devDependency（如未来启用可直接使用），锁定版本。
+- **本地全流程验证**：`yarn typecheck`、`yarn lint`、`yarn build` 均 0 error，关键页面手动走查 UI 与功能无回归。
+
+> Step 4 已完全收尾，核心配置文件加固到位。
