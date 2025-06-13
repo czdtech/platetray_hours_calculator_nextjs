@@ -31,10 +31,13 @@ export function AdSense() {
         return <AdSensePlaceholder />;
     }
 
-    // 生产环境：使用 requestIdleCallback 或 1.5s fallback 延迟加载脚本，避免 hydration 冲突
+    // 生产环境：使用 requestIdleCallback 或 1.5s fallback 延迟加载脚本
     useEffect(() => {
-        if (!isMounted) return; // 确保客户端
-        if (process.env.NODE_ENV === 'development') return; // 开发环境跳过
+        if (!isMounted) return; // 仅在客户端且挂载后执行
+
+        // 跳过开发环境
+        if (process.env.NODE_ENV === 'development') return;
+
         if (!adClient) {
             console.warn('⚠️ AdSense client ID is not configured. Please set NEXT_PUBLIC_ADSENSE_CLIENT_ID');
             return;
@@ -53,8 +56,10 @@ export function AdSense() {
             document.head.appendChild(script);
         };
 
-        if ('requestIdleCallback' in window) {
-            (window as any).requestIdleCallback(loadAdSense, { timeout: 1500 });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const win = window as unknown as { requestIdleCallback?: (cb: () => void, options?: { timeout: number }) => void };
+        if (typeof win.requestIdleCallback === 'function') {
+            win.requestIdleCallback(loadAdSense, { timeout: 1500 });
         } else {
             setTimeout(loadAdSense, 1500);
         }
