@@ -31,13 +31,15 @@ export function AdSense() {
         return <AdSensePlaceholder />;
     }
 
-    if (!adClient) {
-        console.warn("⚠️ AdSense client ID is not configured. Please set NEXT_PUBLIC_ADSENSE_CLIENT_ID in your environment variables.");
-        return null;
-    }
-
     // 生产环境：使用 requestIdleCallback 或 1.5s fallback 延迟加载脚本，避免 hydration 冲突
     useEffect(() => {
+        if (!isMounted) return; // 确保客户端
+        if (process.env.NODE_ENV === 'development') return; // 开发环境跳过
+        if (!adClient) {
+            console.warn('⚠️ AdSense client ID is not configured. Please set NEXT_PUBLIC_ADSENSE_CLIENT_ID');
+            return;
+        }
+
         // 若脚本已存在则跳过
         if (document.querySelector('script[src*="adsbygoogle.js"]')) return;
 
@@ -52,12 +54,11 @@ export function AdSense() {
         };
 
         if ('requestIdleCallback' in window) {
-            // @ts-ignore
-            requestIdleCallback(loadAdSense, { timeout: 1500 });
+            (window as any).requestIdleCallback(loadAdSense, { timeout: 1500 });
         } else {
             setTimeout(loadAdSense, 1500);
         }
-    }, [adClient]);
+    }, [isMounted, adClient]);
 
     // 生产环境无可见输出
     return null;
