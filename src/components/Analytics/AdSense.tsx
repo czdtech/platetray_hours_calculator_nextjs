@@ -37,8 +37,6 @@ export function AdSense() {
             script.async = true;
             script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adClient}`;
             script.crossOrigin = 'anonymous';
-            script.onload = () => console.log('✅ AdSense script loaded (native)');
-            script.onerror = (e) => console.error('AdSense script failed:', e);
             document.head.appendChild(script);
         };
 

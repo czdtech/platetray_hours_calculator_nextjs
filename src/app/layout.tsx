@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="flex flex-col min-h-screen">
+      <body className="flex flex-col min-h-screen" suppressHydrationWarning={true}>
         {/* 只添加跳过导航链接，不修改main标签结构 */}
         <a
           href="#content-start"
