@@ -13,6 +13,7 @@ function AdSensePlaceholder() {
 }
 
 export function AdSense() {
+    // Hooks must be called at the top level
     const [isMounted, setIsMounted] = useState(false);
     const adClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
 
@@ -20,31 +21,16 @@ export function AdSense() {
         setIsMounted(true);
     }, []);
 
-    // 防止 hydration 错误：在客户端挂载前不渲染任何内容
-    if (!isMounted) {
-        return null;
-    }
-
-    // 在开发环境中显示广告位模拟
-    if (process.env.NODE_ENV === 'development') {
-        console.log('🚫 开发环境：跳过 AdSense 加载以避免警告和错误');
-        return <AdSensePlaceholder />;
-    }
-
-    // 生产环境：使用 requestIdleCallback 或 1.5s fallback 延迟加载脚本
     useEffect(() => {
-        if (!isMounted) return; // 仅在客户端且挂载后执行
-
-        // 跳过开发环境
-        if (process.env.NODE_ENV === 'development') return;
-
-        if (!adClient) {
-            console.warn('⚠️ AdSense client ID is not configured. Please set NEXT_PUBLIC_ADSENSE_CLIENT_ID');
+        // All conditional logic must be inside the hook
+        if (!isMounted || process.env.NODE_ENV === 'development' || !adClient) {
             return;
         }
-
-        // 若脚本已存在则跳过
-        if (document.querySelector('script[src*="adsbygoogle.js"]')) return;
+        
+        // Skip if script is already present
+        if (document.querySelector('script[src*="adsbygoogle.js"]')) {
+            return;
+        }
 
         const loadAdSense = () => {
             const script = document.createElement('script');
@@ -56,15 +42,19 @@ export function AdSense() {
             document.head.appendChild(script);
         };
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const win = window as unknown as { requestIdleCallback?: (cb: () => void, options?: { timeout: number }) => void };
-        if (typeof win.requestIdleCallback === 'function') {
-            win.requestIdleCallback(loadAdSense, { timeout: 1500 });
+        if (typeof window.requestIdleCallback === 'function') {
+            window.requestIdleCallback(loadAdSense, { timeout: 1500 });
         } else {
             setTimeout(loadAdSense, 1500);
         }
     }, [isMounted, adClient]);
 
-    // 生产环境无可见输出
+    // Conditional returns are now after all hooks
+    if (process.env.NODE_ENV === 'development') {
+        if (!isMounted) return null; // Still prevent hydration mismatch for placeholder
+        return <AdSensePlaceholder />;
+    }
+    
+    // In production, this component renders nothing itself.
     return null;
 } 
