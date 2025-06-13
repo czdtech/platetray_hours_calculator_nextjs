@@ -1,6 +1,5 @@
 "use client";
 
-import Script from "next/script";
 import { useEffect, useState } from "react";
 
 // 开发环境广告位模拟组件
@@ -37,21 +36,29 @@ export function AdSense() {
         return null;
     }
 
-    // 使用 next/script 的 afterInteractive 策略是解决此类问题的最佳实践。
-    // 它能确保 AdSense 脚本在页面完成 Hydration、变得可交互后才加载，
-    // 从而完美避开与 React 的初始化冲突，同时又不会过分延迟广告加载。
-    return (
-        <Script
-            id="adsbygoogle-script"
-            strategy="afterInteractive"
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adClient}`}
-            crossOrigin="anonymous"
-            onLoad={() => {
-                console.log('✅ AdSense script loaded via next/script (afterInteractive)');
-            }}
-            onError={(e) => {
-                console.error('AdSense script failed to load:', e);
-            }}
-        />
-    );
+    // 生产环境：使用 requestIdleCallback 或 1.5s fallback 延迟加载脚本，避免 hydration 冲突
+    useEffect(() => {
+        // 若脚本已存在则跳过
+        if (document.querySelector('script[src*="adsbygoogle.js"]')) return;
+
+        const loadAdSense = () => {
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adClient}`;
+            script.crossOrigin = 'anonymous';
+            script.onload = () => console.log('✅ AdSense script loaded (native)');
+            script.onerror = (e) => console.error('AdSense script failed:', e);
+            document.head.appendChild(script);
+        };
+
+        if ('requestIdleCallback' in window) {
+            // @ts-ignore
+            requestIdleCallback(loadAdSense, { timeout: 1500 });
+        } else {
+            setTimeout(loadAdSense, 1500);
+        }
+    }, [adClient]);
+
+    // 生产环境无可见输出
+    return null;
 } 
