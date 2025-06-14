@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense, lazy, useMemo, useCallback, useRef } from "react";
 import { DateProvider, useDateContext } from "@/contexts/DateContext";
 import { usePlanetaryHours } from "@/hooks/usePlanetaryHours";
+import { PlanetaryHoursCalculationResult } from "@/services/PlanetaryHoursCalculator";
 import { Header } from "@/components/Layout/Header";
 import { EnhancedLocationInput } from "@/components/Calculator/EnhancedLocationInput";
 import { DateTimeInput } from "@/components/Calculator/DateTimeInput";
@@ -13,7 +14,7 @@ import { HoursListSkeleton } from "@/components/Skeleton/HoursListSkeleton";
 import { CurrentHourSkeleton } from "@/components/Skeleton/CurrentHourSkeleton";
 import { Section } from "@/components/semantic/Section";
 import { timeZoneService } from "@/services/TimeZoneService";
-import { formatInTimeZone as formatInTimeZoneDirect } from "date-fns-tz";
+import { formatInTimeZone as formatInTimeZoneDirect, fromZonedTime } from "date-fns-tz";
 import { subDays } from "date-fns";
 import { LayoutStabilizer } from "@/components/Performance/LayoutStabilizer";
 import { createLogger } from '@/utils/logger';
@@ -97,7 +98,11 @@ const FAQ_DATA = [
   },
 ];
 
-function CalculatorCore() {
+interface CalculatorPageOptimizedProps {
+  precomputed?: PlanetaryHoursCalculationResult | null;
+}
+
+function CalculatorCore({ precomputed }: CalculatorPageOptimizedProps) {
   const { selectedDate, timezone, setSelectedDate, setTimezone, formatDate, formatDateWithTodayPrefix } =
     useDateContext();
 
@@ -121,7 +126,7 @@ function CalculatorCore() {
     isLoading: isLoadingHours,
     error: hoursError,
     calculate,
-  } = usePlanetaryHours(timeFormat);
+  } = usePlanetaryHours(timeFormat, precomputed ?? null);
 
   const loading = isLoadingHours || isTimezoneUpdating;
 
@@ -218,13 +223,29 @@ function CalculatorCore() {
   useEffect(() => {
     let isCancelled = false;
 
+    // —— 优化：若存在 SSR 预计算数据且满足默认条件，则直接复用数据，跳过首次客户端计算 ——
+    const isNYDefaultCoords = isDefaultCoordinates(coordinates);
+
+    // 直接复用 SSR 预计算数据（默认纽约坐标），不再比较"纽约当天"判断，避免因跨时区造成的误判
+    if (precomputed && isNYDefaultCoords && !hasInitialCalculated) {
+      logger.info("✅ [SSR] 复用预计算数据，跳过首次客户端计算");
+      calculationParamsRef.current = `${coordinatesKey}_${selectedDateKey}_${timezone}`;
+      setHasInitialCalculated(true);
+      return;
+    }
+
     const performCalculation = async () => {
       // 创建计算参数标识符
       const currentParams = `${coordinatesKey}_${selectedDateKey}_${timezone}`;
 
-      // 避免重复计算
-      if (currentParams === calculationParamsRef.current) {
-        logger.info("⚡ [Calculation] 跳过重复计算，参数未变化");
+      // 跳过重复计算的前提：
+      // 1) 参数完全一致；且
+      // 2) planetaryHoursRaw 的 requestedDate 已与 selectedDateKey 相同
+      if (
+        currentParams === calculationParamsRef.current &&
+        planetaryHoursRaw?.requestedDate === selectedDateKey
+      ) {
+        logger.info("⚡ [Calculation] 跳过重复计算，参数未变化且日期已对齐");
         return;
       }
 
@@ -286,7 +307,8 @@ function CalculatorCore() {
     calculate,
     setTimezone,
     hasInitialCalculated,
-    isTimezoneUpdating
+    isTimezoneUpdating,
+    precomputed
   ]);
 
   // 当前小时变化时更新活动标签
@@ -377,10 +399,20 @@ function CalculatorCore() {
           displayName: cityData.displayName
         });
 
-        // 同时更新坐标、位置和时区，确保状态同步
+        // 1) 同时更新坐标、位置和时区，确保状态同步
         setCoordinates(newCoordinates);
         setLocation(cityData.displayName);
         setTimezone(cityData.timezone);
+
+        // 2) 重置 selectedDate 为新时区当天中午，避免跨时区后出现"Tomorrow"错位
+        try {
+          const todayInNewTZStr = formatInTimeZoneDirect(new Date(), cityData.timezone, "yyyy-MM-dd");
+          const middayInNewTZUtc = fromZonedTime(`${todayInNewTZStr}T12:00:00`, cityData.timezone);
+          setSelectedDate(middayInNewTZUtc);
+        } catch (err) {
+          console.error("Error computing midday for new timezone", err);
+        }
+
         setHasInitialCalculated(false);
         calculationParamsRef.current = "";
 
@@ -738,13 +770,15 @@ function CalculatorCore() {
   );
 }
 
-export default function CalculatorPageOptimized() {
-  const initialDate = new Date();
+export default function CalculatorPageOptimized({ precomputed }: CalculatorPageOptimizedProps = {}) {
   const initialTimezone = "America/New_York";
+  // 取纽约当前日历日，并固定到当地中午 12:00，再转换回 UTC 作为初始日期，避免跨日误判
+  const todayNYStr = formatInTimeZoneDirect(new Date(), initialTimezone, "yyyy-MM-dd");
+  const initialDate = fromZonedTime(`${todayNYStr}T12:00:00`, initialTimezone);
 
   return (
     <DateProvider initialDate={initialDate} initialTimezone={initialTimezone}>
-      <CalculatorCore />
+      <CalculatorCore precomputed={precomputed} />
     </DateProvider>
   );
 }

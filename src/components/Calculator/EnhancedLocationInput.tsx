@@ -850,6 +850,7 @@ function EnhancedLocationInputComponent({
             }, 200);
           }}
           autoComplete="off"
+          data-testid="location-input"
         />
         {showPredictions && predictions.length > 0 && (
           <ul

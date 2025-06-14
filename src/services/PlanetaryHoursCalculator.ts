@@ -4,7 +4,7 @@ import {
   fromZonedTime,
   formatInTimeZone,
 } from "date-fns-tz";
-import { addDays, isValid, getDay } from "date-fns";
+import { addDays, isValid } from "date-fns";
 
 import { createLogger } from '@/utils/logger';
 
@@ -140,9 +140,14 @@ export class PlanetaryHoursCalculator {
     return cacheKey;
   }
 
-  private getDayRuler(localDate: Date): string {
-    const day = getDay(localDate);
-    return DAY_RULERS[day as keyof typeof DAY_RULERS];
+  private getDayRuler(localDate: Date, timezone: string): string {
+    // 使用目标时区确定星期，而不是依赖运行环境时区
+    // formatInTimeZone('e') 返回 1(周一) - 7(周日)
+    const isoDayStr = formatInTimeZone(localDate, timezone, "i");
+    const isoDay = parseInt(isoDayStr, 10); // 1-7
+    // 将 ISO Day 转换为 JS Day: Sunday=0, Monday=1, ...
+    const jsDay = isoDay % 7;
+    return DAY_RULERS[jsDay as keyof typeof DAY_RULERS];
   }
 
   private getNextPlanet(currentPlanet: string): string {
@@ -184,7 +189,10 @@ export class PlanetaryHoursCalculator {
 
       const baseDateForSunCalc = fromZonedTime(noonStringInTimezone, timezone);
 
-      const dateForDayRuler = toZonedTime(baseDateForSunCalc, timezone);
+      // 直接使用 baseDateForSunCalc 即可，它已经代表了目标时区的正午对应的 UTC 时间点。
+      // 不再额外调用 toZonedTime，否则在极端时区（如 UTC-10 的夏威夷）会因再次转换而回退到前一天，
+      // 导致 dayRuler 计算错误（例如本应为 Saturday 却得到 Friday -> Venus）。
+      const dateForDayRuler = baseDateForSunCalc;
 
       // 调试输出
       logger.info(
@@ -194,7 +202,7 @@ export class PlanetaryHoursCalculator {
         baseDateForSunCalc.toISOString(),
       );
 
-      const dayRuler = this.getDayRuler(dateForDayRuler);
+      const dayRuler = this.getDayRuler(dateForDayRuler, timezone);
 
       const sunTimesToday = SunCalc.getTimes(
         baseDateForSunCalc,

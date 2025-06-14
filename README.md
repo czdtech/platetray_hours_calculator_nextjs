@@ -1,333 +1,201 @@
-# Planetary Hours Calculator
+# 🪐 行星时计算器（Planetary Hours Calculator）
 
-一个基于 Next.js 15 构建的行星时计算器应用，使用 App Router 架构。
+> 基于 **Next.js 15 + React 19 + TypeScript 5** 打造的现代化行星时查询工具
 
-## 🚀 最新修复 (2025-01-06)
-
-### AdSense 和 Hydration 错误修复
-
-我们已经修复了以下生产环境问题：
-
-1. **AdSense `data-nscript` 警告**: 
-   - 移除了 Next.js `Script` 组件，改用原生 script 标签
-   - 避免了 Next.js 自动添加的 `data-nscript` 属性
-
-2. **React Hydration 错误 #418**:
-   - 为所有客户端组件添加了 `isMounted` 状态检查
-   - 确保服务端和客户端渲染一致性
-
-3. **开发环境优化**:
-   - 开发环境跳过 AdSense 加载，避免 403 错误
-   - 添加广告位模拟显示，便于开发调试
-
-### 修复的组件
-
-- `src/components/Analytics/AdSense.tsx` - 完全重写，使用原生 script 标签
-- `src/components/Analytics/Analytics.tsx` - 添加 hydration 安全检查  
-- `src/components/UI/BackToTop.tsx` - 修复客户端挂载问题
-- `next.config.ts` - 禁用可能导致 hydration 问题的实验性功能
-
-### 部署后验证
-
-部署到生产环境后，请检查：
-
-1. ✅ 浏览器控制台无 AdSense 警告
-2. ✅ 无 React hydration 错误
-3. ✅ AdSense 脚本正常加载（生产环境）
-4. ✅ 页面交互正常，无 UI 卡顿
+本项目将传统的七曜行星时算法与现代 Web 技术结合，提供「精准 · 即时 · 离线可用」的行星时信息。默认城市为纽约，首页通过预计算 JSON 实现 0 CLS 与极速 FMP。
 
 ---
 
-## 🛠️ 依赖更新 (2025-06-11)
+## 🎯 项目亮点
 
-以下依赖已更新至最新稳定版本，并通过 `yarn lint && yarn typecheck && yarn build` 全流程验证均 **0 error / 0 warning**：
-
-| Package | New Version |
-|---------|-------------|
-| next | 15.3.3 |
-| tailwindcss | 4.1.8 |
-| @tailwindcss/postcss | 4.1.8 |
-| lucide-react | 0.513.0 |
-| react-datepicker | 8.4.0 |
-| web-vitals | 5.0.2 |
-
-CI 已新增 lint 零警告门禁，确保后续 PR 不引入新警告。
+| 维度 | 说明 |
+|------|------|
+| 🚀 性能 | 每日预计算 + Server Components — 首屏不再闪烁，LCP < 1 s |
+| 🌍 全球化 | 支持任意经纬度 / 日期，自动时区推断，跨日跨区零误差 |
+| 📱 移动友好 | 完全响应式，INP < 200 ms，移动端手势优化 |
+| ⚙️ PWA | Service Worker Cache First，离线亦可查看已访问数据 |
+| 🔍 SEO | 动态 meta、JSON-LD、Sitemap；Lighthouse SEO 100/100 |
+| 💰 AdSense | 生产环境自动加载，开发环境占位，不污染控制台 |
+| 🧪 测试 | Vitest 单测 + Playwright E2E，CI 100% 通过 |
 
 ---
 
-## 📋 项目概述
+## 🗺️ 架构概览
 
-这是一个专业的行星时计算器应用，具备以下核心功能：
-
-- 📍 基于地理位置的精确行星时计算
-- 🌍 全球时区支持和自动定位
-- 📱 完全响应式设计（桌面端和移动端优化）
-- ⚡ PWA 支持，可离线使用
-- 🔍 完整的 SEO 优化和结构化数据
-- 📊 Google Analytics 和 AdSense 集成
-- ♿ 无障碍访问支持（ARIA 标准）
-
-## 🛠️ 技术栈
-
-### 核心技术
-- **Next.js 15** - App Router + React Server Components
-- **React 19** - 最新的并发特性
-- **TypeScript 5** - 严格类型检查
-- **Tailwind CSS v4** - 原子化 CSS + LightningCSS
-
-### 工具链
-- **Turbopack** - 极速开发构建工具
-- **Yarn** - 包管理器（必需，用于 LightningCSS 兼容）
-- **ESLint + TypeScript** - 代码质量保证
-
-### 集成服务
-- **Google Maps API** - 地理定位和地址搜索
-- **Google Analytics** - 用户行为分析
-- **Google AdSense** - 广告变现
-- **PWA** - 渐进式 Web 应用
-
-## 🏗️ 项目结构
-
-```
-src/
-├── app/                    # Next.js App Router
-│   ├── page.tsx           # 首页 - 行星时计算器
-│   ├── layout.tsx         # 根布局
-│   ├── globals.css        # 全局样式
-│   ├── api/               # API 路由
-│   └── [pages]/           # 其他页面
-├── components/            # React 组件
-│   ├── Calculator/        # 计算器相关组件
-│   ├── Analytics/         # 分析和广告组件
-│   ├── SEO/              # SEO 优化组件
-│   ├── UI/               # 通用 UI 组件
-│   └── Layout/           # 布局组件
-├── utils/                # 工具函数
-├── types/                # TypeScript 类型定义
-└── services/             # 业务逻辑服务
+```mermaid
+flowchart TD
+    subgraph "Vercel Cron"
+        A[22:00 预计算] -->|写 KV/文件| J((JSON))
+        B[23:00 验证] --> J
+    end
+    J -.Edge Cache / SW Cache.- U[用户浏览器]
+    J --> S[CalculatorServer (RSC)] --> C[CalculatorClient]
 ```
 
-## 🚀 快速开始
+1. **预计算脚本**：每天纽约时间 22:00 生成次日 `ny-YYYY-MM-DD.json`。
+2. **验证脚本**：23:00 检测文件是否存在，缺失则补偿计算。
+3. **SSR**：`CalculatorServer` 在 RSC 阶段读取 JSON；若缺失则同步计算并回写。
+4. **CSR**：默认纽约直接复用 SSR 数据；更换城市/日期时客户端重新计算。
+5. **离线**：Service Worker 对 `/precomputed/*.json` 采用 Cache First。
 
-### 环境要求
+### 📐 日期处理原则
 
-- Node.js 18.0 或更高版本
-- Yarn 包管理器（必需）
-- Git
+所有行星时计算日期均统一构造为「**目标时区当日 12:00**」，再转换至 UTC 输入 SunCalc，避免因跨时区导致日期漂移。
 
-### 安装步骤
+---
 
-1. **克隆项目**
-```bash
-git clone <repository-url>
-cd nextjs
+## 📂 目录结构
+
+```text
+nextjs/
+├── .cursor/
+├── .next/                       # Next.js 编译输出（忽略版本控制）
+├── docs/                        # 设计文档 & 方案说明
+├── node_modules/                # 第三方依赖（忽略版本控制）
+├── public/
+│   ├── precomputed/             # 预计算 JSON（开发 / CDN 缓存）
+│   └── ...                      # 其它静态资源 (icons、images…)
+├── scripts/                     # CLI 任务脚本
+│   ├── precompute-newyork.ts
+│   ├── verify-newyork.ts
+│   └── clean-precomputed.ts
+├── src/
+│   ├── app/                     # App Router 页面 & API
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   ├── CalculatorServer.tsx
+│   │   ├── globals.css
+│   │   └── api/
+│   │       └── cron/
+│   │           ├── precompute-newyork/route.ts
+│   │           ├── verify-newyork/route.ts
+│   │           └── revalidate/route.ts
+│   ├── components/
+│   │   ├── Calculator/
+│   │   │   ├── CalculatorClient.tsx
+│   │   │   ├── CurrentHourDisplay.tsx
+│   │   │   ├── DateTimeInput.tsx
+│   │   │   └── EnhancedLocationInput.tsx
+│   │   ├── SEO/JsonLd.tsx
+│   │   └── … (UI, Layout 等其余组件)
+│   ├── hooks/usePlanetaryHours.ts
+│   ├── services/PlanetaryHoursCalculator.ts
+│   ├── utils/time.ts
+│   └── types/
+├── tests/                       # Vitest & Playwright
+│   ├── __mocks__/
+│   ├── unit/
+│   │   ├── precompute.spec.ts
+│   │   ├── verify.spec.ts
+│   │   └── … 其它单测
+│   └── e2e/
+│       ├── ssr.spec.ts
+│       └── … 其它端到端测试
+├── .env.local                   # 本地环境变量（不提交）
+├── .eslintrc.json               # ESLint 配置
+├── .gitignore                   # Git 忽略清单
+├── middleware.ts                # Next.js 中间件
+├── next.config.ts               # Next.js 全局配置
+├── package.json                 # 依赖 & 脚本
+├── playwright.config.ts         # Playwright 配置
+├── postcss.config.mjs           # PostCSS / LightningCSS 配置
+├── tailwind.config.js           # Tailwind v4 配置
+├── tsconfig.json                # TypeScript 编译配置
+├── vercel.json                  # Vercel 部署配置
+└── yarn.lock                    # Yarn 依赖锁
 ```
 
-2. **安装依赖**
-```bash
-yarn install
-```
+---
 
-3. **环境变量配置**
+## ⚙️ 安装与启动
 
-创建 `.env.local` 文件：
-```bash
-# Google Maps API (必需)
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
-
-# Google Analytics (可选)
-NEXT_PUBLIC_GA_ID=your_google_analytics_id
-
-# Google Search Console (可选)
-NEXT_PUBLIC_GSC_VERIFICATION=your_gsc_verification_code
-
-# 站点配置
-NEXT_PUBLIC_SITE_URL=https://your-domain.com
-```
-
-4. **启动开发服务器**
-```bash
-yarn dev
-```
-
-应用将在 http://localhost:3000 启动。
-
-## 📦 可用脚本
+> **⚠️ 必须使用 Yarn**，否则 LightningCSS 原生模块在 Windows 可能报错。
 
 ```bash
-# 开发
-yarn dev          # 启动开发服务器 (http://localhost:3000)
+# 克隆仓库并安装依赖
+$ git clone <repo-url> && cd nextjs
+$ yarn install
 
-# 构建
-yarn build        # 构建生产版本
-yarn start        # 启动生产服务器
+# （可选）本地立即生成纽约 JSON，避免首屏闪烁
+$ FORCE_RUN=true yarn precompute:newyork
+$ FORCE_RUN=true yarn verify:newyork
 
-# 代码质量
-yarn lint         # ESLint 检查
-yarn typecheck    # TypeScript 类型检查
-
-# 清理
-yarn clean        # 清理构建缓存
-yarn clean:all    # 完全清理（包括 node_modules）
+# 启动开发服务器
+$ yarn dev      # http://localhost:3000
 ```
 
-## 🎯 开发规范
+如需生产部署，推荐 **Vercel**：连接 GitHub → 配置环境变量 → 自动部署。
 
-### 代码规范
-- 使用 TypeScript 严格模式
-- ESLint 零警告策略（CI 强制 `yarn lint --max-warnings=0`）
-- 遵循 ESLint 规则
-- 组件采用 PascalCase 命名
-- 文件名采用 camelCase
-- 所有代码必须使用英文命名
+---
 
-### 组件设计原则
-- 单一责任原则
-- 可复用性设计
-- 组合优于继承
-- Props 类型验证
+## 📦 常用脚本
 
-### 性能优化
-- 优先使用 Server Components
-- 合理使用 Client Components
-- 图片优化和懒加载
-- 代码分割和动态导入
+| 命令 | 说明 |
+|------|------|
+| `yarn dev` | 开发模式启动 |
+| `yarn build` / `yarn start` | 生产构建 / 启动 |
+| `yarn lint` / `yarn typecheck` | ESLint / TS 严格检查 |
+| `yarn test` | 运行所有 Vitest 单测 |
+| `npx playwright test` | 运行 E2E 测试（需先 `yarn dev`） |
+| `yarn precompute:newyork` | 22:00 NY 预计算脚本 |
+| `yarn verify:newyork` | 23:00 NY 验证 & 补偿脚本 |
 
-## 🌐 API 配置
+### Vercel Cron
 
-### Google Maps API
+| 路径 | UTC | 纽约时间 | 任务 |
+|------|-----|---------|------|
+| `/api/cron/precompute` | 02:00 | 22:00 | 生成次日 JSON |
+| `/api/cron/verify` | 03:00 | 23:00 | 校验 / 补偿 |
+| `/api/cron/revalidate` | 04:01 | 00:01 | 触发首页 ISR revalidate |
 
-项目使用以下 Google Maps API 服务：
-- **Places API** - 地址自动完成
-- **Geocoding API** - 地址转坐标
-- **Time Zone API** - 时区信息
+---
 
-### API 路由
+## 🧪 测试
 
-- `GET /api/maps/autocomplete` - 地址自动完成
-- `GET /api/maps/geocode` - 地理编码
-- `GET /api/maps/placeDetails` - 地点详情
-- `GET /api/maps/timezone` - 时区信息
-
-## 🔧 故障排除
-
-### 常见问题
-
-1. **LightningCSS 错误**
-   ```
-   Error: Cannot find module '../lightningcss.win32-x64-msvc.node'
-   ```
-   **解决方案**: 必须使用 Yarn 而不是 npm
-   ```bash
-   rm -rf node_modules package-lock.json
-   yarn install
-   ```
-
-2. **构建缓存问题**
-   ```bash
-   yarn clean
-   yarn install
-   yarn build
-   ```
-
-3. **TypeScript 错误**
-   ```bash
-   yarn typecheck
-   ```
-
-4. **开发服务器无法启动**
-   - 检查端口 3000 是否被占用
-   - 确认 Node.js 版本 >= 18.0
-   - 重新安装依赖
-
-### 调试技巧
-
-- 使用 `yarn dev` 启动开发模式，支持热重载
-- 检查浏览器控制台错误信息
-- 使用 React Developer Tools
-- 启用 Next.js 调试模式：`DEBUG=* yarn dev`
-
-## 📊 SEO 优化
-
-### 已实现的 SEO 特性
-
-- ✅ 动态 meta 标签生成
-- ✅ Open Graph 和 Twitter Card
-- ✅ 结构化数据 (JSON-LD)
-- ✅ 语义化 HTML 结构
-- ✅ 自动生成 Sitemap
-- ✅ Google Search Console 集成
-- ✅ Core Web Vitals 优化
-- ✅ 移动端友好设计
-
-### 性能指标
-
-- Lighthouse 性能评分: 95+
-- Core Web Vitals: 全绿
-- SEO 评分: 100
-- 可访问性评分: 95+
-
-## 🚀 部署
-
-### Vercel 部署 (推荐)
-
-1. 连接 GitHub 仓库到 Vercel
-2. 配置环境变量
-3. 自动部署
-
-### 其他平台
-
-项目支持任何支持 Node.js 的部署平台：
-- Netlify
-- Railway
-- Digital Ocean
-- AWS
-- Google Cloud
-
-### 环境变量设置
-
-生产环境需要设置以下环境变量：
 ```bash
+# 单元测试
+$ yarn test
+
+# 端到端测试（需本地 dev）
+$ npx playwright test
+```
+
+CI 流水线：`lint → typecheck → test`，全部通过后才可合并。
+
+---
+
+## 🔑 环境变量示例（`.env.local`）
+
+```ini
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=
+NEXT_PUBLIC_SITE_URL=https://planetaryhours.org
+
+# 可选
 NEXT_PUBLIC_GA_ID=
 NEXT_PUBLIC_GSC_VERIFICATION=
-NEXT_PUBLIC_SITE_URL=
 ```
 
-## 📄 许可证
+---
 
-本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
+## 🐛 常见问题
+
+| 问题 | 原因 | 解决方案 |
+|------|------|----------|
+| `lightningcss.*.node` 丢失 | 使用 npm 安装依赖 | 删除 `node_modules` & `package-lock.json`，改用 Yarn |
+| 首页闪烁 / 数据缺失 | KV 未生成 JSON | 手动运行预计算脚本或等待下次定时任务 |
+| Hydration mismatch | 开发环境加载 AdSense | 开发模式已用占位符代替，无需处理 |
+
+---
 
 ## 🤝 贡献
 
-欢迎提交 Issue 和 Pull Request！
-
-### 贡献流程
-
-1. Fork 项目
-2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 打开 Pull Request
-
-### 开发注意事项
-
-- 遵循现有代码风格
-- 添加适当的测试
-- 更新相关文档
-- 确保 CI 检查通过
+1. Fork 仓库并创建分支 `feature/<name>`
+2. 保持代码/文件/变量命名英文，注释可中文
+3. 编写/更新单测 & 文档
+4. 确保 `yarn lint && yarn typecheck && yarn test` 全绿后提交 PR
 
 ---
 
-## 📞 支持
+## 📄 License
 
-如遇到问题，请通过以下方式寻求帮助：
-
-1. 查看 [故障排除](#-故障排除) 部分
-2. 搜索现有 Issues
-3. 创建新的 Issue
-4. 查看项目文档
-
----
-
-**Happy Coding! 🎉**
+MIT

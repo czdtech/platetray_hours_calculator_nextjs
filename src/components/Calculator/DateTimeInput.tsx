@@ -70,11 +70,12 @@ export function DateTimeInput({
         const now = new Date();
         const todayInTimezone = utcToZonedTime(now);
 
-        // 设置为指定天数后的开始时间
+        // 设置为指定天数后的日期，并固定到本地中午 12:00，
+        // 避免在 UTC <-> Local 转换时因负时区造成日期回退
         todayInTimezone.setDate(todayInTimezone.getDate() + days);
-        todayInTimezone.setHours(0, 0, 0, 0);
+        todayInTimezone.setHours(12, 0, 0, 0);
 
-        // 转换回 UTC 时间
+        // 转换回 UTC 时间（此时确保仍处于同一"本地日"）
         const utcDate = zonedTimeToUtc(todayInTimezone);
 
         // 使用异步调用来避免阻塞
@@ -98,8 +99,12 @@ export function DateTimeInput({
 
   const handleDateChange = (date: Date | null) => {
     if (date) {
+      // 将选中日期固定到本地中午 12:00 再转换，避免跨 UTC 日期错位
+      const localMidday = new Date(date);
+      localMidday.setHours(12, 0, 0, 0);
+
       // Convert selected date to UTC date
-      const utcDate = zonedTimeToUtc(date);
+      const utcDate = zonedTimeToUtc(localMidday);
       // Call the callback function
       onDateChange(utcDate);
       setIsOpen(false);

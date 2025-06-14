@@ -44,9 +44,10 @@ export interface UsePlanetaryHoursResult {
  */
 export function usePlanetaryHours(
   timeFormat: "12h" | "24h" = "24h",
+  initialData: PlanetaryHoursCalculationResult | null = null,
 ): UsePlanetaryHoursResult {
   const [planetaryHoursRaw, setPlanetaryHoursRaw] =
-    useState<PlanetaryHoursCalculationResult | null>(null);
+    useState<PlanetaryHoursCalculationResult | null>(initialData);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentCoordinates, setCurrentCoordinates] = useState<{
@@ -59,6 +60,12 @@ export function usePlanetaryHours(
 
   const lastParamsRef = useRef<string | null>(null);
   const { dedupeRequest: networkDedupe } = useNetworkOptimization();
+
+  // 若提供 initialData，提前设定 lastParamsRef，避免首次多余的重新计算导致与服务器不一致
+  if (initialData && !lastParamsRef.current) {
+    const initialKey = `${initialData.latitude.toFixed(6)}_${initialData.longitude.toFixed(6)}_${initialData.requestedDate}_${initialData.timezone}`;
+    lastParamsRef.current = initialKey;
+  }
 
   // 使用新的 Hook 获取实时当前行星时
   const currentHour = useCurrentLivePlanetaryHour({
@@ -92,6 +99,7 @@ export function usePlanetaryHours(
 
         setIsLoading(true);
         setError(null);
+        setPlanetaryHoursRaw(null); // Immediately clear old data to show loading state
 
         logger.info(
           `计算行星时: 日期=${dateStr}, 时区=${timezoneInput}, 坐标=[${latitude}, ${longitude}]`,
@@ -134,7 +142,7 @@ export function usePlanetaryHours(
           lastParamsRef.current = paramKey;
         } else {
           // Handle the case where result is null, perhaps set an error or clear existing data
-          setError("Failed to calculate planetary hours: No result returned.");
+          setError("Planetary hours data is not available for this date and location (polar day/night or invalid sunrise/sunset).");
           setPlanetaryHoursRaw(null);
           setCurrentCoordinates(null);
           setSelectedDateForCalc(null);

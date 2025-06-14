@@ -9,7 +9,14 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf .next .next-dev node_modules/.cache",
-    "clean:all": "rimraf .next .next-dev node_modules/.cache && yarn install"
+    "clean:all": "rimraf .next .next-dev node_modules/.cache && yarn install",
+    "precompute:newyork": "tsx scripts/precompute-newyork.ts",
+    "verify:newyork": "tsx scripts/verify-newyork.ts",
+    "clean:precomputed": "tsx scripts/clean-precomputed.ts",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.16",
@@ -32,6 +39,11 @@
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "4.1.8",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jsdom": "^21.1.7",
     "@types/next-pwa": "^5.6.9",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -43,8 +55,13 @@
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "jsdom": "^26.1.0",
     "rimraf": "^6.0.1",
     "tailwindcss": "4.1.8",
-    "typescript": "^5"
+    "ts-node": "^10.9.1",
+    "tsx": "^4.20.2",
+    "typescript": "^5",
+    "vitest": "^3.2.3",
+    "@playwright/test": "^1.44.0"
   }
 }

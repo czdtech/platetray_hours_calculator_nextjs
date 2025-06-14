@@ -133,6 +133,23 @@ body {
 }
 
 @layer utilities {
+  /* Override low-contrast gray text to a darker shade for accessibility */
+  .text-gray-500 {
+    color: #4b5563 !important; /* Tailwind gray-600 */
+  }
+  .text-gray-400 {
+    color: #4b5563 !important;
+  }
+  .text-gray-300 {
+    color: #6b7280 !important;
+  }
+  .text-gray-200 {
+    color: #6b7280 !important;
+  }
+  .text-gray-100 {
+    color: #9ca3af !important;
+  }
+
   .animate-fadeIn {
     animation: fadeIn 0.3s ease-in-out;
   }

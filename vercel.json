@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    {
+      "path": "/api/cron/precompute-newyork",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/verify-newyork",
+      "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/revalidate",
+      "schedule": "1 4 * * *"
+    }
+  ]
+}

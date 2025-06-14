@@ -1,6 +1,10 @@
+'use client';
 import React from "react";
 import { AnySchemaType, isValidSchema } from "@/types/schema";
 import { createLogger } from '@/utils/logger';
+// eslint-disable-next-line import/no-extraneous-dependencies, @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { useNonce as nextUseNonce } from 'next/script';
 
 const logger = createLogger('JsonLd');
 
@@ -74,6 +78,9 @@ export const JsonLd: React.FC<JsonLdProps> = ({ data }) => {
   // 验证所有Schema对象的有效性
   const validSchemas = schemaArray.filter(isValidSchema);
 
+  // 获取 CSP nonce；在旧版本 Next.js 中 useNonce 可能为 undefined
+  const nonce: string | undefined = typeof nextUseNonce === 'function' ? nextUseNonce() : undefined;
+
   if (validSchemas.length === 0) {
     logger.warn("JsonLd: No valid schema objects provided");
     return null;
@@ -82,7 +89,7 @@ export const JsonLd: React.FC<JsonLdProps> = ({ data }) => {
   return (
     <>
       {validSchemas.map((schema, idx) => (
-        <script
+        <script nonce={nonce || undefined}
           key={`schema-${schema["@type"]}-${idx}`}
           type="application/ld+json"
           dangerouslySetInnerHTML={{

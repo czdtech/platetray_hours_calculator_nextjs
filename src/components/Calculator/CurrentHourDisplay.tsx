@@ -96,7 +96,7 @@ export function CurrentHourDisplay({
       : undefined;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" suppressHydrationWarning={true}>
       <p className="block text-sm font-medium text-gray-700">
         {showCurrentHour ? "Current Planetary Hour" : "Day Ruler"}
       </p>
@@ -118,7 +118,7 @@ export function CurrentHourDisplay({
                     style={{
                       color:
                         PLANET_COLOR_HEX[
-                        dayRuler as keyof typeof PLANET_COLOR_HEX
+                          dayRuler as keyof typeof PLANET_COLOR_HEX
                         ],
                     }}
                   >
@@ -129,7 +129,7 @@ export function CurrentHourDisplay({
                     style={{
                       color:
                         PLANET_COLOR_HEX[
-                        dayRuler as keyof typeof PLANET_COLOR_HEX
+                          dayRuler as keyof typeof PLANET_COLOR_HEX
                         ],
                     }}
                   >
@@ -142,19 +142,23 @@ export function CurrentHourDisplay({
             {/* Current Hour Row */}
             <div className="p-2.5 flex items-center">
               <div
-                className={`text-2xl ${currentHour?.planetColor || "text-gray-500"}`}
+                className={`text-2xl ${
+                  currentHour?.planetColor || "text-gray-500"
+                }`}
                 style={{ color: currentPlanetColor }}
               >
                 {currentHour?.planet && currentHour.planet in PLANET_SYMBOLS
                   ? PLANET_SYMBOLS[
-                  currentHour.planet as keyof typeof PLANET_SYMBOLS
-                  ]
+                      currentHour.planet as keyof typeof PLANET_SYMBOLS
+                    ]
                   : PLANET_SYMBOLS["Sun"]}
               </div>
               <div className="ml-3 flex-grow">
                 <div className="flex items-center space-x-2">
                   <span
-                    className={`font-medium ${currentHour?.planetColor || "text-gray-500"}`}
+                    className={`font-medium ${
+                      currentHour?.planetColor || "text-gray-500"
+                    }`}
                     style={{ color: currentPlanetColor }}
                   >
                     {currentHour?.planet}
@@ -214,7 +218,7 @@ export function CurrentHourDisplay({
                     style={{
                       color:
                         PLANET_COLOR_HEX[
-                        dayRuler as keyof typeof PLANET_COLOR_HEX
+                          dayRuler as keyof typeof PLANET_COLOR_HEX
                         ],
                     }}
                   >
@@ -225,7 +229,7 @@ export function CurrentHourDisplay({
                     style={{
                       color:
                         PLANET_COLOR_HEX[
-                        dayRuler as keyof typeof PLANET_COLOR_HEX
+                          dayRuler as keyof typeof PLANET_COLOR_HEX
                         ],
                     }}
                   >
@@ -251,7 +255,8 @@ export function CurrentHourDisplay({
                   <>
                     You&apos;re viewing planetary hours for {formattedToday}.
                     <br />
-                    &quot;Current hour&quot; is only shown for today&apos;s date.
+                    &quot;Current hour&quot; is only shown for today&apos;s
+                    date.
                   </>
                 )}
                 {isSelectedDateFuture && (

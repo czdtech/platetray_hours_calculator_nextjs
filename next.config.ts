@@ -52,10 +52,7 @@ const nextConfig: NextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(self)',
           },
-          {
-            key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googlesyndication.com https://*.doubleclick.net https://*.googleadservices.com https://*.googletagservices.com https://*.google-analytics.com https://*.googletagmanager.com https://*.googleapis.com https://*.gstatic.com https://*.google.com https://*.adtrafficquality.google https://cdn.ampproject.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.gstatic.com; img-src 'self' data: blob: https:; font-src 'self' https://*.gstatic.com; connect-src 'self' https:; frame-src 'self' https://*.googlesyndication.com https://*.doubleclick.net https://*.googleadservices.com https://*.googletagservices.com https://*.google-analytics.com https://*.googletagmanager.com https://*.googleapis.com https://*.gstatic.com https://*.google.com https://*.adtrafficquality.google https://cdn.ampproject.org; frame-ancestors 'none';",
-          },
+          // Content-Security-Policy 通过 middleware 动态设置，不在此静态 headers 中声明
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains; preload',
@@ -101,9 +98,7 @@ const nextConfig: NextConfig = {
   // 编译配置
   compiler: {
     // 移除console.log (仅在生产环境)
-    removeConsole: process.env.NODE_ENV === 'production' ? {
-      exclude: ['error'],
-    } : false,
+    removeConsole: process.env.NODE_ENV === 'production',
   },
 
   // 输出配置
@@ -240,6 +235,21 @@ const pwaConfig = withPWA({
           maxAgeSeconds: 60 * 60 * 24, // 24 hours
         },
         networkTimeoutSeconds: 10,
+      },
+    },
+    {
+      urlPattern: /^\/precomputed\/.*\.json$/i,
+      handler: 'CacheFirst',
+      method: 'GET',
+      options: {
+        cacheName: 'precomputed-json',
+        expiration: {
+          maxEntries: 64,
+          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+        },
+        cacheableResponse: {
+          statuses: [0, 200],
+        },
       },
     },
   ],

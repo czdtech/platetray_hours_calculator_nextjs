@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { getSoftwareApplicationSchema } from "@/utils/seo/jsonld";
-import CalculatorPageOptimized from "./CalculatorPageOptimized";
+import CalculatorServer from "./CalculatorServer";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
 
@@ -61,6 +61,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 3600;
+
 export default function HomePage() {
-  return <CalculatorPageOptimized />;
+  return <CalculatorServer />;
 }
