@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useId, useState, useCallback } from "react";
+import { useRef, useId, useState, useCallback, useEffect } from "react";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -25,12 +25,17 @@ export function DateTimeInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const inputId = useId();
 
+  // -------- 解决 hydration mismatch (#418) --------
+  const [now, setNow] = useState<Date>(() => new Date(0));
+  useEffect(() => {
+    setNow(new Date());
+  }, []);
+
   // Convert UTC date to zoned date for DatePicker
   const zonedDate = utcToZonedTime(selectedDate);
 
   // 计算哪个日期按钮应该被选中
   const getSelectedDateType = useCallback(() => {
-    const now = new Date();
     const todayInTimezone = utcToZonedTime(now);
     const selectedInTimezone = utcToZonedTime(selectedDate);
 
@@ -57,7 +62,7 @@ export function DateTimeInput({
     }
 
     return null;
-  }, [selectedDate, utcToZonedTime]);
+  }, [selectedDate, utcToZonedTime, now]);
 
   // 优化快捷选择按钮的性能处理
   const handleQuickSelect = useCallback((days: number) => {
@@ -237,8 +242,7 @@ export function DateTimeInput({
             />
           }
           dayClassName={(date) => {
-            const today = new Date();
-            const isToday = date.toDateString() === today.toDateString();
+            const isToday = date.toDateString() === now.toDateString();
             const isSelected = date.toDateString() === zonedDate.toDateString();
             const isWeekend = date.getDay() === 0 || date.getDay() === 6;
 

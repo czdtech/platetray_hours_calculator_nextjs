@@ -25,6 +25,7 @@ export function EnhancedDatePicker({
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(selectedDate);
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
+  const [now, setNow] = useState<Date>(() => new Date(0));
 
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -81,6 +82,10 @@ export function EnhancedDatePicker({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, selectedDate, hoveredDate, onDateChange]);
 
+  useEffect(() => {
+    setNow(new Date());
+  }, []);
+
   const handleDateSelect = (date: Date) => {
     onDateChange(date);
     setIsOpen(false);
@@ -93,7 +98,6 @@ export function EnhancedDatePicker({
     requestAnimationFrame(() => {
       try {
         // 获取当前时区的今天日期
-        const now = new Date();
         const todayInTimezone = timeZoneService.utcToZonedTime(now, timezone);
         // 设置为指定天数后的开始时间
         todayInTimezone.setDate(todayInTimezone.getDate() + days);
@@ -177,7 +181,6 @@ export function EnhancedDatePicker({
           {/* 快捷选择 - 只在选中今天时显示 */}
           {(() => {
             // 检查选中的日期是否为用户时区的今天
-            const now = new Date();
             const todayInTimezone = timeZoneService.utcToZonedTime(now, timezone);
             const selectedInTimezone = timeZoneService.utcToZonedTime(selectedDate, timezone);
 
@@ -252,7 +255,6 @@ export function EnhancedDatePicker({
               {calendarDays.map((date) => {
                 const isSelected = isSameDay(date, selectedDate);
                 // 使用时区来判断是否为今天
-                const now = new Date();
                 const todayInTimezone = timeZoneService.utcToZonedTime(now, timezone);
                 const isTodayDate = isSameDay(date, todayInTimezone);
                 const isCurrentMonth = isSameMonth(date, currentMonth);
