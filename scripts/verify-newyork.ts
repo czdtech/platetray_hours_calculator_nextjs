@@ -69,8 +69,8 @@ export async function verifyTask() {
     }
   }
 
-  const tomorrowInNY = addDays(nowInNY, 1);
-  const tomorrowStr = formatInTimeZone(tomorrowInNY, NY_TIMEZONE, "yyyy-MM-dd");
+  const tomorrowUTC = addDays(nowUTC, 1);
+  const tomorrowStr = formatInTimeZone(tomorrowUTC, NY_TIMEZONE, "yyyy-MM-dd");
   const cacheKey = `ny-${tomorrowStr}`;
 
   console.log(`[Verify] 检查 ${cacheKey}`);
@@ -87,7 +87,7 @@ export async function verifyTask() {
 
   console.warn("[Miss] 未找到预计算数据，进行补偿计算");
   const calcResult = await planetaryHoursCalculator.calculate(
-    tomorrowInNY,
+    tomorrowUTC,
     LATITUDE_NY,
     LONGITUDE_NY,
     NY_TIMEZONE,

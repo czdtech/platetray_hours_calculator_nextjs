@@ -2,7 +2,7 @@ export interface BlogPost {
     slug: string;
     title: string;
     excerpt: string;
-    imageUrl: string;
+    imageUrl: string | import("next/image").StaticImageData;
     date: string;
     author?: string;
     readingTime?: number;

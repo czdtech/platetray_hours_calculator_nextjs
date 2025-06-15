@@ -18,6 +18,7 @@ import { formatInTimeZone as formatInTimeZoneDirect, fromZonedTime } from "date-
 import { subDays } from "date-fns";
 import { LayoutStabilizer } from "@/components/Performance/LayoutStabilizer";
 import { createLogger } from '@/utils/logger';
+import { ServerCurrentHourPayload } from '@/utils/planetaryHourHelpers';
 
 // 将 logger 创建移到组件外部，避免每次渲染时重新创建
 const logger = createLogger('CalculatorPageOptimized');
@@ -100,9 +101,10 @@ const FAQ_DATA = [
 
 interface CalculatorPageOptimizedProps {
   precomputed?: PlanetaryHoursCalculationResult | null;
+  initialHour?: ServerCurrentHourPayload | null;
 }
 
-function CalculatorCore({ precomputed }: CalculatorPageOptimizedProps) {
+function CalculatorCore({ precomputed, initialHour }: CalculatorPageOptimizedProps) {
   const { selectedDate, timezone, setSelectedDate, setTimezone, formatDate, formatDateWithTodayPrefix } =
     useDateContext();
 
@@ -530,6 +532,7 @@ function CalculatorCore({ precomputed }: CalculatorPageOptimizedProps) {
                       timeFormat={timeFormat}
                       isSameDate={renderData.isSameDate}
                       beforeSunrise={renderData.beforeSunrise}
+                      initialHourPayload={initialHour}
                     />
                   )}
                 </LayoutStabilizer>
@@ -770,7 +773,7 @@ function CalculatorCore({ precomputed }: CalculatorPageOptimizedProps) {
   );
 }
 
-export default function CalculatorPageOptimized({ precomputed }: CalculatorPageOptimizedProps = {}) {
+export default function CalculatorPageOptimized({ precomputed, initialHour }: CalculatorPageOptimizedProps = {}) {
   const initialTimezone = "America/New_York";
   // 取纽约当前日历日，并固定到当地中午 12:00，再转换回 UTC 作为初始日期，避免跨日误判
   const todayNYStr = formatInTimeZoneDirect(new Date(), initialTimezone, "yyyy-MM-dd");
@@ -778,7 +781,7 @@ export default function CalculatorPageOptimized({ precomputed }: CalculatorPageO
 
   return (
     <DateProvider initialDate={initialDate} initialTimezone={initialTimezone}>
-      <CalculatorCore precomputed={precomputed} />
+      <CalculatorCore precomputed={precomputed} initialHour={initialHour} />
     </DateProvider>
   );
 }

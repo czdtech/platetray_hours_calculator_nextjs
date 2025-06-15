@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogPost as _BlogPost } from "@/types/blog";
+import type { StaticImageData } from "next/image";
 import { blogPosts } from "@/data/blogPosts";
 import { getMarkdownContent } from "@/utils/markdown";
 import { ArticleLayout } from "@/components/Blog/ArticleLayout";
@@ -47,7 +48,9 @@ export async function generateMetadata({
   // 优先使用 markdown 文件中的元数据，然后是 blogPosts 数据
   const title = markdownContent?.title || post?.title || "";
   const description = markdownContent?.excerpt || post?.excerpt || "";
-  const imageUrl = post?.imageUrl || "/images/blog-default.jpg";
+  const rawImage = post?.imageUrl || "/images/blog-default.jpg";
+  const imageUrl =
+    typeof rawImage === "string" ? rawImage : (rawImage as StaticImageData).src;
   const articleUrl = `${SITE_URL}/blog/${slug}`;
 
   // 确保图片URL是完整的
@@ -107,7 +110,9 @@ export default async function BlogPostPage({
   const author =
     markdownContent?.author || post?.author || "Planetary Hours Team";
   const readingTime = post?.readingTime || 5;
-  const imageUrl = post?.imageUrl || "/images/blog-default.jpg";
+  const rawImage = post?.imageUrl || "/images/blog-default.jpg";
+  const imageUrl =
+    typeof rawImage === "string" ? rawImage : (rawImage as StaticImageData).src;
 
   const articleUrl = `${SITE_URL}/blog/${slug}`;
 
@@ -136,7 +141,7 @@ export default async function BlogPostPage({
 
   return (
     <ArticleLayout
-      hero={<ArticleHero title={title} imageUrl={imageUrl} />}
+      hero={<ArticleHero title={title} imageUrl={rawImage} />}
       breadcrumbItems={breadcrumbItems}
     >
       <JsonLd data={[articleSchema, breadcrumbSchema]} />

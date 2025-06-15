@@ -3,6 +3,8 @@ import path from "path";
 import { formatInTimeZone } from "date-fns-tz";
 import { NY_TIMEZONE, getCurrentUTCDate, toNewYorkTime } from "@/utils/time";
 import CalculatorClient from "@/components/Calculator/CalculatorClient";
+import { getCurrentHourPayload } from "@/utils/planetaryHourHelpers";
+
 import { planetaryHoursCalculator, PlanetaryHoursCalculationResult } from "@/services/PlanetaryHoursCalculator";
 
 // 纽约坐标常量
@@ -36,16 +38,27 @@ async function loadPrecomputed(key: string): Promise<PlanetaryHoursCalculationRe
 
 export default async function CalculatorServer() {
   const nowUTC = getCurrentUTCDate();
+  // 直接基于 UTC 时间格式化到纽约日期，避免重复时区转换导致跨天错误
+  const todayStr = formatInTimeZone(nowUTC, NY_TIMEZONE, "yyyy-MM-dd");
+
+  // 同时保留纽约当前时间对象供后续计算使用
   const nowInNY = toNewYorkTime(nowUTC);
-  const todayStr = formatInTimeZone(nowInNY, NY_TIMEZONE, "yyyy-MM-dd");
   const cacheKey = `ny-${todayStr}`;
 
   let precomputed: PlanetaryHoursCalculationResult | null = await loadPrecomputed(cacheKey);
 
+  // 若预计算文件存在但日期不一致（可能因缓存过期或生成错误），则忽略并重新计算
+  if (precomputed && precomputed.requestedDate !== todayStr) {
+    console.warn(
+      `[Warning] 预计算文件 ${cacheKey}.json 的 requestedDate=${precomputed.requestedDate} 与今日 ${todayStr} 不符，执行重新计算`,
+    );
+    precomputed = null;
+  }
+
   if (!precomputed) {
     // 回退即时计算
     precomputed = await planetaryHoursCalculator.calculate(
-      nowInNY,
+      nowUTC,
       LATITUDE_NY,
       LONGITUDE_NY,
       NY_TIMEZONE,
@@ -70,5 +83,11 @@ export default async function CalculatorServer() {
     );
   }
 
-  return <CalculatorClient precomputed={precomputed} />;
+  const payload = precomputed ? getCurrentHourPayload(precomputed, '24h') : null;
+
+  return (
+    <>
+      <CalculatorClient precomputed={precomputed} initialHour={payload} />
+    </>
+  );
 }

@@ -234,9 +234,10 @@ export class PlanetaryHoursCalculator {
         return null;
       }
 
-      const sunriseLocal = toZonedTime(sunrise, timezone);
-      const sunsetLocal = toZonedTime(sunset, timezone);
-      const nextSunriseLocal = toZonedTime(actualSunriseTomorrow, timezone);
+      // 直接使用 UTC 时间作为本地时间基准，避免 toZonedTime 导致日期错位
+      const sunriseLocal = new Date(sunrise.getTime());
+      const sunsetLocal = new Date(sunset.getTime());
+      const nextSunriseLocal = new Date(actualSunriseTomorrow.getTime());
 
       const planetaryHours = this.calculateAndSortPlanetaryHours(
         dayRuler,

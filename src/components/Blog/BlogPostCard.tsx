@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
+import type { StaticImageData } from "next/image";
 
 interface BlogPostCardProps {
   slug: string;
@@ -8,8 +9,8 @@ interface BlogPostCardProps {
   excerpt: string;
   date: string;
   author: string;
-  imageUrl: string;
-  readingTime: string;
+  imageUrl: string | StaticImageData;
+  readingTime: string | number;
 }
 
 export function BlogPostCard({
@@ -32,6 +33,7 @@ export function BlogPostCard({
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            placeholder="blur"
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import { blogPosts } from "@/data/blogPosts";
 import { Breadcrumb } from "@/components/SEO/Breadcrumb";
@@ -65,10 +65,11 @@ export default function BlogPage() {
                   <div className="md:flex">
                     <div className="md:flex-shrink-0 h-64 md:h-auto md:w-1/3 relative">
                       <Image
-                        src={blogPosts[0].imageUrl}
+                        src={blogPosts[0].imageUrl as string | StaticImageData}
                         alt={blogPosts[0].title}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
+                        placeholder="blur"
                         className="object-cover"
                       />
                     </div>
@@ -115,10 +116,11 @@ export default function BlogPage() {
                   <Link href={`/blog/${post.slug}`} className="block">
                     <div className="h-48 overflow-hidden relative">
                       <Image
-                        src={post.imageUrl}
+                        src={post.imageUrl as string | StaticImageData}
                         alt={post.title}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        placeholder="blur"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>

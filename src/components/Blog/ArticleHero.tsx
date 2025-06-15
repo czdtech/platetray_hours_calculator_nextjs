@@ -1,8 +1,8 @@
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 
 interface ArticleHeroProps {
   title: string;
-  imageUrl: string;
+  imageUrl: string | StaticImageData;
 }
 
 export function ArticleHero({ title, imageUrl }: ArticleHeroProps) {
@@ -12,8 +12,11 @@ export function ArticleHero({ title, imageUrl }: ArticleHeroProps) {
         src={imageUrl}
         alt={title}
         fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 1200px"
+        placeholder="blur"
         className="object-cover transition-transform duration-700 hover:scale-105"
         priority
+        quality={85}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
       <div className="relative z-10 flex items-end h-full container mx-auto px-6 pb-16">

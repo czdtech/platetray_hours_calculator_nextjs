@@ -2,7 +2,7 @@
   时间工具集合：统一从 UTC 时间戳出发，避免直接依赖服务器或客户端本地时区。
   所有时间计算必须先显式指定目标时区，再进行后续 getHours / format 操作。
 */
-import { toZonedTime } from "date-fns-tz";
+import { formatInTimeZone } from "date-fns-tz";
 
 export const NY_TIMEZONE = "America/New_York" as const;
 
@@ -19,5 +19,7 @@ export function getCurrentUTCDate(): Date {
  */
 export function toNewYorkTime(input: number | Date): Date {
   const date = typeof input === "number" ? new Date(input) : input;
-  return toZonedTime(date, NY_TIMEZONE);
+  // 使用 formatInTimeZone 输出带时区偏移的字符串，再由 Date 解析为对应时间点
+  const zoned = formatInTimeZone(date, NY_TIMEZONE, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+  return new Date(zoned);
 }

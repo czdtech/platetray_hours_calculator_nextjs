@@ -10,6 +10,7 @@ import {
   PLANET_SYMBOLS,
 } from "@/constants/planetColors";
 
+import { ServerCurrentHourPayload } from '@/utils/planetaryHourHelpers';
 interface CurrentHourDisplayProps {
   currentHour: FormattedPlanetaryHour | null;
   dayRuler?: string;
@@ -17,6 +18,7 @@ interface CurrentHourDisplayProps {
   timeFormat?: "12h" | "24h";
   isSameDate?: boolean;
   beforeSunrise?: boolean;
+  initialHourPayload?: ServerCurrentHourPayload | null;
 }
 
 export function CurrentHourDisplay({
@@ -26,11 +28,24 @@ export function CurrentHourDisplay({
   timeFormat = "24h",
   isSameDate: _isSameDate = true,
   beforeSunrise = false,
+  initialHourPayload = null,
 }: CurrentHourDisplayProps) {
   // 使用DateContext获取时区及选中日期
   const { timezone, selectedDate, formatDate } = useDateContext();
-  // 判断所选日期是否为"今天"（以所选时区计）
   const now = new Date();
+  // 判断用户当前视图是否为今天（同一时区下）
+  // 只有在"今天"视图且客户端尚未算出 currentHour 时，才使用服务器预先提供的 payload，
+  // 避免过去/未来日期误用今日数据。
+  const isTodayPage = timeZoneService.formatInTimeZone(selectedDate ?? now, timezone, "yyyy-MM-dd") ===
+                      timeZoneService.formatInTimeZone(now, timezone, "yyyy-MM-dd");
+
+  if (!currentHour && isTodayPage && initialHourPayload?.currentHour) {
+    currentHour = initialHourPayload.currentHour;
+    dayRuler = dayRuler ?? initialHourPayload.dayRuler ?? undefined;
+    sunriseTime = sunriseTime ?? initialHourPayload.sunrise ?? undefined;
+    // ⚠️ 不要在这里强制重置 beforeSunrise，避免在凌晨日出前阶段被误判
+  }
+  // 判断所选日期是否为"今天"（以所选时区计）
   const selectedDateStr = timeZoneService.formatInTimeZone(
     selectedDate,
     timezone,
@@ -44,24 +59,22 @@ export function CurrentHourDisplay({
   const isSelectedDateToday = selectedDateStr === todayStr;
   // 检查是否有日出时间，并且当前时间是否早于日出时间
   const isBeforeSunrise = sunriseTime && now < sunriseTime;
-  // 综合父组件传入与即时计算的"日出前"判断
-  const isPreSunrise = beforeSunrise || isBeforeSunrise;
+  // 仅当页面日期为今天时，才考虑"日出前"场景，避免未来日期误判
+  const isPreSunrise = isSelectedDateToday && (beforeSunrise || isBeforeSunrise);
 
-  // 仅当「今天」且(当前行星时尚未开始 或 正处于日出前)才显示提示
-  const shouldShowPreSunriseMessage =
-    isSelectedDateToday && (!currentHour || isPreSunrise);
+  // —— 何时显示"日出前提示" ——
+  // 场景：
+  // A) 选中的日期与行星时数据的实际日期不一致（如凌晨属于前一天夜时段）；
+  // B) 明确标记 beforeSunrise 或计算得出 isBeforeSunrise 为 true。
+  // 只要满足 A 或 B，即可认为应显示提示信息。
+  const shouldShowPreSunriseMessage = !_isSameDate || isPreSunrise;
 
   // 计算所选日期与今天（同一时区）的先后关系
   const isSelectedDatePast = selectedDateStr < todayStr;
   const isSelectedDateFuture = selectedDateStr > todayStr;
 
-  // 何时显示当前行星时卡片？
-  // 1) 选中日期在过去；或
-  // 2) 选中日期是今天且不处于"日出前提示"状态
-  const showCurrentHour =
-    !!currentHour &&
-    (isSelectedDatePast ||
-      (isSelectedDateToday && !shouldShowPreSunriseMessage));
+  // 仅在非未来日期且行星时数据匹配时显示实时小时。
+  const showCurrentHour = !!currentHour && _isSameDate && !isSelectedDateFuture;
 
   // 格式化日出时间
   const formattedSunriseTime = sunriseTime

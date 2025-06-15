@@ -80,6 +80,7 @@ async function writeToLocalFile(key: string, json: string) {
 
 export async function precomputeTask() {
   const nowUTC = getCurrentUTCDate();
+  // 基于 UTC -> 纽约时间一次性转换
   const nowInNY = toNewYorkTime(nowUTC);
 
   // 如果设置了 FORCE_RUN=true，则忽略时间判断；否则仅在 22:00 运行。
@@ -90,8 +91,8 @@ export async function precomputeTask() {
     }
   }
 
-  const tomorrowInNY = addDays(nowInNY, 1);
-  const tomorrowStr = formatInTimeZone(tomorrowInNY, NY_TIMEZONE, "yyyy-MM-dd");
+  const tomorrowUTC = addDays(nowUTC, 1);
+  const tomorrowStr = formatInTimeZone(tomorrowUTC, NY_TIMEZONE, "yyyy-MM-dd");
   const cacheKey = `ny-${tomorrowStr}`;
 
   // 若缓存已存在则跳过（除非 FORCE_RUN）
@@ -105,7 +106,7 @@ export async function precomputeTask() {
 
   console.log(`[Start] 计算 ${cacheKey}`);
   const calcResult = await planetaryHoursCalculator.calculate(
-    tomorrowInNY,
+    tomorrowUTC,
     LATITUDE_NY,
     LONGITUDE_NY,
     NY_TIMEZONE,
