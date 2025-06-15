@@ -222,6 +222,15 @@ function CalculatorCore({ precomputed, initialHour }: CalculatorPageOptimizedPro
     [selectedDate, timezone]
   );
 
+  // --------- 解决首屏 hydration mismatch (#418) ---------
+  // 使用固定占位时间（1970-01-01）保证服务器与客户端首帧一致，
+  // hydration 完成后再异步更新为真实时间。
+  const [now, setNow] = useState<Date>(() => new Date(0));
+  useEffect(() => {
+    // 客户端挂载后立即更新当前时间
+    setNow(new Date());
+  }, []);
+
   useEffect(() => {
     let isCancelled = false;
 
@@ -317,14 +326,14 @@ function CalculatorCore({ precomputed, initialHour }: CalculatorPageOptimizedPro
   useEffect(() => {
     if (currentHour) {
       const sunrise = planetaryHoursRaw?.sunriseLocal;
-      const isBeforeSunrise = sunrise ? new Date() < sunrise : false;
+      const isBeforeSunrise = sunrise ? now < sunrise : false;
       if (isBeforeSunrise) {
         setActiveTab("day");
       } else {
         setActiveTab(currentHour.type === "night" ? "night" : "day");
       }
     }
-  }, [currentHour, planetaryHoursRaw]);
+  }, [currentHour, planetaryHoursRaw, now]);
 
   // 延迟加载FAQ部分
   useEffect(() => {
@@ -447,7 +456,7 @@ function CalculatorCore({ precomputed, initialHour }: CalculatorPageOptimizedPro
     let ephemDateStr = formatInTimeZoneDirect(selectedDate, timezone, "yyyy-MM-dd");
 
     if (sunriseLocal) {
-      const nowUtc = new Date();
+      const nowUtc = now;
       const nowInTzDay = formatInTimeZoneDirect(nowUtc, timezone, "yyyy-MM-dd");
       const sunriseDay = formatInTimeZoneDirect(sunriseLocal, timezone, "yyyy-MM-dd");
 
@@ -466,9 +475,9 @@ function CalculatorCore({ precomputed, initialHour }: CalculatorPageOptimizedPro
       sunriseLocal,
       isSameDate,
       selectedDayRuler,
-      beforeSunrise: sunriseLocal ? new Date() < sunriseLocal : false,
+      beforeSunrise: sunriseLocal ? now < sunriseLocal : false,
     };
-  }, [planetaryHoursRaw, selectedDate, timezone]);
+  }, [planetaryHoursRaw, selectedDate, timezone, now]);
 
   return (
     <>
@@ -564,16 +573,9 @@ function CalculatorCore({ precomputed, initialHour }: CalculatorPageOptimizedPro
                       </svg>
                       <span>
                         {timezone} (
-                        {timeZoneService.getTimeZoneAbbreviation(
-                          new Date(),
-                          timezone,
-                        )}
+                        {timeZoneService.getTimeZoneAbbreviation(now, timezone)}
                         ,{" "}
-                        {timeZoneService.formatInTimeZone(
-                          new Date(),
-                          timezone,
-                          "z",
-                        )}
+                        {timeZoneService.formatInTimeZone(now, timezone, "z")}
                         )
                       </span>
                     </div>
