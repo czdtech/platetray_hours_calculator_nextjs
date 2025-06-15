@@ -110,6 +110,9 @@ const nextConfig: NextConfig = {
   // 生成ETags
   generateEtags: true,
 
+  // 生成浏览器 Source Map 以便线上调试（解决 React #418 排查困难）
+  productionBrowserSourceMaps: true,
+
   // Turbopack 配置
   turbopack: {
     rules: {
