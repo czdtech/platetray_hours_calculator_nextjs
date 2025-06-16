@@ -59,7 +59,7 @@ const nextConfig: NextConfig = {
           }
         ],
       },
-      // 静态资源缓存
+      // 静态资源缓存 - Images
       {
         source: '/images/(.*)',
         headers: [
@@ -69,6 +69,16 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // 静态资源缓存 - Next.js build assets
+      {
+        source: '/_next/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      }
     ];
   },
 
