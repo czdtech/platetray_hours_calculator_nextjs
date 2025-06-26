@@ -3,7 +3,7 @@
 import { FormattedPlanetaryHour } from "@/utils/planetaryHourFormatters";
 import { useDateContext } from "@/contexts/DateContext";
 import { timeZoneService } from "@/services/TimeZoneService";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 // 导入全局行星颜色常量
 import {
   PLANET_COLOR_CLASSES,
@@ -34,11 +34,8 @@ export function CurrentHourDisplay({
   // 使用DateContext获取时区及选中日期
   const { timezone, selectedDate, formatDate } = useDateContext();
 
-  // 使用占位时间 (1970-01-01) 保证服务器与客户端首帧一致，hydration 后再更新
-  const [now, setNow] = useState<Date>(() => new Date(0));
-  useEffect(() => {
-    setNow(new Date());
-  }, []);
+  // 使用当前时间，避免 new Date(0) 反模式
+  const [now] = useState<Date>(() => new Date());
 
   // 判断用户当前视图是否为今天（同一时区下）
   // 只有在"今天"视图且客户端尚未算出 currentHour 时，才使用服务器预先提供的 payload，

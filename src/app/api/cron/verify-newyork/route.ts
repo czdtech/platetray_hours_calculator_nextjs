@@ -5,9 +5,10 @@ export async function GET() {
   try {
     await verifyTask();
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[Cron] verify-newyork error', error);
-    return NextResponse.json({ success: false, error: String(error?.message ?? error) }, {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ success: false, error: errorMessage }, {
       status: 500,
     });
   }

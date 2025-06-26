@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useId, useState, useCallback, useEffect } from "react";
+import { useRef, useId, useState, useCallback } from "react";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -25,11 +25,8 @@ export function DateTimeInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const inputId = useId();
 
-  // -------- 解决 hydration mismatch (#418) --------
-  const [now, setNow] = useState<Date>(() => new Date(0));
-  useEffect(() => {
-    setNow(new Date());
-  }, []);
+  // 使用当前时间，避免 new Date(0) 反模式
+  const [now] = useState<Date>(() => new Date());
 
   // Convert UTC date to zoned date for DatePicker
   const zonedDate = utcToZonedTime(selectedDate);

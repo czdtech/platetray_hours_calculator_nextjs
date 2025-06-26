@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { formatInTimeZone } from "date-fns-tz";
-import { NY_TIMEZONE, getCurrentUTCDate, toNewYorkTime } from "@/utils/time";
+import { NY_TIMEZONE, getCurrentUTCDate } from "@/utils/time";
 import CalculatorClient from "@/components/Calculator/CalculatorClient";
 import { getCurrentHourPayload } from "@/utils/planetaryHourHelpers";
 
@@ -29,7 +29,7 @@ async function loadPrecomputed(key: string): Promise<PlanetaryHoursCalculationRe
     const json = await fs.readFile(filePath, "utf-8");
     const raw = JSON.parse(json);
     return reviveDates(raw) as PlanetaryHoursCalculationResult;
-  } catch (_) {
+  } catch {
     // ignore
   }
   // 2) 未来可加入 Vercel KV 读取逻辑 (边缘运行时除外)
@@ -40,9 +40,6 @@ export default async function CalculatorServer() {
   const nowUTC = getCurrentUTCDate();
   // 直接基于 UTC 时间格式化到纽约日期，避免重复时区转换导致跨天错误
   const todayStr = formatInTimeZone(nowUTC, NY_TIMEZONE, "yyyy-MM-dd");
-
-  // 同时保留纽约当前时间对象供后续计算使用
-  const nowInNY = toNewYorkTime(nowUTC);
   const cacheKey = `ny-${todayStr}`;
 
   let precomputed: PlanetaryHoursCalculationResult | null = await loadPrecomputed(cacheKey);
@@ -69,7 +66,9 @@ export default async function CalculatorServer() {
         const dir = path.resolve(process.cwd(), "public", "precomputed");
         await fs.mkdir(dir, { recursive: true });
         await fs.writeFile(path.join(dir, `${cacheKey}.json`), JSON.stringify(precomputed), "utf-8");
-      } catch (_) {}
+      } catch {
+        // Ignore file write errors in development
+      }
     }
   }
 

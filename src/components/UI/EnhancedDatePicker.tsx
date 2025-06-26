@@ -25,7 +25,8 @@ export function EnhancedDatePicker({
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(selectedDate);
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
-  const [now, setNow] = useState<Date>(() => new Date(0));
+  // 使用当前时间，避免 new Date(0) 反模式
+  const [now] = useState<Date>(() => new Date());
 
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -81,10 +82,6 @@ export function EnhancedDatePicker({
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, selectedDate, hoveredDate, onDateChange]);
-
-  useEffect(() => {
-    setNow(new Date());
-  }, []);
 
   const handleDateSelect = (date: Date) => {
     onDateChange(date);

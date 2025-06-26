@@ -181,7 +181,7 @@ NEXT_PUBLIC_GSC_VERIFICATION=
 
 | 问题 | 原因 | 解决方案 |
 |------|------|----------|
-| `lightningcss.*.node` 丢失 | 使用 npm 安装依赖 | 删除 `node_modules` & `package-lock.json`，改用 Yarn |
+| `lightningcss.*.node` 丢失 | 使用 npm 安装依赖 | 删除 `node_modules`，确保使用 Yarn 安装依赖 |
 | 首页闪烁 / 数据缺失 | KV 未生成 JSON | 手动运行预计算脚本或等待下次定时任务 |
 | Hydration mismatch | 开发环境加载 AdSense | 开发模式已用占位符代替，无需处理 |
 

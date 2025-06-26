@@ -27,8 +27,7 @@ const logger = createLogger('CalculatorPageOptimized');
 const LazyHoursList = lazy(() => import("@/components/Calculator/HoursList").then(module => ({ default: module.HoursList })));
 const LazyFAQSection = lazy(() => import("@/components/FAQ/FAQSection").then(module => ({ default: module.FAQSection })));
 
-// 导入全局行星颜色常量
-import { PLANET_COLOR_CLASSES as _PLANET_COLOR_CLASSES, PLANET_SYMBOLS as _PLANET_SYMBOLS } from "@/constants/planetColors";
+
 
 interface Coordinates {
   latitude: number;
@@ -222,14 +221,8 @@ function CalculatorCore({ precomputed, initialHour }: CalculatorPageOptimizedPro
     [selectedDate, timezone]
   );
 
-  // --------- 解决首屏 hydration mismatch (#418) ---------
-  // 使用固定占位时间（1970-01-01）保证服务器与客户端首帧一致，
-  // hydration 完成后再异步更新为真实时间。
-  const [now, setNow] = useState<Date>(() => new Date(0));
-  useEffect(() => {
-    // 客户端挂载后立即更新当前时间
-    setNow(new Date());
-  }, []);
+  // 使用当前时间，避免 new Date(0) 反模式
+  const [now] = useState<Date>(() => new Date());
 
   useEffect(() => {
     let isCancelled = false;
@@ -319,7 +312,8 @@ function CalculatorCore({ precomputed, initialHour }: CalculatorPageOptimizedPro
     setTimezone,
     hasInitialCalculated,
     isTimezoneUpdating,
-    precomputed
+    precomputed,
+    planetaryHoursRaw?.requestedDate
   ]);
 
   // 当前小时变化时更新活动标签
@@ -333,7 +327,8 @@ function CalculatorCore({ precomputed, initialHour }: CalculatorPageOptimizedPro
         setActiveTab(currentHour.type === "night" ? "night" : "day");
       }
     }
-  }, [currentHour, planetaryHoursRaw, now]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentHour, planetaryHoursRaw?.sunriseLocal, now]);
 
   // 延迟加载FAQ部分
   useEffect(() => {
@@ -438,13 +433,15 @@ function CalculatorCore({ precomputed, initialHour }: CalculatorPageOptimizedPro
         console.error('Error in handleCitySelect:', error);
       }
     });
-  }, [setTimezone]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleDateChange = useCallback((date: Date) => {
     logger.info("📅 [Date] 日期更新:", date.toISOString());
     setSelectedDate(date);
     calculationParamsRef.current = ""; // 清空参数缓存，强制重新计算
-  }, [setSelectedDate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleTimeFormatChange = useCallback((format: "12h" | "24h") => {
     setTimeFormat(format);
@@ -571,7 +568,7 @@ function CalculatorCore({ precomputed, initialHour }: CalculatorPageOptimizedPro
                         <circle cx="12" cy="12" r="10" />
                         <path d="M12 6v6l4 2" />
                       </svg>
-                      <span>
+                      <span suppressHydrationWarning={true}>
                         {timezone} (
                         {timeZoneService.getTimeZoneAbbreviation(now, timezone)}
                         ,{" "}

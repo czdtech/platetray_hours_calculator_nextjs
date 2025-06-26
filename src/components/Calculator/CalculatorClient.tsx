@@ -2,9 +2,10 @@
 
 import CalculatorPageOptimized from '@/app/CalculatorPageOptimized';
 import { ServerCurrentHourPayload } from '@/utils/planetaryHourHelpers';
+import { PlanetaryHoursCalculationResult } from '@/services/PlanetaryHoursCalculator';
 
 interface Props {
-  precomputed?: any;
+  precomputed?: PlanetaryHoursCalculationResult | null;
   initialHour?: ServerCurrentHourPayload | null;
 }
 

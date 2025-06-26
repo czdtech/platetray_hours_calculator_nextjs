@@ -19,14 +19,14 @@ export function getCurrentHourPayload(
   const now = new Date();
 
   // 找出当前小时索引
-  const idx = planetaryHours.findIndex(h => now >= (h as any).startTime && now < (h as any).endTime);
+  const idx = planetaryHours.findIndex(h => now >= h.startTime && now < h.endTime);
   const formatted = idx !== -1
     ? formatHoursToList([
-        planetaryHours[idx] as any
+        planetaryHours[idx]
       ], timezone, timeFormat)[0]
     : null;
 
-  const dayRuler = planetaryHours.length ? (planetaryHours[0] as any).ruler : null;
+  const dayRuler = planetaryHours.length ? planetaryHours[0].ruler : null;
 
   return {
     currentHour: formatted,

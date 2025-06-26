@@ -1,6 +1,5 @@
 import SunCalc from "suncalc";
 import {
-  toZonedTime,
   fromZonedTime,
   formatInTimeZone,
 } from "date-fns-tz";

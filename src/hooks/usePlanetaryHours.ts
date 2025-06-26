@@ -99,7 +99,7 @@ export function usePlanetaryHours(
 
         setIsLoading(true);
         setError(null);
-        setPlanetaryHoursRaw(null); // Immediately clear old data to show loading state
+        // 保持旧数据直到新数据计算完成，避免闪烁
 
         logger.info(
           `计算行星时: 日期=${dateStr}, 时区=${timezoneInput}, 坐标=[${latitude}, ${longitude}]`,
