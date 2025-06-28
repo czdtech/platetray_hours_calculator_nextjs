@@ -181,61 +181,49 @@ const pwaConfig = withPWA({
   register: true,
   skipWaiting: true,
   runtimeCaching: [
-    // 字体资源 - 合并Google字体缓存
+            {
+          urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'google-fonts-cache',
+            expiration: {
+              maxEntries: 10,
+              maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+            },
+          },
+        },
     {
-      urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
+      urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
       handler: 'CacheFirst',
       options: {
-        cacheName: 'fonts',
+        cacheName: 'gstatic-fonts-cache',
         expiration: {
-          maxEntries: 20,
-          maxAgeSeconds: 60 * 60 * 24 * 365, // 365 days
+          maxEntries: 10,
+          maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
         },
       },
     },
-
-    // 静态资源 - 合并JS/CSS/图片
     {
-      urlPattern: /\.(js|css|png|jpg|jpeg|gif|svg|ico|webp)$/i,
-      handler: 'StaleWhileRevalidate',
+      urlPattern: /\.(?:png|jpg|jpeg|svg)$/i,
+      handler: 'CacheFirst',
       options: {
-        cacheName: 'static-assets',
+        cacheName: 'images',
         expiration: {
-          maxEntries: 100,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+          maxEntries: 60,
+          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
         },
       },
     },
-
-    // API请求
     {
       urlPattern: /\/api\/.*$/i,
       handler: 'NetworkFirst',
-      method: 'GET',
       options: {
-        cacheName: 'api',
+        cacheName: 'apis',
         expiration: {
-          maxEntries: 20,
-          maxAgeSeconds: 60 * 60 * 24, // 24 hours
+          maxEntries: 16,
+          maxAgeSeconds: 24 * 60 * 60, // 24 hours
         },
-        networkTimeoutSeconds: 5,
-      },
-    },
-
-    // 预计算文件（保留）
-    {
-      urlPattern: /^\/precomputed\/.*\.json$/i,
-      handler: 'CacheFirst',
-      method: 'GET',
-      options: {
-        cacheName: 'precomputed',
-        expiration: {
-          maxEntries: 30,
-          maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
-        },
-        cacheableResponse: {
-          statuses: [0, 200],
-        },
+        networkTimeoutSeconds: 10, // fall back to cache if network is slow
       },
     },
   ],

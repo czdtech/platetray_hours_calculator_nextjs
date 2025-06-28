@@ -85,8 +85,19 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 3600;
-
+/**
+ * 主页面组件 - 实现动态缓存策略
+ *
+ * 第一阶段修复方案：
+ * 1. 移除固定的revalidate时间
+ * 2. 让CalculatorServer组件根据当前行星时状态动态计算缓存时间
+ * 3. 通过服务端组件确保首次访问的准确性
+ *
+ * 缓存策略：
+ * - 正常期：根据到下一个行星时切换点的时间设置TTL
+ * - 敏感期（切换前5分钟）：30秒短缓存
+ * - 错误情况：15分钟后备缓存
+ */
 export default function HomePage() {
   return <CalculatorServer />;
 }

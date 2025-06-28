@@ -91,13 +91,77 @@ export interface PlanetaryHoursCalculationResult {
   message?: string;
 }
 
+// 内存缓存：缓存当天的计算结果
+interface CacheEntry {
+  data: PlanetaryHoursCalculationResult;
+  calculatedAt: Date;
+  cacheKey: string;
+}
+
+class MemoryCache {
+  private cache = new Map<string, CacheEntry>();
+  private readonly maxEntries = 10; // 最多缓存10个不同位置的数据
+  private readonly cacheValidityMs = 6 * 60 * 60 * 1000; // 6小时有效期
+
+  generateKey(date: Date, latitude: number, longitude: number, timezone: string): string {
+    const dateStr = date.toISOString().split('T')[0];
+    // 坐标精确到小数点后3位（约100米精度）
+    const latRounded = Math.round(latitude * 1000) / 1000;
+    const lonRounded = Math.round(longitude * 1000) / 1000;
+    return `${dateStr}_${latRounded}_${lonRounded}_${timezone}`;
+  }
+
+  get(key: string): PlanetaryHoursCalculationResult | null {
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+
+    // 检查缓存是否过期
+    const now = new Date();
+    const ageMs = now.getTime() - entry.calculatedAt.getTime();
+    if (ageMs > this.cacheValidityMs) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    return entry.data;
+  }
+
+  set(key: string, data: PlanetaryHoursCalculationResult): void {
+    // 如果缓存已满，删除最旧的条目
+    if (this.cache.size >= this.maxEntries) {
+      const oldestKey = this.cache.keys().next().value;
+      if (oldestKey) {
+        this.cache.delete(oldestKey);
+      }
+    }
+
+    this.cache.set(key, {
+      data,
+      calculatedAt: new Date(),
+      cacheKey: key
+    });
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+
+  getStats(): { size: number; keys: string[] } {
+    return {
+      size: this.cache.size,
+      keys: Array.from(this.cache.keys())
+    };
+  }
+}
+
+// 全局内存缓存实例
+const memoryCache = new MemoryCache();
+
 export class PlanetaryHoursCalculator {
   private static instance: PlanetaryHoursCalculator;
-  private cache: Map<string, PlanetaryHoursCalculationResult>;
   private readonly MAX_CACHE_SIZE = 50; // 限制缓存大小防止内存泄漏
 
   private constructor() {
-    this.cache = new Map();
   }
 
   public static getInstance(): PlanetaryHoursCalculator {
@@ -111,7 +175,7 @@ export class PlanetaryHoursCalculator {
    * 清理缓存（用于调试）
    */
   public clearCache(): void {
-    this.cache.clear();
+    memoryCache.clear();
     logger.debug('🧹 PlanetaryHoursCalculator 缓存已清空');
   }
 
@@ -119,28 +183,19 @@ export class PlanetaryHoursCalculator {
    * 获取缓存统计信息（用于调试）
    */
   public getCacheStats(): { size: number; keys: string[] } {
-    return {
-      size: this.cache.size,
-      keys: Array.from(this.cache.keys())
-    };
+    return memoryCache.getStats();
   }
 
   /**
    * 管理缓存大小，防止内存无限增长
    */
   private manageCacheSize(): void {
-    if (this.cache.size > this.MAX_CACHE_SIZE) {
-      // 删除最老的一半条目，保留最新的条目
-      const entries = Array.from(this.cache.entries());
-      const keepCount = Math.floor(this.MAX_CACHE_SIZE / 2);
-      this.cache.clear();
-
-      // 保留最新的条目
-      entries.slice(-keepCount).forEach(([key, value]) => {
-        this.cache.set(key, value);
-      });
-
-      logger.cache(`缓存大小管理: 保留最新的 ${keepCount} 个条目`);
+    const stats = memoryCache.getStats();
+    if (stats.size > this.MAX_CACHE_SIZE) {
+      // 如果缓存超过限制，清空缓存
+      // 注意：MemoryCache类内部已经有LRU逻辑，这里简化处理
+      memoryCache.clear();
+      logger.cache(`缓存大小管理: 缓存已清空，超过限制 ${this.MAX_CACHE_SIZE}`);
     }
   }
 
@@ -192,15 +247,22 @@ export class PlanetaryHoursCalculator {
     elevation: number = 0,
   ): Promise<PlanetaryHoursCalculationResult | null> {
     try {
-      // 检查缓存
-      const cacheKey = this.getCacheKey(date, latitude, longitude, timezone);
-      const cachedResult = this.cache.get(cacheKey);
-      if (cachedResult) {
-        logger.data(`使用缓存结果: ${cacheKey}`);
-        return cachedResult;
+      // 1. 检查内存缓存
+      const cacheKey = memoryCache.generateKey(date, latitude, longitude, timezone);
+      const cached = memoryCache.get(cacheKey);
+      if (cached) {
+        logger.info('命中内存缓存', { cacheKey });
+        return cached;
       }
 
-      logger.process(`开始新计算: ${cacheKey}`);
+      const startTime = Date.now();
+      logger.info('开始行星时计算', {
+        date: date.toISOString(),
+        latitude,
+        longitude,
+        timezone,
+        cacheKey
+      });
 
       // 以目标时区解析日期，避免受浏览器本地时区影响
       const localDateString = formatInTimeZone(date, timezone, "yyyy-MM-dd");
@@ -283,10 +345,17 @@ export class PlanetaryHoursCalculator {
         longitude,
       };
 
-      // 保存到缓存
-      this.cache.set(cacheKey, result);
+      // 2. 存入内存缓存
+      memoryCache.set(cacheKey, result);
       this.manageCacheSize(); // 管理缓存大小
       logger.cache(`结果已缓存: ${cacheKey}`);
+
+      const duration = Date.now() - startTime;
+      logger.info('行星时计算完成并缓存', {
+        duration: `${duration}ms`,
+        cacheKey,
+        cacheStats: memoryCache.getStats()
+      });
 
       return result;
     } catch (error) {

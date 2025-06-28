@@ -65,16 +65,5 @@
       "source": "/api/health",
       "destination": "/api/health"
     }
-  ],
-
-  "crons": [
-    {
-      "path": "/api/cron/precompute-newyork",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/cron/precompute-newyork",
-      "schedule": "0 3 * * *"
-    }
   ]
 }

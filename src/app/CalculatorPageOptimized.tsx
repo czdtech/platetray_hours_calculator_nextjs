@@ -102,9 +102,12 @@ interface CalculatorPageOptimizedProps {
   precomputed?: PlanetaryHoursCalculationResult | null;
   initialHour?: ServerCurrentHourPayload | null;
   serverTime?: string; // 服务端时间戳，确保 SSR/CSR 一致性
+  cacheControl?: string; // 缓存控制头信息
+  ttlInfo?: import('@/utils/cache/dynamicTTL').TTLCalculationResult; // TTL计算结果
+  error?: string; // 错误信息
 }
 
-function CalculatorCore({ precomputed, initialHour, serverTime }: CalculatorPageOptimizedProps) {
+function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, ttlInfo, error }: CalculatorPageOptimizedProps) {
   const { selectedDate, timezone, setSelectedDate, setTimezone, formatDate, formatDateWithTodayPrefix } =
     useDateContext();
 
@@ -757,7 +760,7 @@ function CalculatorCore({ precomputed, initialHour, serverTime }: CalculatorPage
   );
 }
 
-export default function CalculatorPageOptimized({ precomputed, initialHour, serverTime }: CalculatorPageOptimizedProps = {}) {
+export default function CalculatorPageOptimized({ precomputed, initialHour, serverTime, cacheControl, ttlInfo, error }: CalculatorPageOptimizedProps = {}) {
   const initialTimezone = "America/New_York";
 
   // 使用服务端传递的时间戳确保 SSR/CSR 一致性
@@ -767,7 +770,14 @@ export default function CalculatorPageOptimized({ precomputed, initialHour, serv
 
   return (
     <DateProvider initialDate={initialDate} initialTimezone={initialTimezone}>
-      <CalculatorCore precomputed={precomputed} initialHour={initialHour} serverTime={serverTime} />
+      <CalculatorCore
+        precomputed={precomputed}
+        initialHour={initialHour}
+        serverTime={serverTime}
+        cacheControl={cacheControl}
+        ttlInfo={ttlInfo}
+        error={error}
+      />
     </DateProvider>
   );
 }
