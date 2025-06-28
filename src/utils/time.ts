@@ -14,6 +14,18 @@ export function getCurrentUTCDate(): Date {
 }
 
 /**
+ * 获取当前时间的统一入口，优先使用传入的基准时间，用于确保 SSR/CSR 一致性
+ * @param baseTime - 可选的基准时间（通常来自服务端）
+ * @returns 当前时间的 Date 对象
+ */
+export function getCurrentTime(baseTime?: string | Date): Date {
+  if (baseTime) {
+    return typeof baseTime === 'string' ? new Date(baseTime) : baseTime;
+  }
+  return getCurrentUTCDate();
+}
+
+/**
  * 将给定 UTC 时间戳（或 Date 对象）转换为纽约时区的 Date 对象。
  * @param input - UTC 毫秒值或 Date
  */

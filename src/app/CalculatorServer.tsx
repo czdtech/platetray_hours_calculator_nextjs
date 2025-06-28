@@ -4,8 +4,11 @@ import { formatInTimeZone } from "date-fns-tz";
 import { NY_TIMEZONE, getCurrentUTCDate } from "@/utils/time";
 import CalculatorClient from "@/components/Calculator/CalculatorClient";
 import { getCurrentHourPayload } from "@/utils/planetaryHourHelpers";
+import { createLogger } from '@/utils/unified-logger';
 
 import { planetaryHoursCalculator, PlanetaryHoursCalculationResult } from "@/services/PlanetaryHoursCalculator";
+
+const logger = createLogger('CalculatorServer');
 
 // 纽约坐标常量
 const LATITUDE_NY = 40.7128;
@@ -46,8 +49,8 @@ export default async function CalculatorServer() {
 
   // 若预计算文件存在但日期不一致（可能因缓存过期或生成错误），则忽略并重新计算
   if (precomputed && precomputed.requestedDate !== todayStr) {
-    console.warn(
-      `[Warning] 预计算文件 ${cacheKey}.json 的 requestedDate=${precomputed.requestedDate} 与今日 ${todayStr} 不符，执行重新计算`,
+    logger.warn(
+      `预计算文件 ${cacheKey}.json 的 requestedDate=${precomputed.requestedDate} 与今日 ${todayStr} 不符，执行重新计算`,
     );
     precomputed = null;
   }
@@ -86,7 +89,11 @@ export default async function CalculatorServer() {
 
   return (
     <>
-      <CalculatorClient precomputed={precomputed} initialHour={payload} />
+      <CalculatorClient
+        precomputed={precomputed}
+        initialHour={payload}
+        serverTime={nowUTC.toISOString()}
+      />
     </>
   );
 }

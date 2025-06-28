@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react';
 
-import { createLogger } from '@/utils/logger';
+import { createLogger } from '@/utils/unified-logger';
 /**
  * 性能优化Hook
  * 提供防抖、节流和缓存功能
@@ -114,7 +114,7 @@ export function useRenderPerformance(componentName: string) {
     const timeSinceLastRender = now - lastRenderTimeRef.current;
 
     if (process.env.NODE_ENV === 'development') {
-      logger.info(`🎭 [${componentName}] 渲染次数: ${renderCountRef.current}, 距离上次渲染: ${timeSinceLastRender}ms`);
+      logger.debug(`🎭 [${componentName}] 渲染次数: ${renderCountRef.current}, 距离上次渲染: ${timeSinceLastRender}ms`);
     }
 
     lastRenderTimeRef.current = now;

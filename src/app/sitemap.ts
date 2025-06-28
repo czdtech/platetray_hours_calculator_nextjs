@@ -5,6 +5,12 @@ import staticPageDates from "@/data/staticPageDates.json"; // 导入静态页面
 // blogDates.json is implicitly used by blogPosts.ts, so no direct import needed here if blogPosts already processes it.
 // However, if blogPosts only contains slugs and we need to fetch dates separately:
 import blogActualDates from "@/data/blogDates.json"; // Explicitly import for clarity if needed for direct use
+import { createLogger } from '@/utils/unified-logger';
+
+const logger = createLogger('Sitemap');
+
+// 语义化常量，替代 new Date(0) 反模式
+const EPOCH_DATE = new Date('1970-01-01T00:00:00Z');
 
 // Helper function to get the latest blog post date
 const getLatestBlogPostDate = (): Date => {
@@ -16,8 +22,8 @@ const getLatestBlogPostDate = (): Date => {
   const latestDate = blogPosts.reduce((latest, post) => {
     const postDate = new Date(blogActualDates[post.slug as keyof typeof blogActualDates] || post.date);
     return postDate > latest ? postDate : latest;
-  }, new Date(0));
-  return latestDate > new Date(0) ? latestDate : new Date(staticPageDates.home);
+  }, EPOCH_DATE);
+  return latestDate > EPOCH_DATE ? latestDate : new Date(staticPageDates.home);
 };
 
 
@@ -64,10 +70,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Ensure post.slug exists in blogActualDates or post.date is a valid fallback
     const postDateString = blogActualDates[post.slug as keyof typeof blogActualDates] || post.date;
     const postDate = new Date(postDateString);
-    
+
     // Add a check for invalid dates
     if (isNaN(postDate.getTime())) {
-      console.warn(`[Sitemap WARN] Invalid date for blog post slug "${post.slug}": ${postDateString}. Falling back to site launch date.`);
+      logger.warn(`Invalid date for blog post slug "${post.slug}": ${postDateString}. Falling back to site launch date.`);
       return {
         url: `${baseUrl}/blog/${post.slug}`,
         lastModified: siteLaunchDate, // Fallback for invalid dates

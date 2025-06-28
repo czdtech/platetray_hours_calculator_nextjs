@@ -2,7 +2,6 @@
 
 import Script from "next/script";
 import { useEffect, useState } from "react";
-import { reportWebVitals, reportSEOMetrics } from "@/utils/reportWebVitals";
 
 export function Analytics() {
   const [isMounted, setIsMounted] = useState(false);
@@ -32,7 +31,7 @@ export function Analytics() {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${gaId}', { 
+          gtag('config', '${gaId}', {
             send_page_view: false,
             custom_map: { 'custom_parameter.metric_rating': 'metric_rating' }
           });
@@ -43,21 +42,11 @@ export function Analytics() {
 }
 
 export function AnalyticsWrapper() {
-  const [isMounted, setIsMounted] = useState(false);
+  const [_isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  useEffect(() => {
-    if (!isMounted) return;
-
-    // 启动Web Vitals监控
-    reportWebVitals();
-
-    // 启动SEO性能监控
-    reportSEOMetrics();
-  }, [isMounted]);
 
   return <Analytics />;
 }

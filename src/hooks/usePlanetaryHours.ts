@@ -15,7 +15,7 @@ import {
 import { useCurrentLivePlanetaryHour } from "./useCurrentLivePlanetaryHour";
 import { useNetworkOptimization } from "./usePerformanceOptimization";
 
-import { createLogger } from '@/utils/logger';
+import { createLogger } from '@/utils/unified-logger';
 
 // 将 logger 创建移到组件外部，避免每次渲染时重新创建
 const logger = createLogger('UsePlanetaryHours');
@@ -93,7 +93,7 @@ export function usePlanetaryHours(
 
         // 若与上一次计算参数完全一致，则直接跳过
         if (paramKey === lastParamsRef.current) {
-          logger.info("⚡ [Performance] 跳过重复计算，参数未变化");
+          logger.debug("⚡ [Performance] 跳过重复计算，参数未变化");
           return;
         }
 
@@ -101,7 +101,7 @@ export function usePlanetaryHours(
         setError(null);
         // 保持旧数据直到新数据计算完成，避免闪烁
 
-        logger.info(
+        logger.debug(
           `计算行星时: 日期=${dateStr}, 时区=${timezoneInput}, 坐标=[${latitude}, ${longitude}]`,
         );
 
@@ -128,7 +128,7 @@ export function usePlanetaryHours(
 
         // Add null check for result before accessing its properties
         if (result) {
-          logger.info(
+          logger.debug(
             `计算结果: 日出=${result.sunrise?.toISOString()}, 日落=${result.sunset?.toISOString()}, 行星时数量=${result.planetaryHours?.length || 0}, 请求日期=${result.requestedDate}`,
           );
 
@@ -148,12 +148,11 @@ export function usePlanetaryHours(
           setSelectedDateForCalc(null);
           lastParamsRef.current = null; // Clear last params if calculation failed
         }
-      } catch (err) {
+      } catch (error) {
+        const err = error instanceof Error ? error : new Error('Unknown error calculating planetary hours');
         logger.error("计算行星时出错:", err);
         setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to calculate planetary hours",
+          err.message || "计算出错，请重试"
         );
         setPlanetaryHoursRaw(null);
         setCurrentCoordinates(null);
@@ -172,7 +171,7 @@ export function usePlanetaryHours(
       return [];
     }
 
-    logger.info("🔄 [Formatting] 重新计算白天行星时列表");
+    logger.process("[Formatting] 重新计算白天行星时列表");
     return formatHoursToList(
       planetaryHoursRaw.planetaryHours.filter(
         (h: PlanetaryHour) => h.type === "day",
@@ -188,7 +187,7 @@ export function usePlanetaryHours(
       return [];
     }
 
-    logger.info("🔄 [Formatting] 重新计算夜间行星时列表");
+    logger.process("[Formatting] 重新计算夜间行星时列表");
     return formatHoursToList(
       planetaryHoursRaw.planetaryHours.filter(
         (h: PlanetaryHour) => h.type === "night",

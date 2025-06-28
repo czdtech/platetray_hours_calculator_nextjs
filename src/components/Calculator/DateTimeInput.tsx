@@ -6,17 +6,23 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./DateTimeInput.css"; // 导入自定义样式
 import { useDateContext } from "@/contexts/DateContext";
+import { createLogger } from '@/utils/unified-logger';
+import { getCurrentTime } from '@/utils/time';
+
+const logger = createLogger('DateTimeInput');
 
 interface DateTimeInputProps {
   defaultDate: string;
   onDateChange: (date: Date) => void;
   selectedDate: Date;
+  serverTime?: string; // 用于确保 SSR/CSR 一致性
 }
 
 export function DateTimeInput({
   defaultDate,
   onDateChange,
   selectedDate,
+  serverTime,
 }: DateTimeInputProps) {
   const { utcToZonedTime, zonedTimeToUtc } = useDateContext();
   const [isOpen, setIsOpen] = useState(false);
@@ -25,8 +31,8 @@ export function DateTimeInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const inputId = useId();
 
-  // 使用当前时间，避免 new Date(0) 反模式
-  const [now] = useState<Date>(() => new Date());
+  // 使用统一时间源，确保 SSR/CSR 一致性
+  const [now] = useState<Date>(() => getCurrentTime(serverTime));
 
   // Convert UTC date to zoned date for DatePicker
   const zonedDate = utcToZonedTime(selectedDate);
@@ -69,7 +75,6 @@ export function DateTimeInput({
     requestAnimationFrame(() => {
       try {
         // 获取当前时区的今天日期
-        const now = new Date();
         const todayInTimezone = utcToZonedTime(now);
 
         // 设置为指定天数后的日期，并固定到本地中午 12:00，
@@ -88,16 +93,16 @@ export function DateTimeInput({
           if (process.env.NODE_ENV === 'development') {
             const duration = performance.now() - startTime;
             if (duration > 100) {
-              console.warn(`⚡ [INP Warning] Quick select took ${duration.toFixed(2)}ms`);
+              logger.performance(`[INP Warning] Quick select took ${duration.toFixed(2)}ms`);
             }
           }
         }, 0);
 
       } catch (error) {
-        console.error('Error in handleQuickSelect:', error);
+        logger.error('Error in handleQuickSelect', error as Error);
       }
     });
-  }, [utcToZonedTime, zonedTimeToUtc, onDateChange]);
+  }, [utcToZonedTime, zonedTimeToUtc, onDateChange, now]);
 
   const handleDateChange = (date: Date | null) => {
     if (date) {

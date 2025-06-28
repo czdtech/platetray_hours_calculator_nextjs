@@ -29,24 +29,67 @@ const nextConfig: NextConfig = {
   // 安全头配置
   async headers() {
     return [
+      // 静态资源长期缓存 - 与Cloudflare协同
+      {
+        source: '/_next/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          },
+          {
+            key: 'Vary',
+            value: 'Accept-Encoding'
+          }
+        ]
+      },
+      // API路由缓存控制
+      {
+        source: '/api/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=3600, max-age=0, must-revalidate'
+          },
+          {
+            key: 'CDN-Cache-Control',
+            value: 'public, s-maxage=3600'
+          }
+        ]
+      },
+      // 主页面ISR优化
+      {
+        source: '/((?!api|_next/static).*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=3600, stale-while-revalidate=86400'
+          },
+          {
+            key: 'Vary',
+            value: 'Accept-Encoding'
+          }
+        ]
+      },
+      // 安全头
       {
         source: '/(.*)',
         headers: [
           {
             key: 'X-Content-Type-Options',
-            value: 'nosniff',
+            value: 'nosniff'
           },
           {
             key: 'X-Frame-Options',
-            value: 'DENY',
+            value: 'DENY'
           },
           {
             key: 'X-XSS-Protection',
-            value: '1; mode=block',
+            value: '1; mode=block'
           },
           {
             key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
+            value: 'strict-origin-when-cross-origin'
           },
           {
             key: 'Permissions-Policy',
@@ -57,21 +100,11 @@ const nextConfig: NextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains; preload',
           }
-        ],
+        ]
       },
       // 静态资源缓存 - Images
       {
         source: '/images/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      // 静态资源缓存 - Next.js build assets
-      {
-        source: '/_next/static/(.*)',
         headers: [
           {
             key: 'Cache-Control',
@@ -148,117 +181,57 @@ const pwaConfig = withPWA({
   register: true,
   skipWaiting: true,
   runtimeCaching: [
+    // 字体资源 - 合并Google字体缓存
     {
-      urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+      urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
       handler: 'CacheFirst',
       options: {
-        cacheName: 'google-fonts-cache',
+        cacheName: 'fonts',
         expiration: {
-          maxEntries: 10,
+          maxEntries: 20,
           maxAgeSeconds: 60 * 60 * 24 * 365, // 365 days
         },
       },
     },
+
+    // 静态资源 - 合并JS/CSS/图片
     {
-      urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-      handler: 'CacheFirst',
-      options: {
-        cacheName: 'gstatic-fonts-cache',
-        expiration: {
-          maxEntries: 10,
-          maxAgeSeconds: 60 * 60 * 24 * 365, // 365 days
-        },
-      },
-    },
-    {
-      urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i,
+      urlPattern: /\.(js|css|png|jpg|jpeg|gif|svg|ico|webp)$/i,
       handler: 'StaleWhileRevalidate',
       options: {
-        cacheName: 'static-image-assets',
+        cacheName: 'static-assets',
         expiration: {
-          maxEntries: 64,
+          maxEntries: 100,
           maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
         },
       },
     },
-    {
-      urlPattern: /\/_next\/image\?url=.+$/i,
-      handler: 'StaleWhileRevalidate',
-      options: {
-        cacheName: 'next-image',
-        expiration: {
-          maxEntries: 64,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-        },
-      },
-    },
-    {
-      urlPattern: /\.(?:js)$/i,
-      handler: 'StaleWhileRevalidate',
-      options: {
-        cacheName: 'static-js-assets',
-        expiration: {
-          maxEntries: 48,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-        },
-      },
-    },
-    {
-      urlPattern: /\.(?:css|less)$/i,
-      handler: 'StaleWhileRevalidate',
-      options: {
-        cacheName: 'static-style-assets',
-        expiration: {
-          maxEntries: 32,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-        },
-      },
-    },
-    {
-      urlPattern: /\/_next\/static.+\.js$/i,
-      handler: 'CacheFirst',
-      options: {
-        cacheName: 'next-static-js-assets',
-        expiration: {
-          maxEntries: 64,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-        },
-      },
-    },
+
+    // API请求
     {
       urlPattern: /\/api\/.*$/i,
       handler: 'NetworkFirst',
       method: 'GET',
       options: {
-        cacheName: 'apis',
+        cacheName: 'api',
         expiration: {
-          maxEntries: 16,
+          maxEntries: 20,
           maxAgeSeconds: 60 * 60 * 24, // 24 hours
         },
-        networkTimeoutSeconds: 10,
+        networkTimeoutSeconds: 5,
       },
     },
-    {
-      urlPattern: /.*/i,
-      handler: 'NetworkFirst',
-      options: {
-        cacheName: 'others',
-        expiration: {
-          maxEntries: 32,
-          maxAgeSeconds: 60 * 60 * 24, // 24 hours
-        },
-        networkTimeoutSeconds: 10,
-      },
-    },
+
+    // 预计算文件（保留）
     {
       urlPattern: /^\/precomputed\/.*\.json$/i,
       handler: 'CacheFirst',
       method: 'GET',
       options: {
-        cacheName: 'precomputed-json',
+        cacheName: 'precomputed',
         expiration: {
-          maxEntries: 64,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+          maxEntries: 30,
+          maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
         },
         cacheableResponse: {
           statuses: [0, 200],

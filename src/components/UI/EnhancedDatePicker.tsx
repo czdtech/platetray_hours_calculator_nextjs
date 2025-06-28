@@ -4,6 +4,10 @@ import { useState, useRef, useEffect } from "react";
 import { Calendar, ChevronLeft, ChevronRight, Clock, MapPin } from "lucide-react";
 import { format, addDays, subDays, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, isSameMonth } from "date-fns";
 import { timeZoneService } from "@/services/TimeZoneService";
+import { createLogger } from '@/utils/unified-logger';
+import { getCurrentTime } from '@/utils/time';
+
+const logger = createLogger('EnhancedDatePicker');
 
 interface EnhancedDatePickerProps {
   selectedDate: Date;
@@ -12,6 +16,7 @@ interface EnhancedDatePickerProps {
   className?: string;
   placeholder?: string;
   label?: string;
+  serverTime?: string; // 用于确保 SSR/CSR 一致性
 }
 
 export function EnhancedDatePicker({
@@ -21,12 +26,13 @@ export function EnhancedDatePicker({
   className = "",
   placeholder = "Select date...",
   label = "Date",
+  serverTime,
 }: EnhancedDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(selectedDate);
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
-  // 使用当前时间，避免 new Date(0) 反模式
-  const [now] = useState<Date>(() => new Date());
+  // 使用统一时间源，确保 SSR/CSR 一致性
+  const [now] = useState<Date>(() => getCurrentTime(serverTime));
 
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -110,13 +116,13 @@ export function EnhancedDatePicker({
           if (process.env.NODE_ENV === 'development') {
             const duration = performance.now() - startTime;
             if (duration > 100) {
-              console.warn(`⚡ [INP Warning] Date picker quick select took ${duration.toFixed(2)}ms`);
+              logger.performance(`[INP Warning] Date picker quick select took ${duration.toFixed(2)}ms`);
             }
           }
         }, 0);
 
       } catch (error) {
-        console.error('Error in handleQuickSelect:', error);
+        logger.error('Error in handleQuickSelect', error as Error);
       }
     });
   };

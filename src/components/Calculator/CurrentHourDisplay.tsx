@@ -4,6 +4,7 @@ import { FormattedPlanetaryHour } from "@/utils/planetaryHourFormatters";
 import { useDateContext } from "@/contexts/DateContext";
 import { timeZoneService } from "@/services/TimeZoneService";
 import { useState } from "react";
+import { getCurrentTime } from '@/utils/time';
 // 导入全局行星颜色常量
 import {
   PLANET_COLOR_CLASSES,
@@ -20,6 +21,7 @@ interface CurrentHourDisplayProps {
   isSameDate?: boolean;
   beforeSunrise?: boolean;
   initialHourPayload?: ServerCurrentHourPayload | null;
+  serverTime?: string; // 用于确保 SSR/CSR 一致性
 }
 
 export function CurrentHourDisplay({
@@ -30,12 +32,13 @@ export function CurrentHourDisplay({
   isSameDate: _isSameDate = true,
   beforeSunrise = false,
   initialHourPayload = null,
+  serverTime,
 }: CurrentHourDisplayProps) {
   // 使用DateContext获取时区及选中日期
   const { timezone, selectedDate, formatDate } = useDateContext();
 
-  // 使用当前时间，避免 new Date(0) 反模式
-  const [now] = useState<Date>(() => new Date());
+  // 使用统一时间源，确保 SSR/CSR 一致性
+  const [now] = useState<Date>(() => getCurrentTime(serverTime));
 
   // 判断用户当前视图是否为今天（同一时区下）
   // 只有在"今天"视图且客户端尚未算出 currentHour 时，才使用服务器预先提供的 payload，

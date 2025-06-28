@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { AlertCircle, RefreshCw } from "lucide-react";
 
-import { createLogger } from '@/utils/logger';
+import { createLogger } from '@/utils/unified-logger';
 
 // 将 logger 创建移到组件外部，避免每次渲染时重新创建
 const logger = createLogger('Error');

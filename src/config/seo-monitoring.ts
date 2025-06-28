@@ -22,6 +22,14 @@ export interface SEOMonitoringConfig {
             sampleRate: number; // 0-1, 采样率
             reportInterval: number; // 报告间隔 (ms)
         };
+        // 代码性能监控阈值
+        codePerformance: {
+            syncOperationWarning: number; // 同步操作警告阈值 (ms)
+            syncOperationError: number; // 同步操作错误阈值 (ms)
+            asyncOperationWarning: number; // 异步操作警告阈值 (ms)
+            asyncOperationError: number; // 异步操作错误阈值 (ms)
+            frameTime: number; // 单帧时间预算 (ms)
+        };
     };
     seo: {
         tracking: {
@@ -70,6 +78,14 @@ export const seoMonitoringConfig: SEOMonitoringConfig = {
             enabled: true,
             sampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
             reportInterval: 30000, // 30秒
+        },
+        // 统一的代码性能监控阈值
+        codePerformance: {
+            syncOperationWarning: 50,   // 同步操作 > 50ms 显示警告
+            syncOperationError: 100,    // 同步操作 > 100ms 显示错误
+            asyncOperationWarning: 100, // 异步操作 > 100ms 显示警告
+            asyncOperationError: 500,   // 异步操作 > 500ms 显示错误
+            frameTime: 16,              // 单帧时间预算 16.67ms (60fps)
         },
     },
 
@@ -127,15 +143,44 @@ export function isPerformanceThresholdExceeded(
 }
 
 /**
+ * 获取代码性能监控阈值
+ */
+export function getCodePerformanceThresholds() {
+    return seoMonitoringConfig.performance.codePerformance;
+}
+
+/**
+ * 获取性能等级和表情符号
+ */
+export function getPerformanceLevel(
+    duration: number,
+    isAsync: boolean = false
+): { level: 'good' | 'warning' | 'error'; emoji: string } {
+    const thresholds = getCodePerformanceThresholds();
+    const warningThreshold = isAsync ? thresholds.asyncOperationWarning : thresholds.syncOperationWarning;
+    const errorThreshold = isAsync ? thresholds.asyncOperationError : thresholds.syncOperationError;
+
+    if (duration <= warningThreshold) {
+        return { level: 'good', emoji: '✅' };
+    } else if (duration <= errorThreshold) {
+        return { level: 'warning', emoji: '⚠️' };
+    } else {
+        return { level: 'error', emoji: '❌' };
+    }
+}
+
+/**
  * 获取性能指标评级
+ * 支持大小写不敏感的指标名称
  */
 export function getPerformanceRating(
     metric: string,
     value: number
 ): 'good' | 'needs-improvement' | 'poor' {
     const _thresholds = seoMonitoringConfig.performance.thresholds;
+    const normalizedMetric = metric.toLowerCase();
 
-    switch (metric) {
+    switch (normalizedMetric) {
         case 'lcp':
             return value <= 2500 ? 'good' : value <= 4000 ? 'needs-improvement' : 'poor';
         case 'fid':
@@ -220,4 +265,4 @@ function getPerformanceRecommendation(metric: string, rating: string): string {
     };
 
     return recommendations[metric]?.[rating] || `优化${metric}性能指标`;
-} 
+}

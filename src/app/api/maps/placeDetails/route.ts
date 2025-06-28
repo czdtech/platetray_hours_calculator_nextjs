@@ -1,65 +1,51 @@
 import { NextResponse } from "next/server";
 
-import { createLogger } from '@/utils/logger';
+import { apiLogger } from '@/utils/unified-logger';
+
+// 在 Vercel 平台或本地 .env.local 文件中配置此环境变量
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
-// 根据 Google Places API Details 响应定义接口
-// 您可以根据需要从 API 文档中添加更多字段
-interface PlaceDetailsResult {
-  address_components?: {
-    long_name: string;
-    short_name: string;
-    types: string[];
-  }[];
-  formatted_address?: string;
-  geometry?: {
+// Place Details API 响应接口
+interface PlaceDetailsResponse {
+  result: {
+    place_id: string;
+    name: string;
+    formatted_address: string;
+    geometry: {
     location: {
       lat: number;
       lng: number;
     };
   };
-  name?: string;
-  place_id: string;
-  // ... 其他您可能需要的字段
-}
-
-interface PlaceDetailsApiResponse {
-  result: PlaceDetailsResult;
-  status: string; // e.g., "OK", "ZERO_RESULTS", "INVALID_REQUEST", etc.
-  error_message?: string; // Present if status is not "OK"
-  // html_attributions?: string[]; // If you need to display attributions
+    // 其他字段根据需要添加
+  };
+  status: string;
 }
 
 export async function GET(request: Request) {
-  const logger = createLogger('Route');
-
+  const start = performance.now();
   const { searchParams } = new URL(request.url);
-  const placeid = searchParams.get("placeid");
-  const sessiontoken = searchParams.get("sessiontoken");
+  const placeId = searchParams.get("placeId");
+
+  apiLogger.request('/api/maps/placeDetails', 'GET', { placeId });
 
   if (!GOOGLE_MAPS_API_KEY) {
-    logger.error("Google Maps API Key is not configured for place details.");
+    apiLogger.error('/api/maps/placeDetails', new Error("Google Maps API Key missing"), performance.now() - start);
     return NextResponse.json(
       { error: "Server configuration error: API key missing" },
       { status: 500 },
     );
   }
 
-  if (!placeid || typeof placeid !== "string") {
+  if (!placeId || typeof placeId !== "string") {
     return NextResponse.json(
-      { error: "Place ID parameter is required and must be a string" },
+      { error: "Place ID is required" },
       { status: 400 },
     );
   }
 
-  // 指定您需要的字段，以避免不必要的数据和费用
-  const fields = "address_component,formatted_address,geometry,name,place_id";
-  let apiUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${encodeURIComponent(placeid)}&fields=${fields}&key=${GOOGLE_MAPS_API_KEY}`;
-
-  if (sessiontoken && typeof sessiontoken === "string") {
-    apiUrl += `&sessiontoken=${encodeURIComponent(sessiontoken)}`;
-  }
-  // 可以根据需要添加 language 参数
+  // 使用Place Details API
+  const apiUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${encodeURIComponent(placeId)}&fields=place_id,name,formatted_address,geometry&key=${GOOGLE_MAPS_API_KEY}`;
 
   try {
     const controller = new AbortController();
@@ -68,31 +54,34 @@ export async function GET(request: Request) {
     const googleResponse = await fetch(apiUrl, { signal: controller.signal });
     clearTimeout(timeoutId);
 
-    const data = (await googleResponse.json()) as PlaceDetailsApiResponse;
+    const data = (await googleResponse.json()) as PlaceDetailsResponse;
 
     if (!googleResponse.ok || data.status !== "OK") {
-      logger.error(
-        "Google Places Details API error. Status:",
-        data.status,
-        "Message:",
-        data.error_message,
-        "Full response:",
-        data,
-      );
+      apiLogger.error('/api/maps/placeDetails', new Error(`Google API error: ${data.status}`), performance.now() - start);
       return NextResponse.json(
         {
           error: `Failed to fetch place details: ${data.status || "Unknown error"}`,
-          details: data.error_message || "No additional details provided.",
         },
         { status: googleResponse.status || 500 },
       );
     }
 
-    // 返回 Google API 的 result 对象
-    return NextResponse.json(data.result, { status: 200 });
+    // 返回处理后的数据
+    const result = {
+      placeId: data.result.place_id,
+      name: data.result.name,
+      address: data.result.formatted_address,
+      location: {
+        latitude: data.result.geometry.location.lat,
+        longitude: data.result.geometry.location.lng,
+      },
+    };
+
+    apiLogger.success('/api/maps/placeDetails', performance.now() - start, { name: result.name });
+    return NextResponse.json(result, { status: 200 });
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error("Unknown error");
-    logger.error("Error in placeDetails proxy:", err);
+    apiLogger.error('/api/maps/placeDetails', err, performance.now() - start);
     return NextResponse.json(
       { error: "Internal server error", details: err.message },
       { status: 500 },

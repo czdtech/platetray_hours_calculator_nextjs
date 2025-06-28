@@ -7,8 +7,9 @@ import { PlanetaryHoursCalculationResult } from '@/services/PlanetaryHoursCalcul
 interface Props {
   precomputed?: PlanetaryHoursCalculationResult | null;
   initialHour?: ServerCurrentHourPayload | null;
+  serverTime?: string;
 }
 
-export default function CalculatorClient({ precomputed, initialHour }: Props) {
-  return <CalculatorPageOptimized precomputed={precomputed} initialHour={initialHour} />;
+export default function CalculatorClient({ precomputed, initialHour, serverTime }: Props) {
+  return <CalculatorPageOptimized precomputed={precomputed} initialHour={initialHour} serverTime={serverTime} />;
 }

@@ -9,6 +9,9 @@ import { BackToTop } from "@/components/UI/BackToTop";
 import { ResourcePreloader, SmartPrefetcher } from "@/components/Performance/ResourcePreloader";
 import { FontOptimizer, FontDisplayCSS } from "@/components/Performance/FontOptimizer";
 
+// 添加新的简化监控系统
+import { SimpleMonitoringSetup } from "@/components/Monitoring/SimpleMonitoringSetup";
+
 import { getDefaultSiteMetadata } from "@/utils/seo/metadata";
 import { getGSCVerificationMeta } from "@/config/seo-monitoring";
 
@@ -60,6 +63,9 @@ export default function RootLayout({
         <SmartPrefetcher />
         <FontOptimizer />
         <FontDisplayCSS />
+
+        {/* 新增：简化版监控系统 */}
+        <SimpleMonitoringSetup />
 
         {/* 返回顶部按钮 */}
         <BackToTop />

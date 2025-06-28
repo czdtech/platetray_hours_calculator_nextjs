@@ -4,7 +4,7 @@ import matter from "gray-matter";
 import { remark } from "remark";
 import html from "remark-html";
 
-import { createLogger } from '@/utils/logger';
+import { createLogger } from '@/utils/unified-logger';
 const contentDirectory = path.join(process.cwd(), "src/content");
 
 export interface MarkdownContent {
@@ -48,7 +48,8 @@ export async function getMarkdownContent(
       contentHtml,
     };
   } catch (error) {
-    logger.error(`Error reading markdown file for slug ${slug}:`, error);
+      const err = error instanceof Error ? error : new Error(`Unknown error reading markdown file for slug ${slug}`);
+      logger.error(`Error reading markdown file for slug ${slug}:`, err);
     return null;
   }
 }

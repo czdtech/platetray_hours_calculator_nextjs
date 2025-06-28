@@ -5,7 +5,7 @@ import {
 } from "date-fns-tz";
 import { addDays, isValid } from "date-fns";
 
-import { createLogger } from '@/utils/logger';
+import { createLogger } from '@/utils/unified-logger';
 
 const logger = createLogger('PlanetaryHoursCalculator');
 
@@ -94,6 +94,7 @@ export interface PlanetaryHoursCalculationResult {
 export class PlanetaryHoursCalculator {
   private static instance: PlanetaryHoursCalculator;
   private cache: Map<string, PlanetaryHoursCalculationResult>;
+  private readonly MAX_CACHE_SIZE = 50; // 限制缓存大小防止内存泄漏
 
   private constructor() {
     this.cache = new Map();
@@ -111,7 +112,7 @@ export class PlanetaryHoursCalculator {
    */
   public clearCache(): void {
     this.cache.clear();
-    logger.info('🧹 [Cache] PlanetaryHoursCalculator 缓存已清空');
+    logger.debug('🧹 PlanetaryHoursCalculator 缓存已清空');
   }
 
   /**
@@ -122,6 +123,25 @@ export class PlanetaryHoursCalculator {
       size: this.cache.size,
       keys: Array.from(this.cache.keys())
     };
+  }
+
+  /**
+   * 管理缓存大小，防止内存无限增长
+   */
+  private manageCacheSize(): void {
+    if (this.cache.size > this.MAX_CACHE_SIZE) {
+      // 删除最老的一半条目，保留最新的条目
+      const entries = Array.from(this.cache.entries());
+      const keepCount = Math.floor(this.MAX_CACHE_SIZE / 2);
+      this.cache.clear();
+
+      // 保留最新的条目
+      entries.slice(-keepCount).forEach(([key, value]) => {
+        this.cache.set(key, value);
+      });
+
+      logger.cache(`缓存大小管理: 保留最新的 ${keepCount} 个条目`);
+    }
   }
 
   private getCacheKey(
@@ -135,7 +155,7 @@ export class PlanetaryHoursCalculator {
     const dateStringForCache = formatInTimeZone(date, timezone, "yyyy-MM-dd");
     const cacheKey = `${dateStringForCache}_${latitude.toFixed(4)}_${longitude.toFixed(4)}_${timezone}`;
 
-    logger.info(`🔑 [Cache] 生成缓存键: ${cacheKey} (UTC日期: ${date.toISOString()})`);
+    logger.key(`生成缓存键: ${cacheKey} (UTC日期: ${date.toISOString()})`);
     return cacheKey;
   }
 
@@ -176,11 +196,11 @@ export class PlanetaryHoursCalculator {
       const cacheKey = this.getCacheKey(date, latitude, longitude, timezone);
       const cachedResult = this.cache.get(cacheKey);
       if (cachedResult) {
-        logger.info(`📋 [Cache] 使用缓存结果: ${cacheKey}`);
+        logger.data(`使用缓存结果: ${cacheKey}`);
         return cachedResult;
       }
 
-      logger.info(`🔄 [Calculate] 开始新计算: ${cacheKey}`);
+      logger.process(`开始新计算: ${cacheKey}`);
 
       // 以目标时区解析日期，避免受浏览器本地时区影响
       const localDateString = formatInTimeZone(date, timezone, "yyyy-MM-dd");
@@ -194,11 +214,8 @@ export class PlanetaryHoursCalculator {
       const dateForDayRuler = baseDateForSunCalc;
 
       // 调试输出
-      logger.info(
-        "[PHCalc] 计算日期(当地):",
-        noonStringInTimezone,
-        " => UTC:",
-        baseDateForSunCalc.toISOString(),
+      logger.debug(
+        `[PHCalc] 计算日期(当地): ${noonStringInTimezone} => UTC: ${baseDateForSunCalc.toISOString()}`,
       );
 
       const dayRuler = this.getDayRuler(dateForDayRuler, timezone);
@@ -227,8 +244,8 @@ export class PlanetaryHoursCalculator {
         !isValid(actualSunriseTomorrow)
       ) {
         logger.error(
-          "Invalid sun times received from SunCalc for the given date/location.",
-          { date: baseDateForSunCalc, latitude, longitude },
+          `Invalid sun times received from SunCalc for the given date/location. Date: ${baseDateForSunCalc}, Lat: ${latitude}, Lng: ${longitude}`,
+          new Error("Invalid sun times from SunCalc")
         );
         return null;
       }
@@ -268,11 +285,13 @@ export class PlanetaryHoursCalculator {
 
       // 保存到缓存
       this.cache.set(cacheKey, result);
-      logger.info(`💾 [Cache] 结果已缓存: ${cacheKey}`);
+      this.manageCacheSize(); // 管理缓存大小
+      logger.cache(`结果已缓存: ${cacheKey}`);
 
       return result;
     } catch (error) {
-      logger.error("Error calculating planetary hours:", error);
+      const err = error instanceof Error ? error : new Error('Unknown error during planetary hours calculation');
+      logger.error("Error calculating planetary hours", err);
       return null;
     }
   }
@@ -439,7 +458,7 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   w.clearAllCaches = () => {
     if (originalClearAllCaches) originalClearAllCaches();
     planetaryHoursCalculator.clearCache();
-    console.log('🧹 [Debug] All caches cleared including PlanetaryHoursCalculator');
+    logger.debug('All caches cleared including PlanetaryHoursCalculator');
   };
-  console.log('🔧 [Debug] planetaryHoursCalculator available at window.planetaryHoursCalculator');
+  logger.debug('planetaryHoursCalculator available at window.planetaryHoursCalculator');
 }

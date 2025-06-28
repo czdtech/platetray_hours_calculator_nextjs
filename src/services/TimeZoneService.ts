@@ -119,6 +119,54 @@ export class TimeZoneService {
   }
 
   /**
+   * 获取UTC偏移量
+   * @param date 日期
+   * @param timezone 时区
+   * @returns UTC偏移量字符串 (例如 'UTC-4', 'UTC+8')
+   */
+  public getUTCOffset(date: Date, timezone: string): string {
+    // 验证时区合法性
+    this.validateTimeZoneOrThrow(timezone);
+
+    // 使用 Intl.DateTimeFormat 获取 GMT 偏移量
+    const parts = new Intl.DateTimeFormat('en', {
+      timeZone: timezone,
+      timeZoneName: "longOffset",
+    }).formatToParts(date);
+
+    const offsetPart = parts.find((part) => part.type === "timeZoneName");
+    if (!offsetPart) {
+      return "UTC";
+    }
+
+    // 将 GMT 格式转换为 UTC 格式
+    // 例如：GMT-04:00 -> UTC-4, GMT+08:00 -> UTC+8
+    const gmtOffset = offsetPart.value;
+    if (gmtOffset === "GMT") {
+      return "UTC";
+    }
+
+    // 解析偏移量 GMT±HH:MM
+    const match = gmtOffset.match(/GMT([+-])(\d{2}):(\d{2})/);
+    if (!match) {
+      return "UTC";
+    }
+
+    const [, sign, hours, minutes] = match;
+    const hourNumber = parseInt(hours, 10);
+    const minuteNumber = parseInt(minutes, 10);
+
+    // 构建简化的UTC偏移量
+    if (minuteNumber === 0) {
+      // 整小时偏移，例如 UTC-4, UTC+8
+      return `UTC${sign}${hourNumber}`;
+    } else {
+      // 包含分钟的偏移，例如 UTC+5:30
+      return `UTC${sign}${hourNumber}:${minutes}`;
+    }
+  }
+
+  /**
    * 验证时区，如果无效则抛出错误
    * @param timezone 时区字符串
    * @throws 如果时区无效

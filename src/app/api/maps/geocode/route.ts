@@ -1,18 +1,20 @@
 import { NextResponse } from "next/server";
 
-import { createLogger } from '@/utils/logger';
+import { apiLogger } from '@/utils/unified-logger';
+
 // 在 Vercel 平台或本地 .env.local 文件中配置此环境变量
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
 export async function GET(request: Request) {
-  const logger = createLogger('Route');
-
+  const start = performance.now();
   const { searchParams } = new URL(request.url);
   const address = searchParams.get("address");
   const latlng = searchParams.get("latlng");
 
+  apiLogger.request('/api/maps/geocode', 'GET', { address });
+
   if (!GOOGLE_MAPS_API_KEY) {
-    logger.error("Google Maps API Key is not configured.");
+    apiLogger.error('/api/maps/geocode', new Error("Google Maps API Key missing"), performance.now() - start);
     return NextResponse.json(
       { error: "Server configuration error: API key missing" },
       { status: 500 },
@@ -70,14 +72,7 @@ export async function GET(request: Request) {
       const errorMessage =
         (data as GeocodeErrorResponse).error_message ||
         "No additional details from API.";
-      logger.error(
-        "Google Geocoding API error. Status:",
-        errorStatus,
-        "Message:",
-        errorMessage,
-        "Full response:",
-        data,
-      );
+      apiLogger.error('/api/maps/geocode', new Error(`Google API error: ${errorStatus}`), performance.now() - start);
       return NextResponse.json(
         {
           error: `Failed to process geocoding request: ${errorStatus}`,
@@ -86,10 +81,11 @@ export async function GET(request: Request) {
         { status: googleResponse.status || 500 },
       );
     }
+    apiLogger.success('/api/maps/geocode', performance.now() - start, { count: data.results?.length || 0 });
     return NextResponse.json(data, { status: 200 });
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error("Unknown error");
-    logger.error("Error in geocode proxy:", err);
+    apiLogger.error('/api/maps/geocode', err, performance.now() - start);
     return NextResponse.json(
       { error: "Internal server error", details: err.message },
       { status: 500 },

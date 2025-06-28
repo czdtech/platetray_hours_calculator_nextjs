@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { createLogger } from '@/utils/logger';
+import { apiLogger } from '@/utils/unified-logger';
 // 在 Vercel 平台或本地 .env.local 文件中配置此环境变量
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
@@ -14,14 +14,15 @@ interface TimezoneApiResponse {
 }
 
 export async function GET(request: Request) {
-  const logger = createLogger('Route');
-
+  const start = performance.now();
   const { searchParams } = new URL(request.url);
   const location = searchParams.get("location");
   const timestamp = searchParams.get("timestamp");
 
+  apiLogger.request('/api/maps/timezone', 'GET', { location, timestamp });
+
   if (!GOOGLE_MAPS_API_KEY) {
-    logger.error("Google Maps API Key is not configured for timezone API.");
+    apiLogger.error('/api/maps/timezone', new Error("Google Maps API Key missing"), performance.now() - start);
     return NextResponse.json(
       { error: "Server configuration error: API key missing" },
       { status: 500 },
@@ -29,7 +30,6 @@ export async function GET(request: Request) {
   }
 
   if (!location || typeof location !== "string") {
-    // location can be null from searchParams.get
     return NextResponse.json(
       {
         error:
@@ -71,14 +71,7 @@ export async function GET(request: Request) {
     const data = (await googleResponse.json()) as TimezoneApiResponse;
 
     if (!googleResponse.ok || data.status !== "OK") {
-      logger.error(
-        "Google Timezone API error. Status:",
-        data.status,
-        "Message:",
-        data.error_message,
-        "Full response:",
-        data,
-      );
+      apiLogger.error('/api/maps/timezone', new Error(`Google API error: ${data.status}`), performance.now() - start);
       return NextResponse.json(
         {
           error: `Failed to fetch timezone information: ${data.status || "Unknown error"}`,
@@ -89,10 +82,11 @@ export async function GET(request: Request) {
     }
 
     // 返回完整的Google API响应
+    apiLogger.success('/api/maps/timezone', performance.now() - start, { status: data.status });
     return NextResponse.json(data, { status: 200 });
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error("Unknown error");
-    logger.error("Error in timezone proxy:", err);
+    apiLogger.error('/api/maps/timezone', err, performance.now() - start);
     return NextResponse.json(
       { error: "Internal server error", details: err.message },
       { status: 500 },

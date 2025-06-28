@@ -16,19 +16,12 @@ export function LayoutStabilizer({
   minHeight = "200px",
   className = ""
 }: LayoutStabilizerProps) {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   return (
     <div
-      className={`transition-all duration-200 ${className}`}
+      className={className}
       style={{
         minHeight: minHeight,
-        contain: 'layout style paint',
-        ...( { ['--transition-timing' as string]: isClient ? '200ms' : '0ms' } as React.CSSProperties)
+        contain: 'layout style paint'
       }}
     >
       {children}

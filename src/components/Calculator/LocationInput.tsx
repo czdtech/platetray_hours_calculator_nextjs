@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect, useRef, memo, useMemo } from "react";
 import { MapPin, Loader2, AlertCircle } from "lucide-react";
 import debounce from "lodash/debounce";
 
-import { createLogger } from '@/utils/logger';
+import { createLogger } from '@/utils/unified-logger';
 
 // 将 logger 创建移到组件外部，避免每次渲染时重新创建
 const logger = createLogger('LocationInput');
@@ -69,7 +69,7 @@ function LocationInputComponent({
   >(null);
 
   const fetchNewSessionToken = useCallback(async () => {
-    logger.info("🎫 [Session] 开始获取新的会话令牌");
+    logger.debug("🎫 [Session] 开始获取新的会话令牌");
     setIsFetchingToken(true);
     try {
       const response = await fetch("/api/maps/session/start");
@@ -83,25 +83,26 @@ function LocationInputComponent({
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         const text = await response.text();
-        logger.error("❌ [Session] 非JSON响应:", text);
+        logger.error("❌ [Session] 非JSON响应:", new Error(`Server returned non-JSON response: ${text}`));
         throw new Error("Server returned non-JSON response");
       }
 
       const data = await response.json();
 
-      logger.info("🔍 [Session] API响应:", data); // 添加调试日志
+      logger.debug("🔍 [Session] API响应:", data); // 添加调试日志
 
       if (data.sessionToken) {
         // 修改这里，使用sessionToken而不是token
-        logger.info("✅ [Session] 成功获取会话令牌");
+        logger.debug("✅ [Session] 成功获取会话令牌");
         sessionTokenRef.current = data.sessionToken;
         setIsLocationServiceReady(true);
       } else {
         logger.error("❌ [Session] API响应中没有找到sessionToken:", data);
         throw new Error("Session token not found in response");
       }
-    } catch (error) {
-      logger.error("❌ [Session] 获取会话令牌失败:", error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
+      logger.error("❌ [Session] 获取会话令牌失败:", err);
       setLocationServiceError("Failed to initialize location service");
     } finally {
       setIsFetchingToken(false);
@@ -109,12 +110,12 @@ function LocationInputComponent({
   }, []);
 
   useEffect(() => {
-    logger.info("🗺️ [LocationInput] 位置输入组件挂载");
-    logger.info(`📍 [LocationInput] 默认位置: ${defaultLocation}`);
+    logger.debug("🗺️ [LocationInput] 位置输入组件挂载");
+    logger.debug(`📍 [LocationInput] 默认位置: ${defaultLocation}`);
 
     // 如果是默认位置（New York, NY），跳过会话令牌获取
     if (defaultLocation === "New York, NY") {
-      logger.info("🏠 [LocationInput] 使用默认位置，跳过会话令牌获取");
+      logger.debug("🏠 [LocationInput] 使用默认位置，跳过会话令牌获取");
       return;
     }
 
@@ -190,12 +191,10 @@ function LocationInputComponent({
           //setError(`Location not found: ${data.status}`);
           throw new Error(`Location not found or API error: ${data.status}`);
         }
-      } catch (_e: unknown) {
-        const error = _e instanceof Error ? _e : new Error("Unknown error");
-        setError(
-          error.message ||
-          "Could not find location. Please try a different search term.",
-        );
+      } catch (error: unknown) {
+        const err = error instanceof Error ? error : new Error('Unknown error');
+        logger.error("❌ [地理编码] 错误:", err);
+        setError(err.message || "Could not find location. Please try a different search term.");
       }
     },
     [onLocationChange, onUseCurrentLocation],
@@ -210,7 +209,7 @@ function LocationInputComponent({
       setActivePredictionIndex(-1);
 
       if (!prediction.place_id) {
-        logger.warn(
+        logger.error(
           "Place ID missing from prediction, falling back to geocodeAddress.",
         );
         geocodeAddress(prediction.description);
@@ -305,7 +304,7 @@ function LocationInputComponent({
         return;
       }
       if (!token) {
-        logger.warn(
+        logger.error(
           "Attempted to fetch suggestions without a session token.",
         );
         return;
@@ -313,14 +312,14 @@ function LocationInputComponent({
 
       // Ensure we only process the latest request intention.
       if (requestId !== lastRequestIdRef.current) {
-        // logger.info(`Debounced function for requestId ${requestId} (${inputValue}) superseded by ${lastRequestIdRef.current}. Not fetching.`);
+        // logger.debug(`Debounced function for requestId ${requestId} (${inputValue}) superseded by ${lastRequestIdRef.current}. Not fetching.`);
         return;
       }
 
       // Abort any previous in-flight autocomplete request.
       if (activeAutocompleteRequestControllerRef.current) {
         activeAutocompleteRequestControllerRef.current.abort();
-        // logger.info('Aborted previous autocomplete request.');
+        // logger.debug('Aborted previous autocomplete request.');
       }
 
       const controller = new AbortController();
@@ -329,7 +328,7 @@ function LocationInputComponent({
       const apiUrl = `/api/maps/autocomplete?input=${encodeURIComponent(inputValue)}&sessiontoken=${encodeURIComponent(token)}`;
 
       try {
-        // logger.info(`Fetching suggestions for requestId ${requestId} (${inputValue})`);
+        // logger.debug(`Fetching suggestions for requestId ${requestId} (${inputValue})`);
         const response = await fetch(apiUrl, { signal: controller.signal });
 
         // If this request was not aborted by a subsequent one, clear its controller from active ref.
@@ -354,25 +353,24 @@ function LocationInputComponent({
           setActivePredictionIndex(-1);
           setError(null); // Clear error on successful fetch of suggestions
         } else {
-          // logger.info(`Response for requestId ${requestId} (${inputValue}) arrived, but current is ${lastRequestIdRef.current}. Not updating UI.`);
+          // logger.debug(`Response for requestId ${requestId} (${inputValue}) arrived, but current is ${lastRequestIdRef.current}. Not updating UI.`);
         }
       } catch (err: unknown) {
         if (err instanceof DOMException && err.name === "AbortError") {
-          // logger.info(`Fetch for requestId ${requestId} (${inputValue}) was aborted.`);
+          // logger.debug(`Fetch for requestId ${requestId} (${inputValue}) was aborted.`);
           // No error state update needed for self-aborted requests,
           // unless it was the *very last* intended request that got aborted by unmount or similar.
           // If this specific controller was the one stored as active, it means it was aborted by a *newer* request's controller.
           // If it's still the active one after an abort error, it might be an external abort (less likely here).
         } else if (requestId === lastRequestIdRef.current) {
           // For other errors, only update UI if current
+          const error = err instanceof Error ? err : new Error("Unknown error");
           logger.error(
             "fetchAutocompleteSuggestions (via proxy) error:",
-            err,
+            error,
           );
           setPredictions([]);
           setShowPredictions(false);
-          const error =
-            err instanceof Error ? err : new Error("Unknown error");
           setError(error.message || "Could not fetch location suggestions.");
         }
         // Ensure the controller is cleared if it was the active one and an error occurred.

@@ -1,9 +1,9 @@
 "use client";
-import { useState, useCallback, useEffect, useRef, memo, useMemo } from "react";
+import React, { useState, useCallback, useEffect, useRef, memo, useMemo } from "react";
 import { MapPin, Loader2, AlertCircle } from "lucide-react";
-import debounce from "lodash/debounce";
+import { debounce } from "lodash";
 import { POPULAR_CITIES, DEFAULT_CITY, type PopularCity } from "@/constants/popularCities";
-import { createLogger } from "@/utils/logger";
+import { createLogger } from '@/utils/unified-logger';
 
 // 将 logger 创建移到组件外部，避免每次渲染时重新创建
 const logger = createLogger('LocationInput');
@@ -118,7 +118,7 @@ function EnhancedLocationInputComponent({
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         const text = await response.text();
-        logger.error("❌ 非JSON响应:", text);
+        logger.error("❌ 非JSON响应:", new Error(`Server returned non-JSON response: ${text}`));
         throw new Error("Server returned non-JSON response");
       }
 
@@ -133,8 +133,9 @@ function EnhancedLocationInputComponent({
         logger.error("❌ API响应中没有找到sessionToken:", data);
         throw new Error("Session token not found in response");
       }
-    } catch (error) {
-      logger.error("❌ 获取会话令牌失败:", error);
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error('Unknown error');
+      logger.error("❌ 获取会话令牌失败:", err);
       setLocationServiceError("Failed to initialize location service");
     } finally {
       setIsFetchingToken(false);
@@ -247,7 +248,7 @@ function EnhancedLocationInputComponent({
             if (process.env.NODE_ENV === 'development') {
               const duration = performance.now() - startTime;
               if (duration > 100) {
-                console.warn(`⚡ [INP Warning] City selection took ${duration.toFixed(2)}ms`);
+                logger.performance(`[INP Warning] City selection took ${duration.toFixed(2)}ms`);
               }
             }
 
@@ -257,7 +258,7 @@ function EnhancedLocationInputComponent({
         }, 0);
 
       } catch (error) {
-        console.error('Error in handlePopularCitySelect:', error);
+        logger.error('Error in handlePopularCitySelect', error as Error);
         setError('Failed to select city');
         setProcessingCitySelect(null);
       }
@@ -317,10 +318,12 @@ function EnhancedLocationInputComponent({
         } else {
           throw new Error(`Location not found or API error: ${data.status}`);
         }
-      } catch (_e: unknown) {
-        const error = _e instanceof Error ? _e : new Error("Unknown error");
+      } catch (error: unknown) {
+        const err = error instanceof Error ? error : new Error('Unknown error');
+        logger.error("❌ 地理编码错误:", err);
+        // 出错时设置默认坐标
         setError(
-          error.message ||
+          err.message ||
           "Could not find location. Please try a different search term.",
         );
       }
@@ -337,7 +340,7 @@ function EnhancedLocationInputComponent({
       setActivePredictionIndex(-1);
 
       if (!prediction.place_id) {
-        logger.warn("Place ID missing from prediction, falling back to geocodeAddress.");
+        logger.error("Place ID missing from prediction, falling back to geocodeAddress.", new Error('Missing place_id'));
         geocodeAddress(prediction.description);
         return;
       }
@@ -424,7 +427,7 @@ function EnhancedLocationInputComponent({
         return;
       }
       if (!token) {
-        logger.warn("Attempted to fetch suggestions without a session token.");
+        logger.error("Attempted to fetch suggestions without a session token.", new Error('Missing session token'));
         return;
       }
 
@@ -464,17 +467,13 @@ function EnhancedLocationInputComponent({
           setActivePredictionIndex(-1);
           setError(null);
         }
-      } catch (err: unknown) {
-        if (err instanceof DOMException && err.name === "AbortError") {
-          // Aborted request, no action needed
-        } else if (requestId === lastRequestIdRef.current) {
-          logger.error("fetchAutocompleteSuggestions (via proxy) error:", err);
+      } catch (error: unknown) {
+        const err = error instanceof Error ? error : new Error('Unknown error');
+        logger.error("❌ 获取建议失败:", err);
           setPredictions([]);
           setShowPredictions(false);
-          const error =
-            err instanceof Error ? err : new Error("Unknown error");
-          setError(error.message || "Could not fetch location suggestions.");
-        }
+        setError("Failed to fetch suggestions. Please try again.");
+      } finally {
         if (activeAutocompleteRequestControllerRef.current === controller) {
           activeAutocompleteRequestControllerRef.current = null;
         }
@@ -511,7 +510,7 @@ function EnhancedLocationInputComponent({
         if (process.env.NODE_ENV === 'development') {
           const duration = performance.now() - startTime;
           if (duration > 16) { // 超过一帧时间
-            console.warn(`⚡ [INP Warning] Input change took ${duration.toFixed(2)}ms`);
+            logger.performance(`[INP Warning] Input change took ${duration.toFixed(2)}ms`);
           }
         }
         return;
@@ -550,7 +549,7 @@ function EnhancedLocationInputComponent({
         if (process.env.NODE_ENV === 'development') {
           const duration = performance.now() - startTime;
           if (duration > 50) { // 超过 50ms 认为慢
-            console.warn(`⚡ [INP Warning] Full input processing took ${duration.toFixed(2)}ms`);
+            logger.performance(`[INP Warning] Full input processing took ${duration.toFixed(2)}ms`);
           }
         }
       }, 16); // 延迟一帧，让 UI 更新先完成
@@ -781,7 +780,7 @@ function EnhancedLocationInputComponent({
                 key={city.name}
                 onClick={() => handlePopularCitySelect(city)}
                 disabled={isProcessing}
-                className={`px-2.5 py-1 text-xs font-medium 
+                className={`px-2.5 py-1 text-xs font-medium
                          ${isProcessing
                     ? 'text-purple-400 bg-purple-100 cursor-wait'
                     : isSelected
@@ -820,9 +819,9 @@ function EnhancedLocationInputComponent({
           ref={inputRef}
           type="text"
           id="location"
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
                    bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
-                   focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 
+                   focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500
                    transition-all duration-200 pl-4 pr-10
                    placeholder:text-gray-500 dark:placeholder:text-gray-400"
           placeholder="Enter your location..."
@@ -855,8 +854,8 @@ function EnhancedLocationInputComponent({
         {showPredictions && predictions.length > 0 && (
           <ul
             id="predictions-list"
-            className="absolute z-10 w-full left-0 right-0 bg-white dark:bg-gray-800 
-                     border border-gray-300 dark:border-gray-600 rounded-md shadow-lg mt-1 
+            className="absolute z-10 w-full left-0 right-0 bg-white dark:bg-gray-800
+                     border border-gray-300 dark:border-gray-600 rounded-md shadow-lg mt-1
                      max-h-60 overflow-y-auto"
             tabIndex={0}
             role="listbox"
@@ -872,8 +871,8 @@ function EnhancedLocationInputComponent({
                 id={`prediction-item-${index}`}
                 role="option"
                 aria-selected={index === activePredictionIndex}
-                className={`px-4 py-2 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/20 
-                          ${index === activePredictionIndex ? "bg-purple-100 dark:bg-purple-900/20" : ""} 
+                className={`px-4 py-2 cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/20
+                          ${index === activePredictionIndex ? "bg-purple-100 dark:bg-purple-900/20" : ""}
                           text-sm truncate text-gray-900 dark:text-gray-100`}
                 onMouseDown={() => handleSelectPrediction(prediction)}
               >
@@ -888,9 +887,9 @@ function EnhancedLocationInputComponent({
         <button
           onClick={handleGetLocation}
           disabled={isLoading}
-          className={`absolute right-3 top-1/2 transform -translate-y-1/2 
-                    ${isLoading ? "text-purple-400" : "text-gray-400 hover:text-purple-500 dark:text-gray-500 dark:hover:text-purple-400"} 
-                    transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/30 
+          className={`absolute right-3 top-1/2 transform -translate-y-1/2
+                    ${isLoading ? "text-purple-400" : "text-gray-400 hover:text-purple-500 dark:text-gray-500 dark:hover:text-purple-400"}
+                    transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/30
                     rounded-full p-1 hover:scale-105 active:scale-95`}
           aria-label="Use current location"
         >

@@ -7,6 +7,9 @@
 
 import { isValid, addDays, subDays, addWeeks, subWeeks } from "date-fns";
 import { timeZoneService } from "./TimeZoneService";
+import { createLogger } from '@/utils/unified-logger';
+
+const logger = createLogger('DateService');
 
 export interface DateValidationResult {
   isValid: boolean;
@@ -48,8 +51,7 @@ export class DateService {
   private static instance: DateService;
   // 添加缓存机制优化性能
   private weekDaysCache = new Map<string, WeekDay[]>();
-  private formattedDateCache = new Map<string, string>();
-  private readonly CACHE_SIZE_LIMIT = 100; // 限制缓存大小防止内存泄漏
+  private readonly CACHE_SIZE_LIMIT = 50; // 减少缓存大小，因为移除了格式化缓存
 
   private constructor() { }
 
@@ -82,8 +84,7 @@ export class DateService {
    */
   public clearAllCache() {
     this.weekDaysCache.clear();
-    this.formattedDateCache.clear();
-    console.log('📦 [DateService] All caches cleared');
+    logger.cache('All caches cleared');
   }
 
   /**
@@ -92,7 +93,6 @@ export class DateService {
   public getCacheStats() {
     return {
       weekDaysCache: this.weekDaysCache.size,
-      formattedDateCache: this.formattedDateCache.size,
       limit: this.CACHE_SIZE_LIMIT
     };
   }
@@ -262,7 +262,7 @@ export class DateService {
     // 性能监控
     const duration = performance.now() - startTime;
     if (duration > 50) {
-      console.warn(`⚡ [Performance] generateWeekDays took ${duration.toFixed(2)}ms`);
+      logger.performance(`generateWeekDays took ${duration.toFixed(2)}ms`);
     }
 
     return weekDaysArray;
@@ -298,28 +298,14 @@ export class DateService {
     timezone: string,
     format: "short" | "medium" | "long" = "medium",
   ): string {
-    // 修复缓存键生成：使用日期字符串而不是时间戳
-    const dateStr = timeZoneService.formatInTimeZone(date, timezone, "yyyy-MM-dd");
-    const cacheKey = `${dateStr}-${timezone}-${format}`;
-
-    // 检查缓存
-    if (this.formattedDateCache.has(cacheKey)) {
-      return this.formattedDateCache.get(cacheKey)!;
-    }
-
+    // 直接计算，不缓存（格式化操作很快，缓存收益微乎其微）
     const formatMap = {
       short: "MMM d",
       medium: "MMMM d, yyyy",
       long: "EEEE, MMMM d, yyyy",
     };
 
-    const result = timeZoneService.formatInTimeZone(date, timezone, formatMap[format]);
-
-    // 保存到缓存
-    this.formattedDateCache.set(cacheKey, result);
-    this.clearOldCache(this.formattedDateCache);
-
-    return result;
+    return timeZoneService.formatInTimeZone(date, timezone, formatMap[format]);
   }
 }
 
@@ -338,8 +324,8 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   // 添加全局缓存清理函数，方便调试
   w.clearAllCaches = () => {
     dateService.clearAllCache();
-    console.log('🧹 [Debug] All DateService caches cleared');
+    logger.debug('All DateService caches cleared');
   };
-  console.log('🔧 [Debug] dateService available at window.dateService');
-  console.log('🔧 [Debug] clearAllCaches() available at window.clearAllCaches()');
+  logger.debug('dateService available at window.dateService');
+  logger.debug('clearAllCaches() available at window.clearAllCaches()');
 }

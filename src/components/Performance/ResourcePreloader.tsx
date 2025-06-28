@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { createLogger } from '@/utils/logger';
+import { createLogger } from '@/utils/unified-logger';
 
 // 将 logger 创建移到组件外部，避免每次渲染时重新创建
 const logger = createLogger('ResourcePreloader');
@@ -19,9 +19,9 @@ export function ResourcePreloader() {
     // 1. 减少不必要的API调用
     // 2. 节省网络资源和API配额
     // 3. 提升页面加载性能
-    
+
     // 如果将来需要预加载其他关键资源，可以在这里添加
-    logger.info('🚀 [ResourcePreloader] 资源预加载器已初始化（已优化，移除不必要的时区API预加载）');
+    logger.debug('🚀 [ResourcePreloader] 资源预加载器已初始化（已优化，移除不必要的时区API预加载）');
   }, []);
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export function SmartPrefetcher() {
     // 原因：过于激进的预取策略导致频繁的页面请求
     // 建议：使用 Next.js 内置的 Link 组件预取功能
     smartPrefetcherLogger.info('🔧 [SmartPrefetcher] 智能预取已禁用（避免不必要的页面请求）');
-    
+
     // 如果需要预取特定资源，可以在这里添加更精确的逻辑
     // 例如：只在用户悬停在特定链接上时才预取
   }, []);

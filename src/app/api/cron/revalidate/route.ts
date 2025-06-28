@@ -1,4 +1,7 @@
 import { revalidatePath } from "next/cache";
+import { createLogger } from '@/utils/unified-logger';
+
+const logger = createLogger('CronRevalidate');
 
 export const runtime = "nodejs";
 
@@ -14,7 +17,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Revalidate cron failed", error);
+    logger.error("Revalidate cron failed", error as Error);
     return new Response("Error revalidating", {
       status: 500,
       headers: {

@@ -18,7 +18,8 @@ import {
 import { dateService, WeekDay } from "../services/DateService";
 import { timeZoneService } from "../services/TimeZoneService";
 
-import { createLogger } from '@/utils/logger';
+import { createLogger } from '@/utils/unified-logger';
+
 interface DateContextType {
   // 当前选中的日期（UTC）
   selectedDate: Date;
@@ -64,7 +65,7 @@ export function DateProvider({
   initialTimezone = "America/New_York", // 默认时区可以后续调整或从配置读取
 }: DateProviderProps) {
   const logger = createLogger('DateContext');
-  
+
   // 状态
   const [selectedDate, setSelectedDateState] = useState<Date>(initialDate);
   const [timezone, setTimezoneState] = useState<string>(initialTimezone);
@@ -97,7 +98,7 @@ export function DateProvider({
     if (validation.isValid) {
       setTimezoneState(newTimezone);
     } else {
-      logger.error(validation.message || 'Invalid timezone');
+      logger.error('无效时区', new Error(validation.message || 'Invalid timezone'));
     }
   };
 
@@ -136,10 +137,9 @@ export function DateProvider({
     return timeZoneService.formatInTimeZone(date, timezone, pattern);
   };
 
-  // 检查是否为今天
+  // 检查是否为今天（使用初始时间作为基准，确保 SSR/CSR 一致性）
   const isToday = (date: Date) => {
-    const today = new Date();
-    const todayInTimezone = timeZoneService.formatInTimeZone(today, timezone, "yyyy-MM-dd");
+    const todayInTimezone = timeZoneService.formatInTimeZone(initialDate, timezone, "yyyy-MM-dd");
     const dateInTimezone = timeZoneService.formatInTimeZone(date, timezone, "yyyy-MM-dd");
     return todayInTimezone === dateInTimezone;
   };
