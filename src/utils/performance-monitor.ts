@@ -103,3 +103,149 @@ export const performanceReporter = {
 
 // 重新导出 unified-logger 中的性能测试工具，避免重复实现
 export { perfTest } from './unified-logger';
+
+/**
+ * 缓存监控工具
+ */
+export class CacheMonitor {
+  private static instance: CacheMonitor;
+
+  static getInstance(): CacheMonitor {
+    if (!CacheMonitor.instance) {
+      CacheMonitor.instance = new CacheMonitor();
+    }
+    return CacheMonitor.instance;
+  }
+
+  /**
+   * 分析响应头中的缓存信息
+   */
+  analyzeCacheHeaders(response: Response): CacheAnalysis {
+    const headers = response.headers;
+
+    return {
+      cloudflareCache: headers.get('cf-cache-status') || 'UNKNOWN',
+      vercelCache: headers.get('x-vercel-cache') || 'UNKNOWN',
+      age: parseInt(headers.get('age') || '0'),
+      cacheControl: headers.get('cache-control') || '',
+      etag: headers.get('etag') || '',
+      lastModified: headers.get('last-modified') || '',
+      vary: headers.get('vary') || '',
+      server: headers.get('server') || '',
+      edge: headers.get('x-vercel-id') || '',
+      ray: headers.get('cf-ray') || ''
+    };
+  }
+
+  /**
+   * 监控页面加载中的缓存效果
+   */
+  monitorPageCache(): void {
+    if (typeof window === 'undefined') return;
+
+    // 监控当前页面的缓存状态
+    const analyzeCurrentPage = () => {
+      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      if (navigation) {
+        console.log('🚀 页面加载性能:', {
+          DNS解析: `${navigation.domainLookupEnd - navigation.domainLookupStart}ms`,
+          TCP连接: `${navigation.connectEnd - navigation.connectStart}ms`,
+          TLS握手: `${navigation.secureConnectionStart ? navigation.connectEnd - navigation.secureConnectionStart : 0}ms`,
+          请求响应: `${navigation.responseEnd - navigation.requestStart}ms`,
+          DOM加载: `${navigation.domContentLoadedEventEnd - navigation.responseEnd}ms`,
+          总时间: `${navigation.loadEventEnd - navigation.fetchStart}ms`
+        });
+      }
+    };
+
+    // 监控资源加载的缓存情况
+    const analyzeResourceCache = () => {
+      const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+      const cacheStats = {
+        total: 0,
+        cached: 0,
+        static: 0,
+        api: 0
+      };
+
+      resources.forEach(resource => {
+        cacheStats.total++;
+
+        if (resource.transferSize === 0 && resource.decodedBodySize > 0) {
+          cacheStats.cached++;
+        }
+
+        if (resource.name.includes('/_next/static/')) {
+          cacheStats.static++;
+        }
+
+        if (resource.name.includes('/api/')) {
+          cacheStats.api++;
+        }
+      });
+
+      console.log('📊 资源缓存统计:', {
+        总资源: cacheStats.total,
+        缓存命中: cacheStats.cached,
+        缓存率: `${((cacheStats.cached / cacheStats.total) * 100).toFixed(1)}%`,
+        静态资源: cacheStats.static,
+        API请求: cacheStats.api
+      });
+    };
+
+    // 页面加载完成后分析
+    if (document.readyState === 'complete') {
+      setTimeout(() => {
+        analyzeCurrentPage();
+        analyzeResourceCache();
+      }, 1000);
+    } else {
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          analyzeCurrentPage();
+          analyzeResourceCache();
+        }, 1000);
+      });
+    }
+  }
+
+  /**
+   * 测试特定资源的缓存状态
+   */
+  async testResourceCache(url: string): Promise<CacheAnalysis> {
+    try {
+      const response = await fetch(url, {
+        method: 'HEAD',
+        cache: 'reload'
+      });
+      return this.analyzeCacheHeaders(response);
+    } catch (error) {
+      console.error('缓存测试失败:', error);
+      return {
+        cloudflareCache: 'ERROR',
+        vercelCache: 'ERROR',
+        age: 0,
+        cacheControl: '',
+        etag: '',
+        lastModified: '',
+        vary: '',
+        server: '',
+        edge: '',
+        ray: ''
+      };
+    }
+  }
+}
+
+interface CacheAnalysis {
+  cloudflareCache: string;  // cf-cache-status
+  vercelCache: string;      // x-vercel-cache
+  age: number;              // cache age in seconds
+  cacheControl: string;     // cache-control header
+  etag: string;             // etag for validation
+  lastModified: string;     // last-modified date
+  vary: string;             // vary header
+  server: string;           // server type
+  edge: string;             // edge location
+  ray: string;              // cloudflare ray id
+}
