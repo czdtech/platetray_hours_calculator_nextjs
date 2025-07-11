@@ -181,3 +181,95 @@ https://planetaryhours.org/api/cron/force-precompute-today
 2. 查看Cloudflare SSL/DNS设置
 3. 验证域名配置
 4. 回滚到最近稳定版本
+
+---
+
+## 🔧 新发现的性能优化问题 (2025-07-11)
+
+### ✅ 已修复问题
+
+- [x] Google Maps输入提示不可用 - **已完全修复**
+  - 修复API路由数据结构不匹配（suggestions vs predictions）
+  - 添加placeDetails API的session token支持
+  - 优化AbortError错误处理
+  - 统一Google Maps标准数据格式
+
+### ⚠️ 发现的性能问题
+
+#### 1. **长任务问题** (高优先级)
+
+```
+⚠️ [Performance] 检测到长任务: 372.0ms
+⚠️ [Performance] 检测到长任务: 509.0ms
+⚠️ [Performance] 检测到长任务: 155.0ms
+```
+
+**影响**: 阻塞主线程，影响用户交互
+**建议**: 使用React.useMemo、useCallback和任务分片
+
+#### 2. **Web Vitals指标差** (高优先级)
+
+```
+❌ [Web Vitals] FCP: 7912.0ms (poor) - 首次内容绘制慢
+❌ [Web Vitals] TTFB: 7505.5ms (poor) - 首字节时间慢
+❌ [Web Vitals] LCP: 7912.0ms (poor) - 最大内容绘制慢
+```
+
+**目标**: FCP < 1.8s, TTFB < 600ms, LCP < 2.5s
+**建议**: 服务端优化、代码分割、资源预加载
+
+#### 3. **频繁重新渲染** (中优先级)
+
+```
+🔄 [UsePlanetaryHours] [Formatting] 重新计算白天行星时列表
+🔄 [UsePlanetaryHours] [Formatting] 重新计算夜间行星时列表
+```
+
+**影响**: 不必要的CPU消耗
+**建议**: 优化依赖数组、使用React.memo
+
+#### 4. **资源缓存率低** (中优先级)
+
+```
+📊 资源缓存统计: {总资源: 37, 缓存命中: 0, 缓存率: '0.0%'}
+```
+
+**影响**: 增加网络请求和加载时间
+**建议**: 改善缓存策略、使用CDN
+
+#### 5. **未使用的预加载资源** (低优先级)
+
+```
+DateTimeInput_8f3dffea.css was preloaded but not used
+```
+
+**影响**: 浪费带宽，误导浏览器优先级
+**建议**: 清理不必要的预加载指令
+
+### 🎯 优化建议顺序
+
+#### Phase 1: 立即优化 (本周)
+
+1. **修复长任务**: 重构计算密集型组件
+2. **减少重渲染**: 添加memo和优化依赖
+
+#### Phase 2: 性能提升 (下周)
+
+3. **改善Web Vitals**: 服务端渲染优化
+4. **缓存策略**: 实施更好的资源缓存
+
+#### Phase 3: 细节优化 (稍后)
+
+5. **清理预加载**: 移除未使用的资源预加载
+
+### 📊 监控指标
+
+继续监控以下指标改善情况：
+
+- Core Web Vitals (FCP, LCP, TTFB)
+- 长任务频率和持续时间
+- 资源缓存命中率
+- 组件重新渲染频率
+
+**更新时间**: 2025-07-11 18:20
+**状态**: Google Maps功能已修复，性能优化待处理
