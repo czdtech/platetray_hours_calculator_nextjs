@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
-import withPWA from 'next-pwa';
+// 步骤 1: 修改这里的 import
+import withPWA from '@ducanh2912/next-pwa';
 
 const nextConfig: NextConfig = {
   // 图片优化配置
@@ -140,8 +141,9 @@ const nextConfig: NextConfig = {
 
   // 编译配置
   compiler: {
-    // 移除console.log (仅在生产环境)
-    removeConsole: process.env.NODE_ENV === 'production',
+    // 临时保留console.log用于调试线上问题
+    // removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: false,
   },
 
   // 输出配置
@@ -174,7 +176,7 @@ const nextConfig: NextConfig = {
   },
 };
 
-// PWA 配置
+// PWA 配置 (这部分不需要修改)
 const pwaConfig = withPWA({
   dest: 'public',
   disable: process.env.NODE_ENV === 'development',
@@ -229,4 +231,5 @@ const pwaConfig = withPWA({
   ],
 });
 
-export default pwaConfig(nextConfig as unknown as Parameters<typeof pwaConfig>[0]);
+// 步骤 2: 简化这里的 export
+export default pwaConfig(nextConfig);

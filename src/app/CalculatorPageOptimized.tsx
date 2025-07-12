@@ -388,6 +388,14 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
   }) => {
     const startTime = performance.now();
 
+    // 🧪 生产环境调试日志
+    console.log('🏙️ [MAIN_DEBUG] handleCitySelect 被调用:', {
+      cityData,
+      currentTimezone: timezone,
+      currentCoordinates: coordinates,
+      timestamp: new Date().toISOString()
+    });
+
     // 使用 requestAnimationFrame 进行异步处理，避免阻塞主线程
     requestAnimationFrame(() => {
       try {
@@ -397,6 +405,12 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
           source: "preset" as const,
           address: cityData.displayName,
         };
+
+        console.log('🔄 [MAIN_DEBUG] 开始更新状态:', {
+          newCoordinates,
+          newTimezone: cityData.timezone,
+          newLocation: cityData.displayName
+        });
 
         logger.info("🏙️ [CitySelect] 同时更新坐标和时区:", {
           coordinates: newCoordinates,
@@ -409,18 +423,37 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
         setLocation(cityData.displayName);
         setTimezone(cityData.timezone);
 
+        console.log('✅ [MAIN_DEBUG] 状态更新完成，开始计算新日期');
+
         // 2) 重置 selectedDate 为新时区当天中午，避免跨时区后出现"Tomorrow"错位
         try {
           const baseTime = serverTime ? new Date(serverTime) : new Date();
           const todayInNewTZStr = formatInTimeZoneDirect(baseTime, cityData.timezone, "yyyy-MM-dd");
           const middayInNewTZUtc = fromZonedTime(`${todayInNewTZStr}T12:00:00`, cityData.timezone);
           setSelectedDate(middayInNewTZUtc);
+          
+          console.log('📅 [MAIN_DEBUG] 日期已重置:', {
+            originalDate: baseTime.toISOString(),
+            newTimezone: cityData.timezone,
+            todayInNewTZ: todayInNewTZStr,
+            newSelectedDate: middayInNewTZUtc.toISOString()
+          });
         } catch (err) {
+          console.error('❌ [MAIN_DEBUG] 计算新时区日期时出错:', err);
           logger.error("Error computing midday for new timezone", err as Error);
         }
 
         setHasInitialCalculated(false);
         calculationParamsRef.current = "";
+
+        console.log('🎯 [MAIN_DEBUG] 城市选择处理完成:', {
+          processingTime: `${(performance.now() - startTime).toFixed(2)}ms`,
+          finalState: {
+            coordinates: newCoordinates,
+            location: cityData.displayName,
+            timezone: cityData.timezone
+          }
+        });
 
         // 性能监控（开发环境）
         if (process.env.NODE_ENV === 'development') {
@@ -430,6 +463,7 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
           }
         }
       } catch (error) {
+        console.error('❌ [MAIN_DEBUG] handleCitySelect 发生异常:', error);
         logger.error('Error in handleCitySelect', error as Error);
       }
     });

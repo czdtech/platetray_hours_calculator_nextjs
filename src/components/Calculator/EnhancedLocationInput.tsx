@@ -199,8 +199,19 @@ function EnhancedLocationInputComponent({
     (city: PopularCity) => {
       const now = Date.now()
 
+      // 🧪 添加生产环境调试日志
+      console.log('🏙️ [CITY_DEBUG] 城市按钮被点击:', {
+        cityName: city.name,
+        displayName: city.displayName,
+        coordinates: `${city.latitude}, ${city.longitude}`,
+        timezone: city.timezone,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent.substring(0, 50)
+      });
+
       // 防抖检查
       if (now - lastCitySelectRef.current < CITY_SELECT_DEBOUNCE) {
+        console.log(`🚫 [CITY_DEBUG] 跳过快速连续的城市选择`);
         logger.info(`🚫 [Debounce] 跳过快速连续的城市选择`)
         return
       }
@@ -236,8 +247,17 @@ function EnhancedLocationInputComponent({
 
             // 批量处理回调
             requestAnimationFrame(() => {
+              // 🧪 调试回调执行
+              console.log('🔄 [CITY_DEBUG] 开始执行回调函数:', {
+                hasOnCitySelect: !!onCitySelect,
+                hasOnLocationChange: !!onLocationChange,
+                hasOnUseCurrentLocation: !!onUseCurrentLocation,
+                hasOnTimezoneChange: !!onTimezoneChange
+              });
+
               // 优先使用新的 onCitySelect 回调，确保坐标和时区同步更新
               if (onCitySelect) {
+                console.log('✅ [CITY_DEBUG] 调用 onCitySelect 回调');
                 onCitySelect({
                   latitude: city.latitude,
                   longitude: city.longitude,
@@ -245,6 +265,7 @@ function EnhancedLocationInputComponent({
                   displayName: city.displayName,
                 })
               } else {
+                console.log('⚠️ [CITY_DEBUG] onCitySelect 不存在，使用回退方案');
                 // 回退到分别调用（保持向后兼容）
                 onLocationChange(city.displayName)
                 onUseCurrentLocation({
@@ -256,6 +277,7 @@ function EnhancedLocationInputComponent({
 
                 // If timezone change callback is provided, use it for immediate timezone update
                 if (onTimezoneChange) {
+                  console.log('🌍 [CITY_DEBUG] 调用 onTimezoneChange 回调');
                   onTimezoneChange(city.timezone)
                 }
               }
@@ -264,6 +286,13 @@ function EnhancedLocationInputComponent({
                 coordinates: `${city.latitude}, ${city.longitude}`,
                 timezone: city.timezone,
               })
+
+              // 🧪 最终状态检查
+              console.log('✅ [CITY_DEBUG] 城市选择完成:', {
+                finalCityName: city.displayName,
+                processingTime: `${(performance.now() - startTime).toFixed(2)}ms`,
+                success: true
+              });
 
               // 性能监控（开发环境）
               if (process.env.NODE_ENV === 'development') {
@@ -280,6 +309,7 @@ function EnhancedLocationInputComponent({
             })
           }, 0)
         } catch (error) {
+          console.error('❌ [CITY_DEBUG] 城市选择过程中发生错误:', error);
           logger.error('Error in handlePopularCitySelect', error as Error)
           setError('Failed to select city')
           setProcessingCitySelect(null)
