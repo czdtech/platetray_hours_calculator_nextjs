@@ -246,7 +246,7 @@ export default function DebugPage() {
               <div className="space-y-1 font-mono text-xs">
                 {Object.entries(debugInfo.apiTests.timezone.cacheHeaders).map(([key, value]) => (
                   <div key={key}>
-                    <strong>{key}:</strong> {value || '(未设置)'}
+                    <strong>{key}:</strong> {String(value) || '(未设置)'}
                   </div>
                 ))}
               </div>
