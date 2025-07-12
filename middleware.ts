@@ -2,29 +2,32 @@ import { NextResponse, NextRequest } from 'next/server';
 import crypto from 'crypto';
 
 /**
- * Generate a per-request nonce and inject a strict CSP header.
- * The nonce is exposed via the custom "x-nonce" header so that
- * `useNonce()` (Next.js built-in) can pick it up and automatically
- * propagate it to inline <script> elements.
+ * AdSense Revenue-Optimized Middleware
+ * 收益优先的CSP配置 - 允许所有AdSense功能
  */
 export function middleware(request: NextRequest) {
   // 16-byte base64 nonce (128-bit entropy)
   const nonce = crypto.randomBytes(16).toString('base64');
 
-  // Build Content-Security-Policy directive
+  // AdSense收益优先的CSP配置
   const csp = [
     "default-src 'self'",
-    // Inline scripts are only allowed if they carry this nonce
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https:`,
-    // Inline styles may use report-sample for debugging; allow fonts/css CDNs
-    `style-src 'self' 'report-sample' https://fonts.googleapis.com https://*.gstatic.com`,
-    "img-src 'self' data: blob: https:",
-    "font-src 'self' https://*.gstatic.com",
-    "connect-src 'self' https:",
-    "frame-src 'self' https://*.googlesyndication.com https://*.doubleclick.net https://*.googleadservices.com https://*.googletagservices.com https://*.google-analytics.com https://*.googletagmanager.com https://*.googleapis.com https://*.gstatic.com https://*.google.com https://*.adtrafficquality.google https://cdn.ampproject.org",
-    "frame-ancestors 'none'",
+    // 允许所有Google/AdSense脚本和内联脚本
+    `script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-${nonce}' 'strict-dynamic' https: *.google.com *.googlesyndication.com *.googleadservices.com *.googletagservices.com *.doubleclick.net *.google-analytics.com *.googletagmanager.com *.gstatic.com *.googleapis.com data: blob:`,
+    // 允许所有样式和字体，包括内联样式
+    "style-src 'self' 'unsafe-inline' https: *.google.com *.googlesyndication.com *.gstatic.com *.googleapis.com data: blob:",
+    // 允许所有图像源
+    "img-src 'self' 'unsafe-inline' https: http: *.google.com *.googlesyndication.com *.googleadservices.com *.doubleclick.net *.gstatic.com data: blob:",
+    // 允许所有字体源
+    "font-src 'self' https: *.google.com *.gstatic.com data: blob:",
+    // 允许所有连接
+    "connect-src 'self' https: wss: *.google.com *.googlesyndication.com *.googleadservices.com *.doubleclick.net *.google-analytics.com *.googletagmanager.com",
+    // 允许所有AdSense iframe
+    "frame-src 'self' https: *.google.com *.googlesyndication.com *.doubleclick.net *.googleadservices.com *.googletagservices.com *.google-analytics.com *.googletagmanager.com *.googleapis.com *.gstatic.com *.adtrafficquality.google https://cdn.ampproject.org",
+    // 移除frame-ancestors限制，允许AdSense嵌入
+    // "frame-ancestors 'none'", // 注释掉，允许iframe嵌入
     "object-src 'none'",
-    "base-uri 'none'",
+    "base-uri 'self'",
     'upgrade-insecure-requests',
   ].join('; ');
 

@@ -4,13 +4,6 @@ import CalculatorPageOptimized from '@/app/CalculatorPageOptimized';
 import { ServerCurrentHourPayload } from '@/utils/planetaryHourHelpers';
 import { PlanetaryHoursCalculationResult } from '@/services/PlanetaryHoursCalculator';
 import { TTLCalculationResult } from '@/utils/cache/dynamicTTL';
-import dynamic from 'next/dynamic';
-
-// 动态加载缓存监控组件（仅在客户端）
-const CacheMonitorComponent = dynamic(
-  () => import('@/components/Performance/CacheMonitor'),
-  { ssr: false }
-);
 
 interface Props {
   precomputed?: PlanetaryHoursCalculationResult | null;
@@ -38,20 +31,13 @@ export default function CalculatorClient({
   const effectiveInitialHour = initialHourPayload || initialHour;
 
   return (
-    <>
-      <CalculatorPageOptimized
-        precomputed={effectiveCalculationResult}
-        initialHour={effectiveInitialHour}
-        serverTime={serverTime}
-        cacheControl={cacheControl}
-        ttlInfo={ttlInfo}
-        error={error}
-      />
-
-      {/* 缓存监控组件（仅在开发模式显示） */}
-      {process.env.NODE_ENV === 'development' && (
-        <CacheMonitorComponent />
-      )}
-    </>
+    <CalculatorPageOptimized
+      precomputed={effectiveCalculationResult}
+      initialHour={effectiveInitialHour}
+      serverTime={serverTime}
+      cacheControl={cacheControl}
+      ttlInfo={ttlInfo}
+      error={error}
+    />
   );
 }

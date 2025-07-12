@@ -120,7 +120,6 @@ platetray_hours_calculator_nextjs/
 │       │       │   ├── PageHero.tsx
 │       │       │   └── SkipToContent.tsx
 │       │       ├── Performance/         # 性能优化组件
-│       │       │   ├── CacheMonitor.tsx
 │       │       │   ├── FontOptimizer.tsx
 │       │       │   ├── LayoutStabilizer.tsx
 │       │       │   ├── LazyLoader.tsx

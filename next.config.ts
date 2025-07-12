@@ -1,6 +1,5 @@
 import type { NextConfig } from "next";
-// 步骤 1: 修改这里的 import
-import withPWA from '@ducanh2912/next-pwa';
+import withSerwistInit from "@serwist/next";
 
 const nextConfig: NextConfig = {
   // 图片优化配置
@@ -80,10 +79,7 @@ const nextConfig: NextConfig = {
             key: 'X-Content-Type-Options',
             value: 'nosniff'
           },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY'
-          },
+          // X-Frame-Options 移除，AdSense需要完全的iframe自由度
           {
             key: 'X-XSS-Protection',
             value: '1; mode=block'
@@ -94,7 +90,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(self)',
+            value: 'camera=(), microphone=(), geolocation=(self)' // 完全移除interest-cohort限制，AdSense需要更多权限
           },
           // Content-Security-Policy 通过 middleware 动态设置，不在此静态 headers 中声明
           {
@@ -175,12 +171,14 @@ const nextConfig: NextConfig = {
   },
 };
 
-// PWA 配置 - 简化版本
-const pwaConfig = withPWA({
-  dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
-  register: true,
+// Serwist PWA 配置 - 现代化PWA解决方案
+const withSerwist = withSerwistInit({
+  swSrc: "src/app/sw.ts", // Service Worker 源文件
+  swDest: "public/sw.js", // 输出目标
+  cacheOnNavigation: true,
+  reloadOnOnline: true,
+  disable: process.env.NODE_ENV === "development",
 });
 
-// 步骤 2: 简化这里的 export
-export default pwaConfig(nextConfig);
+// 导出配置
+export default withSerwist(nextConfig);
