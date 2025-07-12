@@ -12,7 +12,7 @@ const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 /**
  * 标准API响应接口
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = Record<string, unknown>> {
   error?: string;
   details?: string;
   data?: T;
@@ -55,10 +55,10 @@ export async function fetchWithTimeout(
 /**
  * 处理Google API响应
  */
-export async function handleGoogleApiResponse<T>(
+export async function handleGoogleApiResponse<_T>(
   response: Response,
   routePath: string,
-  startTime: number
+  _startTime: number
 ): Promise<NextResponse> {
   const data = await response.json();
   
@@ -121,7 +121,7 @@ export function buildGoogleApiUrl(
 export function logApiStart(
   routePath: string,
   method: string,
-  params?: Record<string, any>
+  params?: Record<string, unknown>
 ): number {
   const start = performance.now();
   apiLogger.debug(`${method} ${routePath}`, params || '');
@@ -134,7 +134,7 @@ export function logApiStart(
 export function logApiSuccess(
   routePath: string,
   startTime: number,
-  additionalData?: Record<string, any>
+  additionalData?: Record<string, unknown>
 ): void {
   apiLogger.info(`${routePath} 成功 (${(performance.now() - startTime).toFixed(1)}ms)`, additionalData || '');
 }

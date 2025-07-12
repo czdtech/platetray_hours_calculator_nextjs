@@ -14,28 +14,28 @@ export function createLogger(context: string) {
 
   return {
     // 调试信息 - 仅开发环境
-    debug: (message: string, ...args: any[]) => {
+    debug: (message: string, ...args: unknown[]) => {
       if (isDev) {
         console.log(`🔍 ${prefix} ${message}`, ...args);
       }
     },
 
     // 重要信息 - 仅开发环境
-    info: (message: string, ...args: any[]) => {
+    info: (message: string, ...args: unknown[]) => {
       if (isDev) {
         console.log(`ℹ️ ${prefix} ${message}`, ...args);
       }
     },
 
     // 警告信息 - 仅开发环境
-    warn: (message: string, ...args: any[]) => {
+    warn: (message: string, ...args: unknown[]) => {
       if (isDev) {
         console.warn(`⚠️ ${prefix} ${message}`, ...args);
       }
     },
 
     // 错误信息 - 所有环境（生产环境也需要错误日志）
-    error: (message: string, error?: Error, ...args: any[]) => {
+    error: (message: string, error?: Error, ...args: unknown[]) => {
       console.error(`❌ ${prefix} ${message}`, error || '', ...args);
     },
 
@@ -48,14 +48,14 @@ export function createLogger(context: string) {
     },
 
     // 计算流程 - 仅开发环境
-    process: (message: string, ...args: any[]) => {
+    process: (message: string, ...args: unknown[]) => {
       if (isDev) {
         console.log(`🔄 ${prefix} ${message}`, ...args);
       }
     },
 
     // 数据操作 - 仅开发环境
-    data: (message: string, ...args: any[]) => {
+    data: (message: string, ...args: unknown[]) => {
       if (isDev) {
         console.log(`📋 ${prefix} ${message}`, ...args);
       }

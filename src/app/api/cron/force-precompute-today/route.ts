@@ -11,12 +11,12 @@ export async function GET() {
       message: '今日预计算数据生成成功',
       timestamp: new Date().toISOString(),
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[Manual Trigger] 手动触发失败:', error)
     return NextResponse.json(
       {
         success: false,
-        error: String(error?.message ?? error),
+        error: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString(),
       },
       {
