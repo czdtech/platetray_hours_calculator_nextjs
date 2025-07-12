@@ -1,25 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-export default function DebugPage() {
-  // 生产环境禁用调试页面
-  if (process.env.NODE_ENV === 'production') {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">页面不可用</h1>
-          <p className="text-gray-600 mb-6">此页面仅在开发环境中可用</p>
-          <button 
-            onClick={() => window.location.href = '/'}
-            className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700"
-          >
-            返回首页
-          </button>
-        </div>
-      </div>
-    );
-  }
+import { notFound } from 'next/navigation';
 
 interface DebugInfo {
   environment: string;
@@ -37,6 +19,10 @@ interface DebugInfo {
 }
 
 export default function DebugPage() {
+  // 生产环境返回404
+  if (process.env.NODE_ENV === 'production') {
+    notFound();
+  }
   const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 

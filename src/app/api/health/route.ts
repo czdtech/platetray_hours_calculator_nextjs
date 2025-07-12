@@ -1,6 +1,16 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
+  // 生产环境返回404
+  if (process.env.NODE_ENV === 'production') {
+    return new NextResponse('Not Found', { 
+      status: 404,
+      headers: {
+        'Content-Type': 'text/plain'
+      }
+    });
+  }
+
   const healthCheck: {
     timestamp: string;
     status: string;
