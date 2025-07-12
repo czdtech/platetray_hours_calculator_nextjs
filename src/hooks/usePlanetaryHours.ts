@@ -13,7 +13,7 @@ import {
   FormattedPlanetaryHour,
 } from "../utils/planetaryHourFormatters";
 import { useCurrentLivePlanetaryHour } from "./useCurrentLivePlanetaryHour";
-import { useNetworkOptimization } from "./usePerformanceOptimization";
+import { useNetworkOptimization } from "./useNetworkOptimization";
 
 import { createLogger } from '@/utils/unified-logger';
 

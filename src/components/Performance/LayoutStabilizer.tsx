@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import Image from 'next/image';
 
 interface LayoutStabilizerProps {
@@ -8,8 +8,8 @@ interface LayoutStabilizerProps {
 }
 
 /**
- * 布局稳定器组件
- * 用于减少累积布局偏移(CLS)
+ * 布局稳定器组件 - 简化版
+ * 减少累积布局偏移(CLS)
  */
 export function LayoutStabilizer({
   children,
@@ -30,7 +30,7 @@ export function LayoutStabilizer({
 }
 
 /**
- * 图片懒加载组件，防止布局偏移
+ * 图片懒加载组件 - 简化版
  */
 interface OptimizedImageProps {
   src: string;
@@ -50,52 +50,28 @@ export function OptimizedImage({
   priority = false
 }: OptimizedImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isInView, setIsInView] = useState(priority);
-
-  useEffect(() => {
-    if (priority) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    const element = document.getElementById(`img-${src}`);
-    if (element) {
-      observer.observe(element);
-    }
-
-    return () => observer.disconnect();
-  }, [src, priority]);
 
   return (
     <div
-      id={`img-${src}`}
       className={`relative overflow-hidden ${className}`}
       style={{
         width,
         height,
-        backgroundColor: '#f3f4f6' // 占位背景色
+        backgroundColor: '#f3f4f6'
       }}
     >
-      {isInView && (
-        <Image
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'
-            }`}
-          onLoad={() => setIsLoaded(true)}
-          priority={priority}
-          fill={false}
-        />
-      )}
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
+        onLoad={() => setIsLoaded(true)}
+        priority={priority}
+        fill={false}
+      />
       {!isLoaded && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
@@ -106,7 +82,7 @@ export function OptimizedImage({
 }
 
 /**
- * 内容骨架屏组件
+ * 内容骨架屏组件 - 简化版
  */
 interface ContentSkeletonProps {
   lines?: number;
@@ -119,8 +95,9 @@ export function ContentSkeleton({ lines = 3, className = "" }: ContentSkeletonPr
       {Array.from({ length: lines }).map((_, index) => (
         <div
           key={index}
-          className={`h-4 bg-gray-200 rounded ${index === lines - 1 ? 'w-3/4' : 'w-full'
-            }`}
+          className={`h-4 bg-gray-200 rounded ${
+            index === lines - 1 ? 'w-3/4' : 'w-full'
+          }`}
         />
       ))}
     </div>

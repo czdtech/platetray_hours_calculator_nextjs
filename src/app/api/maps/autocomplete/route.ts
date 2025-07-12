@@ -1,115 +1,80 @@
-import { NextResponse } from 'next/server'
-
-import { apiLogger } from '@/utils/unified-logger'
-
-// 在 Vercel 平台或本地 .env.local 文件中配置此环境变量
-const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY
+import { NextResponse } from 'next/server';
+import {
+  checkApiKey,
+  fetchWithTimeout,
+  handleGoogleApiResponse,
+  handleApiError,
+  buildGoogleApiUrl,
+  logApiStart,
+  logApiSuccess
+} from '@/utils/maps-api-helpers';
 
 // Autocomplete API 响应接口
 interface AutocompleteResponse {
   predictions: Array<{
-    place_id: string
-    description: string
+    place_id: string;
+    description: string;
     structured_formatting: {
-      main_text: string
-      secondary_text: string
-    }
-  }>
-  status: string
+      main_text: string;
+      secondary_text: string;
+    };
+  }>;
+  status: string;
 }
 
 // 缓存配置
-const CACHE_DURATION = 10 * 60 * 1000 // 10分钟缓存
+const CACHE_DURATION = 10 * 60 * 1000; // 10分钟缓存
 
 interface CacheItem {
-  data: {
-    predictions: Array<{
-      place_id: string
-      description: string
-      structured_formatting: {
-        main_text: string
-        secondary_text: string
-      }
-    }>
-  }
-  timestamp: number
+  data: { predictions: AutocompleteResponse['predictions'] };
+  timestamp: number;
 }
 
-const cache = new Map<string, CacheItem>()
+const cache = new Map<string, CacheItem>();
 
 export async function GET(request: Request) {
-  const start = performance.now()
-  const { searchParams } = new URL(request.url)
-  const input = searchParams.get('input')
-  const sessionToken = searchParams.get('sessiontoken')
+  const start = logApiStart('/api/maps/autocomplete', 'GET');
+  const { searchParams } = new URL(request.url);
+  const input = searchParams.get('input');
+  const sessionToken = searchParams.get('sessiontoken');
 
-  apiLogger.request('/api/maps/autocomplete', 'GET', {
-    input: input?.substring(0, 20),
-  })
+  // 检查API密钥
+  const keyCheckResult = checkApiKey('/api/maps/autocomplete', start);
+  if (keyCheckResult) return keyCheckResult;
 
-  if (!GOOGLE_MAPS_API_KEY) {
-    apiLogger.error(
-      '/api/maps/autocomplete',
-      new Error('Google Maps API Key missing'),
-      performance.now() - start
-    )
-    return NextResponse.json(
-      { error: 'Server configuration error: API key missing' },
-      { status: 500 }
-    )
-  }
-
+  // 验证输入参数
   if (!input || typeof input !== 'string' || input.trim().length < 2) {
     return NextResponse.json(
       { error: 'Input must be at least 2 characters long' },
       { status: 400 }
-    )
+    );
   }
 
   // 检查缓存
-  const cacheKey = `${input.toLowerCase()}_${sessionToken || 'default'}`
-  const cachedResult = cache.get(cacheKey)
+  const cacheKey = `${input.toLowerCase()}_${sessionToken || 'default'}`;
+  const cachedResult = cache.get(cacheKey);
   if (cachedResult && Date.now() - cachedResult.timestamp < CACHE_DURATION) {
-    apiLogger.success('/api/maps/autocomplete', performance.now() - start, {
-      source: 'cache',
-    })
-    return NextResponse.json(cachedResult.data, { status: 200 })
+    logApiSuccess('/api/maps/autocomplete', start, { source: 'cache' });
+    return NextResponse.json(cachedResult.data, { status: 200 });
   }
-
-  // 构建API URL
-  const params = new URLSearchParams({
-    input: input.trim(),
-    types: 'geocode', // 只返回地理位置
-    key: GOOGLE_MAPS_API_KEY,
-  })
-
-  if (sessionToken) {
-    params.append('sessiontoken', sessionToken)
-  }
-
-  const apiUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?${params.toString()}`
 
   try {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 8000) // 8秒超时
+    // 构建API参数
+    const params = new URLSearchParams({
+      input: input.trim(),
+      types: 'geocode', // 只返回地理位置
+    });
 
-    const googleResponse = await fetch(apiUrl, { signal: controller.signal })
-    clearTimeout(timeoutId)
+    if (sessionToken) {
+      params.append('sessiontoken', sessionToken);
+    }
 
-    const data = (await googleResponse.json()) as AutocompleteResponse
+    const apiUrl = buildGoogleApiUrl('place/autocomplete/json', params);
+    const googleResponse = await fetchWithTimeout(apiUrl, 8000);
+    const data = (await googleResponse.json()) as AutocompleteResponse;
 
     if (!googleResponse.ok || data.status !== 'OK') {
-      apiLogger.error(
-        '/api/maps/autocomplete',
-        new Error(`Google API error: ${data.status}`),
-        performance.now() - start
-      )
-      return NextResponse.json(
-        {
-          error: `Failed to fetch autocomplete suggestions: ${data.status || 'Unknown error'}`,
-        },
-        { status: googleResponse.status || 500 }
-      )
+      return handleGoogleApiResponse(googleResponse, '/api/maps/autocomplete', start);
     }
 
     // 处理响应数据
@@ -120,34 +85,27 @@ export async function GET(request: Request) {
         main_text: prediction.structured_formatting.main_text,
         secondary_text: prediction.structured_formatting.secondary_text,
       },
-    }))
+    }));
 
-    const result = { predictions }
+    const result = { predictions };
 
     // 缓存结果
     cache.set(cacheKey, {
       data: result,
       timestamp: Date.now(),
-    })
+    });
 
     // 清理过期缓存
-    const now = Date.now()
+    const now = Date.now();
     for (const [key, value] of cache.entries()) {
       if (now - value.timestamp > CACHE_DURATION) {
-        cache.delete(key)
+        cache.delete(key);
       }
     }
 
-    apiLogger.success('/api/maps/autocomplete', performance.now() - start, {
-      count: predictions.length,
-    })
-    return NextResponse.json(result, { status: 200 })
+    logApiSuccess('/api/maps/autocomplete', start, { count: predictions.length });
+    return NextResponse.json(result, { status: 200 });
   } catch (error: unknown) {
-    const err = error instanceof Error ? error : new Error('Unknown error')
-    apiLogger.error('/api/maps/autocomplete', err, performance.now() - start)
-    return NextResponse.json(
-      { error: 'Internal server error', details: err.message },
-      { status: 500 }
-    )
+    return handleApiError(error, '/api/maps/autocomplete', start);
   }
 }

@@ -4,16 +4,14 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Footer } from "@/components/Layout/Footer";
 import { AnalyticsWrapper } from "@/components/Analytics/Analytics";
 import { AdSense } from "@/components/Analytics/AdSense";
-
 import { BackToTop } from "@/components/UI/BackToTop";
-import { ResourcePreloader, SmartPrefetcher } from "@/components/Performance/ResourcePreloader";
 import { FontOptimizer, FontDisplayCSS } from "@/components/Performance/FontOptimizer";
-
-// 添加新的简化监控系统
-import { SimpleMonitoringSetup } from "@/components/Monitoring/SimpleMonitoringSetup";
-
 import { getDefaultSiteMetadata } from "@/utils/seo/metadata";
-import { getGSCVerificationMeta } from "@/config/seo-monitoring";
+
+// 简化版Google Search Console验证
+const getGSCVerificationMeta = (): string | null => {
+  return process.env.NEXT_PUBLIC_GSC_VERIFICATION || null;
+};
 
 // 添加Google Search Console验证meta标签
 const gscVerification = getGSCVerificationMeta();
@@ -59,13 +57,8 @@ export default function RootLayout({
         {/* Google AdSense 优化加载 */}
         <AdSense />
         {/* 性能优化组件 */}
-        <ResourcePreloader />
-        <SmartPrefetcher />
         <FontOptimizer />
         <FontDisplayCSS />
-
-        {/* 新增：简化版监控系统 */}
-        <SimpleMonitoringSetup />
 
         {/* 返回顶部按钮 */}
         <BackToTop />

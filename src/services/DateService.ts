@@ -7,9 +7,6 @@
 
 import { isValid, addDays, subDays, addWeeks, subWeeks } from "date-fns";
 import { timeZoneService } from "./TimeZoneService";
-import { createLogger } from '@/utils/unified-logger';
-
-const logger = createLogger('DateService');
 
 export interface DateValidationResult {
   isValid: boolean;
@@ -49,9 +46,9 @@ export const PLANET_SYMBOLS = {
 
 export class DateService {
   private static instance: DateService;
-  // 添加缓存机制优化性能
+  // 保留基本缓存，减少缓存大小限制
   private weekDaysCache = new Map<string, WeekDay[]>();
-  private readonly CACHE_SIZE_LIMIT = 50; // 减少缓存大小，因为移除了格式化缓存
+  private readonly CACHE_SIZE_LIMIT = 20;
 
   private constructor() { }
 
@@ -77,24 +74,6 @@ export class DateService {
         cache.set(key, value);
       });
     }
-  }
-
-  /**
-   * 清理所有缓存（用于调试和故障排除）
-   */
-  public clearAllCache() {
-    this.weekDaysCache.clear();
-    logger.cache('All caches cleared');
-  }
-
-  /**
-   * 获取缓存统计信息（用于调试）
-   */
-  public getCacheStats() {
-    return {
-      weekDaysCache: this.weekDaysCache.size,
-      limit: this.CACHE_SIZE_LIMIT
-    };
   }
 
   /**
@@ -178,9 +157,7 @@ export class DateService {
     }
 
     // 如果没有缓存，进行计算
-    const startTime = performance.now();
-
-    // 1. 确定 baseDate 在目标时区的 YYYY-MM-DD 字符串表示
+    // 确定 baseDate 在目标时区的 YYYY-MM-DD 字符串表示
     const baseDateInTimezoneStr = timeZoneService.formatInTimeZone(
       baseDate,
       timezone,
@@ -259,12 +236,6 @@ export class DateService {
     this.weekDaysCache.set(cacheKey, weekDaysArray);
     this.clearOldCache(this.weekDaysCache);
 
-    // 性能监控
-    const duration = performance.now() - startTime;
-    if (duration > 50) {
-      logger.performance(`generateWeekDays took ${duration.toFixed(2)}ms`);
-    }
-
     return weekDaysArray;
   }
 
@@ -298,7 +269,6 @@ export class DateService {
     timezone: string,
     format: "short" | "medium" | "long" = "medium",
   ): string {
-    // 直接计算，不缓存（格式化操作很快，缓存收益微乎其微）
     const formatMap = {
       short: "MMM d",
       medium: "MMMM d, yyyy",
@@ -311,21 +281,3 @@ export class DateService {
 
 // 导出单例实例
 export const dateService = DateService.getInstance();
-
-// 在开发环境中将 dateService 暴露到全局 window 对象，方便调试
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-  interface WindowWithDateService extends Window {
-    dateService: DateService;
-    clearAllCaches: () => void;
-  }
-
-  const w = window as unknown as WindowWithDateService;
-  w.dateService = dateService;
-  // 添加全局缓存清理函数，方便调试
-  w.clearAllCaches = () => {
-    dateService.clearAllCache();
-    logger.debug('All DateService caches cleared');
-  };
-  logger.debug('dateService available at window.dateService');
-  logger.debug('clearAllCaches() available at window.clearAllCaches()');
-}

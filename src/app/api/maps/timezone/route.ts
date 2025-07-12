@@ -1,8 +1,13 @@
-import { NextResponse } from "next/server";
-
-import { apiLogger } from '@/utils/unified-logger';
-// 在 Vercel 平台或本地 .env.local 文件中配置此环境变量
-const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+import { NextResponse } from 'next/server';
+import {
+  checkApiKey,
+  fetchWithTimeout,
+  handleGoogleApiResponse,
+  handleApiError,
+  buildGoogleApiUrl,
+  logApiStart,
+  logApiSuccess
+} from '@/utils/maps-api-helpers';
 
 interface TimezoneApiResponse {
   dstOffset: number; // 夏令时偏移量（秒）
@@ -14,28 +19,22 @@ interface TimezoneApiResponse {
 }
 
 export async function GET(request: Request) {
-  const start = performance.now();
+  const start = logApiStart('/api/maps/timezone', 'GET');
   const { searchParams } = new URL(request.url);
-  const location = searchParams.get("location");
-  const timestamp = searchParams.get("timestamp");
+  const location = searchParams.get('location');
+  const timestamp = searchParams.get('timestamp');
 
-  apiLogger.request('/api/maps/timezone', 'GET', { location, timestamp });
+  // 检查API密钥
+  const keyCheckResult = checkApiKey('/api/maps/timezone', start);
+  if (keyCheckResult) return keyCheckResult;
 
-  if (!GOOGLE_MAPS_API_KEY) {
-    apiLogger.error('/api/maps/timezone', new Error("Google Maps API Key missing"), performance.now() - start);
-    return NextResponse.json(
-      { error: "Server configuration error: API key missing" },
-      { status: 500 },
-    );
-  }
-
-  if (!location || typeof location !== "string") {
+  // 验证location参数
+  if (!location || typeof location !== 'string') {
     return NextResponse.json(
       {
-        error:
-          'Location parameter is required and must be in format "latitude,longitude"',
+        error: 'Location parameter is required and must be in format "latitude,longitude"',
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -45,7 +44,7 @@ export async function GET(request: Request) {
   if (!locationRegex.test(location)) {
     return NextResponse.json(
       { error: 'Invalid location format. Must be "latitude,longitude"' },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -54,42 +53,30 @@ export async function GET(request: Request) {
 
   if (isNaN(ts)) {
     return NextResponse.json(
-      { error: "Timestamp must be a valid number" },
-      { status: 400 },
+      { error: 'Timestamp must be a valid number' },
+      { status: 400 }
     );
   }
 
-  const apiUrl = `https://maps.googleapis.com/maps/api/timezone/json?location=${encodeURIComponent(location)}&timestamp=${ts}&key=${GOOGLE_MAPS_API_KEY}`;
-
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+    // 构建API参数
+    const params = new URLSearchParams({
+      location: location,
+      timestamp: ts.toString(),
+    });
 
-    const googleResponse = await fetch(apiUrl, { signal: controller.signal });
-    clearTimeout(timeoutId);
-
+    const apiUrl = buildGoogleApiUrl('timezone/json', params);
+    const googleResponse = await fetchWithTimeout(apiUrl);
     const data = (await googleResponse.json()) as TimezoneApiResponse;
 
-    if (!googleResponse.ok || data.status !== "OK") {
-      apiLogger.error('/api/maps/timezone', new Error(`Google API error: ${data.status}`), performance.now() - start);
-      return NextResponse.json(
-        {
-          error: `Failed to fetch timezone information: ${data.status || "Unknown error"}`,
-          details: data.error_message || "No additional details provided.",
-        },
-        { status: googleResponse.status || 500 },
-      );
+    if (!googleResponse.ok || data.status !== 'OK') {
+      return handleGoogleApiResponse(googleResponse, '/api/maps/timezone', start);
     }
 
     // 返回完整的Google API响应
-    apiLogger.success('/api/maps/timezone', performance.now() - start, { status: data.status });
+    logApiSuccess('/api/maps/timezone', start, { status: data.status });
     return NextResponse.json(data, { status: 200 });
   } catch (error: unknown) {
-    const err = error instanceof Error ? error : new Error("Unknown error");
-    apiLogger.error('/api/maps/timezone', err, performance.now() - start);
-    return NextResponse.json(
-      { error: "Internal server error", details: err.message },
-      { status: 500 },
-    );
+    return handleApiError(error, '/api/maps/timezone', start);
   }
 }

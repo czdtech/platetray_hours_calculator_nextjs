@@ -8,8 +8,7 @@ interface LazyLoaderProps {
 }
 
 /**
- * 懒加载包装器组件
- * 用于延迟加载非关键组件，提升首屏性能
+ * 懒加载包装器组件 - 简化版
  */
 export function LazyLoader({ fallback = <div>Loading...</div>, children }: LazyLoaderProps) {
   return (
@@ -20,7 +19,7 @@ export function LazyLoader({ fallback = <div>Loading...</div>, children }: LazyL
 }
 
 /**
- * 创建懒加载组件的工具函数
+ * 创建懒加载组件的工具函数 - 简化版
  */
 export function createLazyComponent<T extends ComponentType<Record<string, unknown>>>(
   importFn: () => Promise<{ default: T }>,
@@ -31,7 +30,6 @@ export function createLazyComponent<T extends ComponentType<Record<string, unkno
   return function WrappedLazyComponent(props: React.ComponentProps<T>) {
     return (
       <Suspense fallback={fallback || <div>Loading...</div>}>
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <LazyComponent {...(props as any)} />
       </Suspense>
     );
@@ -39,16 +37,13 @@ export function createLazyComponent<T extends ComponentType<Record<string, unkno
 }
 
 /**
- * 延迟加载Hook - 在组件挂载后再加载
+ * 延迟加载Hook - 简化版
  */
 export function useDeferredLoad(delay: number = 100) {
   const [shouldLoad, setShouldLoad] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShouldLoad(true);
-    }, delay);
-
+    const timer = setTimeout(() => setShouldLoad(true), delay);
     return () => clearTimeout(timer);
   }, [delay]);
 
