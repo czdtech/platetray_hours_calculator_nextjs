@@ -199,19 +199,9 @@ function EnhancedLocationInputComponent({
     (city: PopularCity) => {
       const now = Date.now()
 
-      // 🧪 添加生产环境调试日志
-      console.log('🏙️ [CITY_DEBUG] 城市按钮被点击:', {
-        cityName: city.name,
-        displayName: city.displayName,
-        coordinates: `${city.latitude}, ${city.longitude}`,
-        timezone: city.timezone,
-        timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent.substring(0, 50)
-      });
 
       // 防抖检查
       if (now - lastCitySelectRef.current < CITY_SELECT_DEBOUNCE) {
-        console.log(`🚫 [CITY_DEBUG] 跳过快速连续的城市选择`);
         logger.info(`🚫 [Debounce] 跳过快速连续的城市选择`)
         return
       }

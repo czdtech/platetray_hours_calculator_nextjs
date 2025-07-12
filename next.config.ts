@@ -141,9 +141,8 @@ const nextConfig: NextConfig = {
 
   // 编译配置
   compiler: {
-    // 临时保留console.log用于调试线上问题
-    // removeConsole: process.env.NODE_ENV === 'production',
-    removeConsole: false,
+    // 生产环境移除console.log，开发环境保留
+    removeConsole: process.env.NODE_ENV === 'production',
   },
 
   // 输出配置

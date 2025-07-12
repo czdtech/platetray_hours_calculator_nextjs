@@ -23,7 +23,9 @@ export default function DebugPage() {
 
   const testAPI = async (url: string, label: string) => {
     try {
-      const response = await fetch(url + '?_debug=' + Date.now(), {
+      // 智能添加调试参数：如果URL已有参数则用&，否则用?
+      const debugParam = url.includes('?') ? '&_debug=' : '?_debug=';
+      const response = await fetch(url + debugParam + Date.now(), {
         headers: { 'Cache-Control': 'no-cache' }
       });
       const data = await response.json();
