@@ -117,9 +117,26 @@ export default async function CalculatorServer() {
       precomputed = null
     }
 
+    // 验证预计算数据的完整性
+    if (precomputed) {
+      if (!precomputed.planetaryHours || precomputed.planetaryHours.length !== 24) {
+        logger.warn('[数据验证] 预计算文件数据不完整，将重新计算', {
+          hoursCount: precomputed.planetaryHours?.length || 0,
+          expectedCount: 24,
+          cacheKey,
+        })
+        precomputed = null
+      }
+    }
+
     if (!precomputed) {
-      logger.info('[即时计算] 预计算文件不存在，开始即时计算')
-      // 回退即时计算
+      logger.info('[即时计算] 预计算文件不存在或无效，开始即时计算', {
+        cacheKey,
+        serverTime: nowUTC.toISOString(),
+        nyTime: nowInNY.toString()
+      })
+      
+      // 回退即时计算 - 使用相同的时区计算逻辑确保一致性
       calculationResult = await planetaryHoursCalculator.calculate(
         nowUTC,
         LATITUDE_NY,
@@ -128,16 +145,36 @@ export default async function CalculatorServer() {
       )
 
       if (calculationResult) {
+        // 验证即时计算结果
+        if (calculationResult.requestedDate !== todayStr) {
+          logger.warn('[即时计算] 计算日期与预期不符', {
+            calculatedDate: calculationResult.requestedDate,
+            expectedDate: todayStr,
+            serverTime: nowUTC.toISOString()
+          })
+        }
+        
+        if (calculationResult.planetaryHours.length !== 24) {
+          logger.error('[即时计算] 计算结果不完整', new Error('数据不完整'), {
+            hoursCount: calculationResult.planetaryHours.length,
+            expectedCount: 24
+          })
+          throw new Error(`即时计算结果不完整: ${calculationResult.planetaryHours.length}/24 小时`)
+        }
+        
         logger.info('[即时计算] 计算完成', {
           requestedDate: calculationResult.requestedDate,
           totalHours: calculationResult.planetaryHours.length,
+          sunrise: calculationResult.sunrise?.toISOString(),
+          sunset: calculationResult.sunset?.toISOString(),
         })
       } else {
         logger.error('[即时计算] 计算失败')
+        throw new Error('即时计算返回空结果')
       }
 
-      // 开发模式将结果写入本地，方便下次复用
-      if (process.env.NODE_ENV === 'development' && calculationResult) {
+      // 线上环境也保存计算结果作为缓存（仅在成功时）
+      if (calculationResult && calculationResult.planetaryHours.length === 24) {
         try {
           const dir = path.resolve(process.cwd(), 'public', 'precomputed')
           await fs.mkdir(dir, { recursive: true })
@@ -146,11 +183,13 @@ export default async function CalculatorServer() {
             JSON.stringify(calculationResult),
             'utf-8'
           )
-          logger.info('[开发模式] 已保存预计算文件到本地', { cacheKey })
+          logger.info('[缓存保存] 已保存即时计算结果到本地', { 
+            cacheKey,
+            environment: process.env.NODE_ENV 
+          })
         } catch (writeError) {
-          logger.warn('[开发模式] 无法写入预计算文件', {
-            error:
-              writeError instanceof Error ? writeError.message : writeError,
+          logger.warn('[缓存保存] 无法写入预计算文件', {
+            error: writeError instanceof Error ? writeError.message : writeError,
           })
         }
       }

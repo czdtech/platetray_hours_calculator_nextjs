@@ -11,6 +11,7 @@
     "clean": "rimraf .next .next-dev node_modules/.cache",
     "clean:all": "rimraf .next .next-dev node_modules/.cache && yarn install",
     "force:precompute-today": "tsx scripts/force-precompute-today.ts",
+    "force:precompute-multiple": "tsx scripts/force-precompute-multiple-days.ts",
     "compress:blog-images": "tsx scripts/compress-blog-images.ts",
     "clean:blog-image-artifacts": "tsx scripts/clean-blog-image-artifacts.ts",
     "test": "vitest run",
