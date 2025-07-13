@@ -546,6 +546,7 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
                       beforeSunrise={renderData.beforeSunrise}
                       initialHourPayload={initialHour}
                       serverTime={serverTime}
+                      planetaryHoursRaw={planetaryHoursRaw}
                     />
                   )}
                 </LayoutStabilizer>

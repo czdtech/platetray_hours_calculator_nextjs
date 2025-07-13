@@ -1,9 +1,10 @@
 "use client";
 
-import { FormattedPlanetaryHour } from "@/utils/planetaryHourFormatters";
+import { FormattedPlanetaryHour, formatHoursToList } from "@/utils/planetaryHourFormatters";
+import { PlanetaryHoursCalculationResult } from "@/services/PlanetaryHoursCalculator";
 import { useDateContext } from "@/contexts/DateContext";
 import { timeZoneService } from "@/services/TimeZoneService";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getCurrentTime } from '@/utils/time';
 // 导入全局行星颜色常量
 import {
@@ -13,6 +14,7 @@ import {
 } from "@/constants/planetColors";
 
 import { ServerCurrentHourPayload } from '@/utils/planetaryHourHelpers';
+
 interface CurrentHourDisplayProps {
   currentHour: FormattedPlanetaryHour | null;
   dayRuler?: string;
@@ -22,10 +24,12 @@ interface CurrentHourDisplayProps {
   beforeSunrise?: boolean;
   initialHourPayload?: ServerCurrentHourPayload | null;
   serverTime?: string; // 用于确保 SSR/CSR 一致性
+  // 新增：接收完整的行星时数据，用于统一计算逻辑
+  planetaryHoursRaw?: PlanetaryHoursCalculationResult | null;
 }
 
 export function CurrentHourDisplay({
-  currentHour,
+  currentHour: fallbackCurrentHour,
   dayRuler,
   sunriseTime,
   timeFormat = "24h",
@@ -33,25 +37,62 @@ export function CurrentHourDisplay({
   beforeSunrise = false,
   initialHourPayload = null,
   serverTime,
+  planetaryHoursRaw = null,
 }: CurrentHourDisplayProps) {
   // 使用DateContext获取时区及选中日期
   const { timezone, selectedDate, formatDate } = useDateContext();
 
-  // 使用统一时间源，确保 SSR/CSR 一致性
-  const [now] = useState<Date>(() => getCurrentTime(serverTime));
+  // 使用实时更新的时间，确保时间是当前的
+  const [now, setNow] = useState<Date>(() => getCurrentTime(serverTime));
+
+  // 添加定时器以实时更新时间
+  useEffect(() => {
+    // 立即更新一次时间（解决SSR时间不同步问题）
+    setNow(new Date());
+    
+    // 每分钟更新一次时间
+    const interval = setInterval(() => {
+      setNow(new Date());
+    }, 60000); // 60秒更新一次
+
+    // 组件卸载时清理定时器
+    return () => clearInterval(interval);
+  }, []);
 
   // 判断用户当前视图是否为今天（同一时区下）
-  // 只有在"今天"视图且客户端尚未算出 currentHour 时，才使用服务器预先提供的 payload，
-  // 避免过去/未来日期误用今日数据。
   const isTodayPage = timeZoneService.formatInTimeZone(selectedDate ?? now, timezone, "yyyy-MM-dd") ===
                       timeZoneService.formatInTimeZone(now, timezone, "yyyy-MM-dd");
 
+  // 🎯 核心修复：使用与 HoursList 相同的逻辑计算当前行星时
+  const calculatedCurrentHour = useMemo(() => {
+    // 只有当是今天且有完整数据时才重新计算
+    if (!isTodayPage || !planetaryHoursRaw?.planetaryHours || !planetaryHoursRaw.timezone) {
+      return null;
+    }
+
+    // 使用与 HoursList 完全相同的逻辑
+    const allFormattedHours = formatHoursToList(
+      planetaryHoursRaw.planetaryHours,
+      planetaryHoursRaw.timezone,
+      timeFormat,
+      undefined, // 不传递 currentHourForHighlighting，让函数自己计算
+      true, // 允许高亮
+    );
+
+    // 找到当前被标记为 current 的行星时
+    return allFormattedHours.find(hour => hour.current) || null;
+  }, [planetaryHoursRaw, timeFormat, isTodayPage, now]); // now 作为依赖确保实时更新
+
+  // 选择要显示的当前行星时：优先使用重新计算的结果
+  let currentHour = calculatedCurrentHour || fallbackCurrentHour;
+
+  // 如果还是没有当前小时且有服务器提供的初始化数据，使用初始化数据
   if (!currentHour && isTodayPage && initialHourPayload?.currentHour) {
     currentHour = initialHourPayload.currentHour;
     dayRuler = dayRuler ?? initialHourPayload.dayRuler ?? undefined;
     sunriseTime = sunriseTime ?? initialHourPayload.sunrise ?? undefined;
-    // ⚠️ 不要在这里强制重置 beforeSunrise，避免在凌晨日出前阶段被误判
   }
+
   // 判断所选日期是否为"今天"（以所选时区计）
   const selectedDateStr = timeZoneService.formatInTimeZone(
     selectedDate,
