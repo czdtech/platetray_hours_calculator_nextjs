@@ -159,6 +159,7 @@ const memoryCache = new MemoryCache();
 
 export class PlanetaryHoursCalculator {
   private static instance: PlanetaryHoursCalculator;
+  private readonly MAX_CACHE_SIZE = 50; // 限制缓存大小防止内存泄漏
 
   private constructor() {
   }
@@ -170,15 +171,47 @@ export class PlanetaryHoursCalculator {
     return PlanetaryHoursCalculator.instance;
   }
 
+  /**
+   * 清理缓存（用于调试）
+   */
+  public clearCache(): void {
+    memoryCache.clear();
+    logger.debug('🧹 PlanetaryHoursCalculator 缓存已清空');
+  }
+
+  /**
+   * 获取缓存统计信息（用于调试）
+   */
+  public getCacheStats(): { size: number; keys: string[] } {
+    return memoryCache.getStats();
+  }
+
+  /**
+   * 管理缓存大小，防止内存无限增长
+   */
+  private manageCacheSize(): void {
+    const stats = memoryCache.getStats();
+    if (stats.size > this.MAX_CACHE_SIZE) {
+      // 如果缓存超过限制，清空缓存
+      // 注意：MemoryCache类内部已经有LRU逻辑，这里简化处理
+      memoryCache.clear();
+      logger.cache(`缓存大小管理: 缓存已清空，超过限制 ${this.MAX_CACHE_SIZE}`);
+    }
+  }
+
   private getCacheKey(
     date: Date,
     latitude: number,
     longitude: number,
     timezone: string,
   ): string {
-    // 使用目标时区的日期字符串，确保不同UTC日期在目标时区产生不同的缓存键
+    // 修复：使用目标时区的日期字符串，而不是本地时区
+    // 这确保不同UTC日期在目标时区产生不同的缓存键
     const dateStringForCache = formatInTimeZone(date, timezone, "yyyy-MM-dd");
-    return `${dateStringForCache}_${latitude.toFixed(4)}_${longitude.toFixed(4)}_${timezone}`;
+    const cacheKey = `${dateStringForCache}_${latitude.toFixed(4)}_${longitude.toFixed(4)}_${timezone}`;
+
+    logger.key(`生成缓存键: ${cacheKey} (UTC日期: ${date.toISOString()})`);
+    return cacheKey;
   }
 
   private getDayRuler(localDate: Date, timezone: string): string {
@@ -223,7 +256,13 @@ export class PlanetaryHoursCalculator {
       }
 
       const startTime = Date.now();
-      logger.info('开始行星时计算', { cacheKey });
+      logger.info('开始行星时计算', {
+        date: date.toISOString(),
+        latitude,
+        longitude,
+        timezone,
+        cacheKey
+      });
 
       // 以目标时区解析日期，避免受浏览器本地时区影响
       const localDateString = formatInTimeZone(date, timezone, "yyyy-MM-dd");
@@ -231,8 +270,15 @@ export class PlanetaryHoursCalculator {
 
       const baseDateForSunCalc = fromZonedTime(noonStringInTimezone, timezone);
 
-      // 使用baseDateForSunCalc作为计算基准，避免时区转换错误
+      // 直接使用 baseDateForSunCalc 即可，它已经代表了目标时区的正午对应的 UTC 时间点。
+      // 不再额外调用 toZonedTime，否则在极端时区（如 UTC-10 的夏威夷）会因再次转换而回退到前一天，
+      // 导致 dayRuler 计算错误（例如本应为 Saturday 却得到 Friday -> Venus）。
       const dateForDayRuler = baseDateForSunCalc;
+
+      // 调试输出
+      logger.debug(
+        `[PHCalc] 计算日期(当地): ${noonStringInTimezone} => UTC: ${baseDateForSunCalc.toISOString()}`,
+      );
 
       const dayRuler = this.getDayRuler(dateForDayRuler, timezone);
 
@@ -299,11 +345,17 @@ export class PlanetaryHoursCalculator {
         longitude,
       };
 
-      // 存入内存缓存
+      // 2. 存入内存缓存
       memoryCache.set(cacheKey, result);
+      this.manageCacheSize(); // 管理缓存大小
+      logger.cache(`结果已缓存: ${cacheKey}`);
 
       const duration = Date.now() - startTime;
-      logger.info(`行星时计算完成: ${duration}ms`);
+      logger.info('行星时计算完成并缓存', {
+        duration: `${duration}ms`,
+        cacheKey,
+        cacheStats: memoryCache.getStats()
+      });
 
       return result;
     } catch (error) {
@@ -461,3 +513,21 @@ export class PlanetaryHoursCalculator {
 
 export const planetaryHoursCalculator = PlanetaryHoursCalculator.getInstance();
 
+// 在开发环境中暴露到全局，方便调试
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  interface WindowWithPHCalculator extends Window {
+    planetaryHoursCalculator: PlanetaryHoursCalculator;
+    clearAllCaches?: () => void;
+  }
+
+  const w = window as unknown as WindowWithPHCalculator;
+  w.planetaryHoursCalculator = planetaryHoursCalculator;
+  // 扩展全局缓存清理函数
+  const originalClearAllCaches = w.clearAllCaches;
+  w.clearAllCaches = () => {
+    if (originalClearAllCaches) originalClearAllCaches();
+    planetaryHoursCalculator.clearCache();
+    logger.debug('All caches cleared including PlanetaryHoursCalculator');
+  };
+  logger.debug('planetaryHoursCalculator available at window.planetaryHoursCalculator');
+}

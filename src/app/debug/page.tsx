@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 
 interface DebugInfo {
@@ -8,8 +8,8 @@ interface DebugInfo {
   userAgent: string;
   timestamp: string;
   apiTests: {
-    timezone: { status: string; data?: Record<string, unknown>; error?: string; cacheHeaders?: Record<string, unknown> };
-    session: { status: string; data?: Record<string, unknown>; error?: string };
+    timezone: { status: string; data?: any; error?: string; cacheHeaders?: any };
+    session: { status: string; data?: any; error?: string };
   };
   cacheInfo: {
     serviceWorker: boolean;
@@ -26,7 +26,7 @@ export default function DebugPage() {
   const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const testAPI = async (url: string, _label: string) => {
+  const testAPI = async (url: string, label: string) => {
     try {
       // 智能添加调试参数：如果URL已有参数则用&，否则用?
       const debugParam = url.includes('?') ? '&_debug=' : '?_debug=';
@@ -74,7 +74,7 @@ export default function DebugPage() {
     return info;
   };
 
-  const collectDebugInfo = useCallback(async () => {
+  const collectDebugInfo = async () => {
     setIsLoading(true);
     const errors: string[] = [];
 
@@ -111,7 +111,7 @@ export default function DebugPage() {
       window.removeEventListener('error', errorHandler);
       setIsLoading(false);
     }
-  }, []);
+  };
 
   const testCitySelection = async () => {
     console.log('🧪 [Debug] 测试城市选择功能');
@@ -163,7 +163,7 @@ export default function DebugPage() {
 
   useEffect(() => {
     collectDebugInfo();
-  }, [collectDebugInfo]);
+  }, []);
 
   if (!debugInfo && isLoading) {
     return (
@@ -204,7 +204,7 @@ export default function DebugPage() {
                   <div className="text-sm">状态: {debugInfo.apiTests.timezone.status}</div>
                   {debugInfo.apiTests.timezone.data && (
                     <div className="text-xs mt-1">
-                      时区ID: {String((debugInfo.apiTests.timezone.data as Record<string, unknown>)?.timeZoneId || 'N/A')}
+                      时区ID: {debugInfo.apiTests.timezone.data.timeZoneId}
                     </div>
                   )}
                   {debugInfo.apiTests.timezone.error && (
@@ -314,8 +314,8 @@ export default function DebugPage() {
             <li>首先查看环境信息确认当前环境</li>
             <li>检查API测试结果，确认接口是否正常</li>
             <li>查看缓存信息，了解缓存状态</li>
-            <li>点击&quot;测试城市选择&quot;按钮，观察控制台输出</li>
-            <li>如有问题，尝试&quot;清理所有缓存&quot;后重新测试</li>
+            <li>点击"测试城市选择"按钮，观察控制台输出</li>
+            <li>如有问题，尝试"清理所有缓存"后重新测试</li>
           </ol>
           <p className="mt-2 text-xs text-gray-600">
             💡 提示: 打开浏览器开发者工具的Console标签查看详细日志

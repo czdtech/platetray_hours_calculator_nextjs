@@ -35,9 +35,9 @@ export default function CalculatorClient({
       precomputed={effectiveCalculationResult}
       initialHour={effectiveInitialHour}
       serverTime={serverTime}
-      _cacheControl={cacheControl}
-      _ttlInfo={ttlInfo}
-      _error={error}
+      cacheControl={cacheControl}
+      ttlInfo={ttlInfo}
+      error={error}
     />
   );
 }

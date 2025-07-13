@@ -3,7 +3,7 @@
 import { FormattedPlanetaryHour } from "@/utils/planetaryHourFormatters";
 import { useDateContext } from "@/contexts/DateContext";
 import { timeZoneService } from "@/services/TimeZoneService";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { getCurrentTime } from '@/utils/time';
 // 导入全局行星颜色常量
 import {
@@ -37,32 +37,20 @@ export function CurrentHourDisplay({
   // 使用DateContext获取时区及选中日期
   const { timezone, selectedDate, formatDate } = useDateContext();
 
-  // 使用实时更新的时间，确保时间是当前的
-  const [now, setNow] = useState<Date>(() => getCurrentTime(serverTime));
-
-  // 添加定时器以实时更新时间
-  useEffect(() => {
-    // 立即更新一次时间（解决SSR时间不同步问题）
-    setNow(new Date());
-    
-    // 每分钟更新一次时间
-    const interval = setInterval(() => {
-      setNow(new Date());
-    }, 60000); // 60秒更新一次
-
-    // 组件卸载时清理定时器
-    return () => clearInterval(interval);
-  }, []);
+  // 使用统一时间源，确保 SSR/CSR 一致性
+  const [now] = useState<Date>(() => getCurrentTime(serverTime));
 
   // 判断用户当前视图是否为今天（同一时区下）
+  // 只有在"今天"视图且客户端尚未算出 currentHour 时，才使用服务器预先提供的 payload，
+  // 避免过去/未来日期误用今日数据。
   const isTodayPage = timeZoneService.formatInTimeZone(selectedDate ?? now, timezone, "yyyy-MM-dd") ===
                       timeZoneService.formatInTimeZone(now, timezone, "yyyy-MM-dd");
 
-  // 优先使用客户端计算的 currentHour，如果没有且是今天，则使用服务器的初始化数据
   if (!currentHour && isTodayPage && initialHourPayload?.currentHour) {
     currentHour = initialHourPayload.currentHour;
     dayRuler = dayRuler ?? initialHourPayload.dayRuler ?? undefined;
     sunriseTime = sunriseTime ?? initialHourPayload.sunrise ?? undefined;
+    // ⚠️ 不要在这里强制重置 beforeSunrise，避免在凌晨日出前阶段被误判
   }
   // 判断所选日期是否为"今天"（以所选时区计）
   const selectedDateStr = timeZoneService.formatInTimeZone(
