@@ -4,6 +4,17 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
 
+  "crons": [
+    {
+      "path": "/api/cron/daily-precompute",
+      "schedule": "0 22 * * *"
+    },
+    {
+      "path": "/api/cron/revalidate",
+      "schedule": "5 22 * * *"
+    }
+  ],
+
   "headers": [
     {
       "source": "/service-worker.js",
