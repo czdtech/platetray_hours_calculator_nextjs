@@ -117,6 +117,28 @@ export default async function CalculatorServer() {
       precomputed = null
     }
 
+    // 额外验证：检查预计算数据的时间范围是否涵盖当前时间
+    if (precomputed) {
+      const firstHour = precomputed.planetaryHours[0]
+      const lastHour = precomputed.planetaryHours[precomputed.planetaryHours.length - 1]
+      
+      if (firstHour && lastHour) {
+        const dataStartTime = new Date(firstHour.startTime)
+        const dataEndTime = new Date(lastHour.endTime)
+        
+        // 检查当前时间是否在预计算数据的时间范围内
+        if (nowUTC < dataStartTime || nowUTC > dataEndTime) {
+          logger.warn('[数据验证] 当前时间超出预计算数据范围，将重新计算', {
+            currentTime: nowUTC.toISOString(),
+            dataStartTime: dataStartTime.toISOString(),
+            dataEndTime: dataEndTime.toISOString(),
+            cacheKey,
+          })
+          precomputed = null
+        }
+      }
+    }
+
     if (!precomputed) {
       logger.info('[即时计算] 预计算文件不存在，开始即时计算')
       // 回退即时计算

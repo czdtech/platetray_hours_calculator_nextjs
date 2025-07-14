@@ -775,7 +775,7 @@ export default function CalculatorPageOptimized({ precomputed, initialHour, serv
   const initialDate = fromZonedTime(`${todayNYStr}T12:00:00`, initialTimezone);
 
   return (
-    <DateProvider initialDate={initialDate} initialTimezone={initialTimezone}>
+    <DateProvider initialDate={initialDate} initialTimezone={initialTimezone} serverTime={serverTime}>
       <CalculatorCore
         precomputed={precomputed}
         initialHour={initialHour}

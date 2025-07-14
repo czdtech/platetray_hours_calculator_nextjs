@@ -57,12 +57,14 @@ interface DateProviderProps {
   children: ReactNode;
   initialDate?: Date;
   initialTimezone?: string;
+  serverTime?: string; // 服务器时间基准，用于确保 SSR/CSR 一致性
 }
 
 export function DateProvider({
   children,
   initialDate = new Date(),
   initialTimezone = "America/New_York", // 默认时区可以后续调整或从配置读取
+  serverTime,
 }: DateProviderProps) {
   const logger = createLogger('DateContext');
 
@@ -137,9 +139,11 @@ export function DateProvider({
     return timeZoneService.formatInTimeZone(date, timezone, pattern);
   };
 
-  // 检查是否为今天（使用初始时间作为基准，确保 SSR/CSR 一致性）
+  // 检查是否为今天（使用服务器时间基准，确保 SSR/CSR 一致性）
   const isToday = (date: Date) => {
-    const todayInTimezone = timeZoneService.formatInTimeZone(initialDate, timezone, "yyyy-MM-dd");
+    // 优先使用服务器时间基准，如果没有则使用初始时间
+    const referenceTime = serverTime ? new Date(serverTime) : initialDate;
+    const todayInTimezone = timeZoneService.formatInTimeZone(referenceTime, timezone, "yyyy-MM-dd");
     const dateInTimezone = timeZoneService.formatInTimeZone(date, timezone, "yyyy-MM-dd");
     return todayInTimezone === dateInTimezone;
   };
