@@ -128,13 +128,52 @@ export default async function CalculatorServer() {
         
         // 检查当前时间是否在预计算数据的时间范围内
         if (nowUTC < dataStartTime || nowUTC > dataEndTime) {
-          logger.warn('[数据验证] 当前时间超出预计算数据范围，将重新计算', {
+          logger.warn('[数据验证] 当前时间超出预计算数据范围，尝试加载前一天数据', {
             currentTime: nowUTC.toISOString(),
             dataStartTime: dataStartTime.toISOString(),
             dataEndTime: dataEndTime.toISOString(),
             cacheKey,
           })
-          precomputed = null
+          
+          // 智能数据选择：如果当前时间早于今天的数据开始时间，尝试加载前一天的数据
+          if (nowUTC < dataStartTime) {
+            const yesterdayDate = new Date(nowUTC.getTime() - 24 * 60 * 60 * 1000)
+            const yesterdayStr = formatInTimeZone(yesterdayDate, NY_TIMEZONE, 'yyyy-MM-dd')
+            const yesterdayCacheKey = `ny-${yesterdayStr}`
+            
+            logger.info('[智能数据选择] 尝试加载前一天数据', { 
+              yesterdayCacheKey,
+              reason: '当前时间早于今天数据开始时间'
+            })
+            
+            const yesterdayData = await loadPrecomputed(yesterdayCacheKey)
+            if (yesterdayData) {
+              const yesterdayLastHour = yesterdayData.planetaryHours[yesterdayData.planetaryHours.length - 1]
+              if (yesterdayLastHour) {
+                const yesterdayEndTime = new Date(yesterdayLastHour.endTime)
+                
+                // 检查当前时间是否在前一天数据的覆盖范围内
+                if (nowUTC >= new Date(yesterdayData.planetaryHours[0].startTime) && nowUTC < yesterdayEndTime) {
+                  logger.info('[智能数据选择] 使用前一天数据', {
+                    dataRange: `${yesterdayData.planetaryHours[0].startTime} - ${yesterdayLastHour.endTime}`,
+                    currentTime: nowUTC.toISOString()
+                  })
+                  precomputed = yesterdayData
+                } else {
+                  logger.warn('[智能数据选择] 前一天数据也无法覆盖当前时间', {
+                    currentTime: nowUTC.toISOString(),
+                    yesterdayEndTime: yesterdayEndTime.toISOString()
+                  })
+                  precomputed = null
+                }
+              }
+            } else {
+              logger.warn('[智能数据选择] 无法加载前一天数据', { yesterdayCacheKey })
+              precomputed = null
+            }
+          } else {
+            precomputed = null
+          }
         }
       }
     }

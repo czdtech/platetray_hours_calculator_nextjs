@@ -4,11 +4,15 @@ import { createLogger } from '@/utils/unified-logger'
 
 const logger = createLogger('DailyPrecomputeCron')
 
+// 强制动态执行，防止Vercel缓存
+export const dynamic = 'force-dynamic'
+
 /**
  * Vercel Cron Job API - 每日预计算任务
- * 每天22:00 (UTC) 自动执行，生成未来7天的预计算数据
+ * 每天06:00 (UTC) 自动执行，相当于纽约时间凌晨1-2点
+ * 为当天及未来6天生成预计算数据，确保日出前完成
  */
-export async function GET() {
+export async function POST() {
   const startTime = Date.now()
   
   try {
@@ -69,9 +73,9 @@ export async function GET() {
 }
 
 /**
- * 支持 POST 方法用于手动触发
+ * 支持 GET 方法用于手动触发
  * 用于紧急情况下的手动预计算
  */
-export async function POST() {
-  return GET() // 复用相同的逻辑
+export async function GET() {
+  return POST() // 复用相同的逻辑
 }
