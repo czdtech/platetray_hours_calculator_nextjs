@@ -15,10 +15,17 @@
    - 显示为：**Upstash** - Serverless DB (Redis, Vector, Queue)
    - Plans starting at $0（免费方案可用）
 5. 点击 **"Install"**
-6. 选择 **Redis** 数据库类型
-7. 提供数据库名称：`planetary-hours-cache`
-8. 选择区域（推荐：美国东部）
-9. 点击 **"Create"**
+6. 在产品选择页面，选择 **"Upstash for Redis"**
+   - 显示为：Redis Compatible Database
+   - 有 Free, Pay as You Go, Fixed 方案
+7. 点击 **"Install"**
+8. 配置数据库参数：
+   - **Primary Region**: 选择 **US East (N. Virginia)** 或 **US East (Ohio)**
+   - **Read Regions**: 保持为空（optional）
+   - **Eviction**: 启用（Enable）- 当达到最大数据大小时自动清理
+   - **Plans**: 选择 **Free** 方案
+9. 提供数据库名称：`planetary-hours-cache`
+10. 点击 **"Create Database"**
 
 ### 2. 连接到项目
 
