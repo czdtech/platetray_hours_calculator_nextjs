@@ -4,24 +4,27 @@
 
 ## 📋 配置步骤
 
-### 1. 通过 Vercel Marketplace 安装 Redis 集成
+### 1. 在项目中添加集成
 
-在 Vercel 仪表板中：
+从你的项目仪表板中：
 
-1. 进入项目 → **Integrations** 标签
-2. 点击 **"Browse Marketplace"**
-3. 在 "Native Integrations" 部分找到 **Redis** 集成（由 Upstash 提供）
-4. 点击 **"Install"**
-5. 选择合适的计费方案（免费方案可用）
-6. 点击 **"Continue"**
+1. 在当前项目界面中点击 **"Storage"** 标签
+2. 或者点击 **"Settings"** 标签，然后找到 **"Integrations"** 部分
+3. 点击 **"Add Integration"** 或 **"Browse Marketplace"**
+4. 在 Native Integrations 部分找到 **"Upstash"** 集成
+   - 显示为：**Upstash** - Serverless DB (Redis, Vector, Queue)
+   - Plans starting at $0（免费方案可用）
+5. 点击 **"Install"**
+6. 选择 **Redis** 数据库类型
 7. 提供数据库名称：`planetary-hours-cache`
-8. 点击 **"Create"**
+8. 选择区域（推荐：美国东部）
+9. 点击 **"Create"**
 
 ### 2. 连接到项目
 
 创建数据库后：
 
-1. 选择要连接的项目：`platetray_hours_calculator_nextjs`
+1. 选择要连接的项目：`astro-planetary-hours-astronomy-engine`
 2. 系统会自动配置环境变量
 3. 点击完成设置
 
