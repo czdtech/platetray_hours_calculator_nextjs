@@ -11,6 +11,7 @@ import path from 'path'
 import { planetaryHoursCalculator } from '../src/services/PlanetaryHoursCalculator'
 import { NY_TIMEZONE, getCurrentUTCDate } from '../src/utils/time'
 import { createLogger } from '../src/utils/unified-logger'
+import { kv } from '@vercel/kv'
 
 const logger = createLogger('PrecomputeMultipleDays')
 
@@ -24,11 +25,57 @@ const DAYS_TO_GENERATE = process.env.PRECOMPUTE_DAYS
   : DEFAULT_DAYS
 
 async function writeToLocalFile(key: string, json: string) {
-  const destDir = path.resolve(__dirname, '../public/precomputed')
+  // 🔧 修复Vercel部署路径问题：使用process.cwd()而不是__dirname
+  const destDir = path.resolve(process.cwd(), 'public/precomputed')
   await fs.mkdir(destDir, { recursive: true })
   const destPath = path.join(destDir, `${key}.json`)
   await fs.writeFile(destPath, json, 'utf-8')
   logger.info(`已写入本地文件: ${destPath}`)
+}
+
+async function writeToKV(key: string, data: any) {
+  try {
+    // 检查是否在Vercel环境中且KV可用
+    if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
+      await kv.set(key, data, { 
+        ex: 60 * 60 * 24 * 7 // 7天过期
+      })
+      logger.info(`已写入KV存储: ${key}`)
+      return true
+    } else {
+      logger.warn('KV存储不可用，跳过KV写入')
+      return false
+    }
+  } catch (error) {
+    logger.error(`KV写入失败: ${key}`, error instanceof Error ? error : new Error(String(error)))
+    return false
+  }
+}
+
+async function writeToStorage(key: string, data: any) {
+  const json = JSON.stringify(data)
+  let localSuccess = false
+  let kvSuccess = false
+  
+  // 尝试写入本地文件（开发环境）
+  try {
+    await writeToLocalFile(key, json)
+    localSuccess = true
+  } catch (error) {
+    logger.warn(`本地文件写入失败: ${key}`, error instanceof Error ? error : new Error(String(error)))
+  }
+  
+  // 尝试写入KV存储（生产环境）
+  kvSuccess = await writeToKV(key, data)
+  
+  if (!localSuccess && !kvSuccess) {
+    throw new Error(`所有存储方式都失败了: ${key}`)
+  }
+  
+  logger.info(`存储写入完成: ${key}`, {
+    localFile: localSuccess,
+    kvStorage: kvSuccess
+  })
 }
 
 function validateCalculationResult(result: any, expectedDate: string): boolean {
@@ -80,10 +127,9 @@ export async function generatePrecomputeForDate(targetDate: Date): Promise<boole
       planetaryHoursCount: calcResult!.planetaryHours?.length || 0,
     })
 
-    const json = JSON.stringify(calcResult)
-    await writeToLocalFile(cacheKey, json)
+    await writeToStorage(cacheKey, calcResult)
 
-    logger.info(`预计算文件生成成功: ${cacheKey}.json`)
+    logger.info(`预计算数据生成成功: ${cacheKey}`)
     return true
   } catch (error) {
     logger.error(`生成 ${dateStr} 预计算失败`, error instanceof Error ? error : new Error(String(error)))

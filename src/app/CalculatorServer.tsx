@@ -4,6 +4,7 @@ import { getCurrentHourPayload } from '@/utils/planetaryHourHelpers'
 import { NY_TIMEZONE, getCurrentUTCDate, toNewYorkTime } from '@/utils/time'
 import { createLogger } from '@/utils/unified-logger'
 import { formatInTimeZone, toZonedTime } from 'date-fns-tz'
+import { kv } from '@vercel/kv'
 import fs from 'fs/promises'
 import path from 'path'
 
@@ -32,7 +33,27 @@ function reviveDates<T>(data: T): T {
 async function loadPrecomputed(
   key: string
 ): Promise<PlanetaryHoursCalculationResult | null> {
-  // 1) 尝试从本地文件读取 (public/precomputed)
+  // 1) 优先从KV存储读取（生产环境）
+  try {
+    if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
+      const kvResult = await kv.get<PlanetaryHoursCalculationResult>(key)
+      if (kvResult) {
+        const result = reviveDates(kvResult) as PlanetaryHoursCalculationResult
+        logger.info(`[预计算] 成功从KV存储加载: ${key}`, {
+          requestedDate: result.requestedDate,
+        })
+        return result
+      } else {
+        logger.info(`[预计算] KV存储中未找到: ${key}`)
+      }
+    }
+  } catch (error) {
+    logger.warn(`[预计算] KV存储读取失败: ${key}`, {
+      error: error instanceof Error ? error.message : error,
+    })
+  }
+
+  // 2) 回退到本地文件读取 (public/precomputed)
   try {
     const filePath = path.resolve(
       process.cwd(),
@@ -42,7 +63,7 @@ async function loadPrecomputed(
     )
     const json = await fs.readFile(filePath, 'utf-8')
     const raw = JSON.parse(json)
-    logger.info(`[预计算] 成功加载预计算文件: ${key}.json`, {
+    logger.info(`[预计算] 成功从本地文件加载: ${key}.json`, {
       filePath,
       requestedDate: raw.requestedDate,
     })
@@ -52,7 +73,9 @@ async function loadPrecomputed(
       error: error instanceof Error ? error.message : error,
     })
   }
-  // 2) 未来可加入 Vercel KV 读取逻辑 (边缘运行时除外)
+
+  // 3) 所有存储方式都失败
+  logger.info(`[预计算] 所有存储方式都无法加载: ${key}`)
   return null
 }
 
