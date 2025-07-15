@@ -4,7 +4,7 @@ import { forcePrecomputeToday } from '../../../../../scripts/force-precompute-to
 // 强制动态执行，防止Vercel缓存
 export const dynamic = 'force-dynamic'
 
-export async function GET() {
+export async function POST() {
   try {
     console.log('[Manual Trigger] 开始手动触发今日预计算数据生成')
     await forcePrecomputeToday()

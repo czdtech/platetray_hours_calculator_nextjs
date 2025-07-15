@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  // 生产环境返回404
+  // 简化生产环境健康检查
   if (process.env.NODE_ENV === 'production') {
-    return new NextResponse('Not Found', { 
-      status: 404,
-      headers: {
-        'Content-Type': 'text/plain'
-      }
+    return NextResponse.json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      environment: 'production',
+      kv_connected: !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN)
     });
   }
 
