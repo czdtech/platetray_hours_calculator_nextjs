@@ -4,10 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { AlertCircle, RefreshCw } from "lucide-react";
 
-import { createLogger } from '@/utils/unified-logger';
-
-// 将 logger 创建移到组件外部，避免每次渲染时重新创建
-const logger = createLogger('Error');
+// 简化错误处理，避免 logger 依赖问题
 
 interface ErrorPageProps {
   error: Error & { digest?: string };
@@ -17,7 +14,7 @@ interface ErrorPageProps {
 export default function ErrorPage({ error, reset }: ErrorPageProps) {
   useEffect(() => {
     // 可以在这里记录错误到监控服务
-    logger.error("Application error:", error);
+    console.error("Application error:", error);
   }, [error]);
 
   return (

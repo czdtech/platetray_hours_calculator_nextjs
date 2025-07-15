@@ -3,7 +3,7 @@ import { generateCacheControlHeader } from '@/utils/cache/dynamicTTL'
 import { getCurrentHourPayload } from '@/utils/planetaryHourHelpers'
 import { NY_TIMEZONE, getCurrentUTCDate, toNewYorkTime } from '@/utils/time'
 import { createLogger } from '@/utils/unified-logger'
-import { formatInTimeZone } from 'date-fns-tz'
+import { formatInTimeZone, toZonedTime } from 'date-fns-tz'
 import fs from 'fs/promises'
 import path from 'path'
 
@@ -126,18 +126,30 @@ export default async function CalculatorServer() {
         const dataStartTime = new Date(firstHour.startTime)
         const dataEndTime = new Date(lastHour.endTime)
         
-        // 检查当前时间是否在预计算数据的时间范围内
-        if (nowUTC < dataStartTime || nowUTC > dataEndTime) {
-          logger.warn('[数据验证] 当前时间超出预计算数据范围，尝试加载前一天数据', {
-            currentTime: nowUTC.toISOString(),
-            dataStartTime: dataStartTime.toISOString(),
-            dataEndTime: dataEndTime.toISOString(),
+        // 🔧 修复：将时间转换到纽约时区进行比较，避免UTC与本地时间混淆
+        const nowInNY = toZonedTime(nowUTC, NY_TIMEZONE)
+        const dataStartInNY = toZonedTime(dataStartTime, NY_TIMEZONE)
+        const dataEndInNY = toZonedTime(dataEndTime, NY_TIMEZONE)
+        
+        logger.info('[时区验证] 时间范围检查', {
+          currentTimeUTC: nowUTC.toISOString(),
+          currentTimeNY: formatInTimeZone(nowUTC, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
+          dataStartNY: formatInTimeZone(dataStartTime, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
+          dataEndNY: formatInTimeZone(dataEndTime, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
+        })
+        
+        // 使用纽约时区的时间进行比较
+        if (nowInNY < dataStartInNY || nowInNY > dataEndInNY) {
+          logger.warn('[数据验证] 当前纽约时间超出预计算数据范围，尝试加载前一天数据', {
+            currentTimeNY: formatInTimeZone(nowUTC, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
+            dataStartNY: formatInTimeZone(dataStartTime, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
+            dataEndNY: formatInTimeZone(dataEndTime, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
             cacheKey,
           })
           
-          // 智能数据选择：如果当前时间早于今天的数据开始时间，尝试加载前一天的数据
-          if (nowUTC < dataStartTime) {
-            const yesterdayDate = new Date(nowUTC.getTime() - 24 * 60 * 60 * 1000)
+          // 智能数据选择：如果当前纽约时间早于今天的数据开始时间，尝试加载前一天的数据
+          if (nowInNY < dataStartInNY) {
+            const yesterdayDate = new Date(nowInNY.getTime() - 24 * 60 * 60 * 1000)
             const yesterdayStr = formatInTimeZone(yesterdayDate, NY_TIMEZONE, 'yyyy-MM-dd')
             const yesterdayCacheKey = `ny-${yesterdayStr}`
             
@@ -152,17 +164,20 @@ export default async function CalculatorServer() {
               if (yesterdayLastHour) {
                 const yesterdayEndTime = new Date(yesterdayLastHour.endTime)
                 
-                // 检查当前时间是否在前一天数据的覆盖范围内
-                if (nowUTC >= new Date(yesterdayData.planetaryHours[0].startTime) && nowUTC < yesterdayEndTime) {
+                // 检查当前纽约时间是否在前一天数据的覆盖范围内
+                const yesterdayDataStartInNY = toZonedTime(new Date(yesterdayData.planetaryHours[0].startTime), NY_TIMEZONE)
+                const yesterdayDataEndInNY = toZonedTime(yesterdayEndTime, NY_TIMEZONE)
+                
+                if (nowInNY >= yesterdayDataStartInNY && nowInNY < yesterdayDataEndInNY) {
                   logger.info('[智能数据选择] 使用前一天数据', {
-                    dataRange: `${yesterdayData.planetaryHours[0].startTime} - ${yesterdayLastHour.endTime}`,
-                    currentTime: nowUTC.toISOString()
+                    dataRange: `${formatInTimeZone(new Date(yesterdayData.planetaryHours[0].startTime), NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz')} - ${formatInTimeZone(yesterdayEndTime, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz')}`,
+                    currentTimeNY: formatInTimeZone(nowUTC, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz')
                   })
                   precomputed = yesterdayData
                 } else {
-                  logger.warn('[智能数据选择] 前一天数据也无法覆盖当前时间', {
-                    currentTime: nowUTC.toISOString(),
-                    yesterdayEndTime: yesterdayEndTime.toISOString()
+                  logger.warn('[智能数据选择] 前一天数据也无法覆盖当前纽约时间', {
+                    currentTimeNY: formatInTimeZone(nowUTC, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
+                    yesterdayEndTimeNY: formatInTimeZone(yesterdayEndTime, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz')
                   })
                   precomputed = null
                 }
