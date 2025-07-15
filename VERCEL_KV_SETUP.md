@@ -1,30 +1,33 @@
 # Vercel KV 存储配置说明
 
+> **⚠️ 重要更新**：从 2024 年开始，Vercel KV 已迁移到 Marketplace 集成方式，由 Upstash 提供支持。不再通过 Storage 标签直接创建。
+
 ## 📋 配置步骤
 
-### 1. 创建 Vercel KV 存储
+### 1. 通过 Vercel Marketplace 安装 Redis 集成
 
-在 Vercel 项目仪表板中：
+在 Vercel 仪表板中：
 
-1. 进入项目设置 → Storage 标签
-2. 点击 "Create Database"
-3. 选择 "KV" 类型
-4. 输入数据库名称：`planetary-hours-cache`
-5. 选择区域（推荐：美国东部 `us-east-1`）
-6. 点击 "Create"
+1. 进入项目 → **Integrations** 标签
+2. 点击 **"Browse Marketplace"**
+3. 在 "Native Integrations" 部分找到 **Redis** 集成（由 Upstash 提供）
+4. 点击 **"Install"**
+5. 选择合适的计费方案（免费方案可用）
+6. 点击 **"Continue"**
+7. 提供数据库名称：`planetary-hours-cache`
+8. 点击 **"Create"**
 
-### 2. 连接数据库到项目
+### 2. 连接到项目
 
 创建数据库后：
 
-1. 在 Storage 页面找到新创建的 KV 数据库
-2. 点击 "Connect Project"
-3. 选择你的项目：`platetray_hours_calculator_nextjs`
-4. 点击 "Connect"
+1. 选择要连接的项目：`platetray_hours_calculator_nextjs`
+2. 系统会自动配置环境变量
+3. 点击完成设置
 
 ### 3. 环境变量自动配置
 
-连接后，Vercel 会自动设置以下环境变量：
+集成安装后，Vercel 会自动设置以下环境变量：
 - `KV_REST_API_URL`
 - `KV_REST_API_TOKEN`
 - `KV_URL` (用于 Redis 客户端连接)
