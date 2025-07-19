@@ -4,6 +4,9 @@ import CalculatorServer from "./CalculatorServer";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
 
+// 🔧 关键修复：设置页面级别的revalidate时间
+export const revalidate = 900; // 15分钟重新验证
+
 export const metadata: Metadata = {
   title: "Planetary Hours Calculator - Find Your Perfect Timing",
   description: "Discover the perfect timing with our planetary hours calculator. Calculate astrological planetary hours based on your location and date for optimal life decisions.",

@@ -32,6 +32,28 @@ export async function POST() {
     // 执行多天预计算
     await forcePrecomputeMultipleDays()
 
+    // 🔧 关键修复：预计算完成后立即清理相关页面缓存
+    try {
+      // 触发主页面重新验证
+      const revalidateUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://planetaryhours.org'
+      await fetch(`${revalidateUrl}/api/revalidate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.REVALIDATE_TOKEN || 'daily-precompute-token'}`
+        },
+        body: JSON.stringify({
+          paths: [
+            '/', // 主页
+            '/api/calculator', // 计算器API
+          ]
+        })
+      })
+      logger.info('缓存重新验证请求已发送', { revalidateUrl })
+    } catch (revalidateError) {
+      logger.warn('缓存重新验证失败，但不影响主要功能', revalidateError instanceof Error ? revalidateError : new Error(String(revalidateError)))
+    }
+
     const duration = Date.now() - startTime
     logger.info('每日预计算任务完成', {
       duration: `${duration}ms`,

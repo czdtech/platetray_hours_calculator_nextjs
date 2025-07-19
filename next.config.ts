@@ -43,27 +43,27 @@ const nextConfig: NextConfig = {
           }
         ]
       },
-      // API路由缓存控制
+      // API路由缓存控制 - 缩短缓存时间确保数据实时性
       {
         source: '/api/(.*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, s-maxage=3600, max-age=0, must-revalidate'
+            value: 'public, s-maxage=600, max-age=0, must-revalidate'
           },
           {
             key: 'CDN-Cache-Control',
-            value: 'public, s-maxage=3600'
+            value: 'public, s-maxage=600'
           }
         ]
       },
-      // 主页面ISR优化
+      // 主页面ISR优化 - 缩短缓存时间确保数据实时性
       {
         source: '/((?!api|_next/static).*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, s-maxage=3600, stale-while-revalidate=86400'
+            value: 'public, s-maxage=900, stale-while-revalidate=3600'
           },
           {
             key: 'Vary',
