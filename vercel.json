@@ -7,11 +7,11 @@
   "crons": [
     {
       "path": "/api/cron/daily-precompute",
-      "schedule": "0 6 * * *"
+      "schedule": "0 4 * * *"
     },
     {
       "path": "/api/cron/revalidate",
-      "schedule": "5 6 * * *"
+      "schedule": "5 4 * * *"
     }
   ],
 

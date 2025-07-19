@@ -1,9 +1,9 @@
 import CalculatorClient from '@/components/Calculator/CalculatorClient'
 import { generateCacheControlHeader } from '@/utils/cache/dynamicTTL'
 import { getCurrentHourPayload } from '@/utils/planetaryHourHelpers'
-import { NY_TIMEZONE, getCurrentUTCDate, toNewYorkTime } from '@/utils/time'
+import { getCurrentUTCDate } from '@/utils/time'
 import { createLogger } from '@/utils/unified-logger'
-import { formatInTimeZone, toZonedTime } from 'date-fns-tz'
+import { formatInTimeZone } from 'date-fns-tz'
 import { kv } from '@vercel/kv'
 import fs from 'fs/promises'
 import path from 'path'
@@ -15,9 +15,32 @@ import {
 
 const logger = createLogger('CalculatorServer')
 
-// 纽约坐标常量
-const LATITUDE_NY = 40.7128
-const LONGITUDE_NY = -74.006
+// 默认纽约坐标常量
+const DEFAULT_COORDINATES = {
+  latitude: 40.7128,
+  longitude: -74.006,
+  timezone: 'America/New_York',
+  cityKey: 'ny'
+}
+
+// 城市坐标映射
+const CITY_COORDS = {
+  ny: { latitude: 40.7128, longitude: -74.006, timezone: 'America/New_York' },
+  sydney: { latitude: -33.8688, longitude: 151.2093, timezone: 'Australia/Sydney' },
+  london: { latitude: 51.5074, longitude: -0.1278, timezone: 'Europe/London' },
+  dubai: { latitude: 25.2048, longitude: 55.2708, timezone: 'Asia/Dubai' }
+}
+
+// 根据坐标识别城市
+function identifyCity(lat: number, lng: number): string {
+  const tolerance = 0.1
+  for (const [key, coords] of Object.entries(CITY_COORDS)) {
+    if (Math.abs(coords.latitude - lat) < tolerance && Math.abs(coords.longitude - lng) < tolerance) {
+      return key
+    }
+  }
+  return 'ny' // 默认返回纽约
+}
 
 const ISO_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/
 
@@ -97,7 +120,12 @@ async function setDynamicCacheHeaders(
 }
 
 /**
- * 服务端组件：负责实时计算纽约行星时数据并计算缓存策略
+ * 服务端组件：负责实时计算默认城市（纽约）行星时数据并计算缓存策略
+ * 
+ * 关键时区验证逻辑：
+ * 行星时数据跨日期（从日出到次日日出），因此需要智能匹配：
+ * - 凌晨时间可能需要前一天的数据
+ * - 需要验证当前时间是否在预计算数据的时间范围内
  *
  * 该组件将在每次请求时执行，根据当前时间和行星时状态
  * 动态计算最优的缓存时间，确保用户看到准确的当前行星时
@@ -105,24 +133,18 @@ async function setDynamicCacheHeaders(
 export default async function CalculatorServer() {
   // 获取当前服务端时间 - 这是关键的时间基准
   const nowUTC = getCurrentUTCDate()
-  const todayStr = formatInTimeZone(nowUTC, NY_TIMEZONE, 'yyyy-MM-dd')
+  const { latitude, longitude, timezone, cityKey } = DEFAULT_COORDINATES
+  const todayStr = formatInTimeZone(nowUTC, timezone, 'yyyy-MM-dd')
 
   logger.info('服务端渲染开始', {
     serverTime: nowUTC.toISOString(),
     todayString: todayStr,
     timestamp: Date.now(),
     environment: process.env.NODE_ENV,
+    defaultCity: cityKey
   })
 
-  // 同时保留纽约当前时间对象供后续计算使用
-  const nowInNY = toNewYorkTime(nowUTC)
-  logger.info('[时区转换] 纽约当前时间', {
-    utcTime: nowUTC.toISOString(),
-    nyTime: nowInNY.toString(),
-    todayStr,
-  })
-
-  const cacheKey = `ny-${todayStr}`
+  const cacheKey = `${cityKey}-${todayStr}`
   let calculationResult: PlanetaryHoursCalculationResult | null = null
 
   try {
@@ -140,7 +162,7 @@ export default async function CalculatorServer() {
       precomputed = null
     }
 
-    // 额外验证：检查预计算数据的时间范围是否涵盖当前时间
+    // 🔧 关键时区验证逻辑：检查预计算数据的时间范围是否涵盖当前时间
     if (precomputed) {
       const firstHour = precomputed.planetaryHours[0]
       const lastHour = precomputed.planetaryHours[precomputed.planetaryHours.length - 1]
@@ -149,32 +171,38 @@ export default async function CalculatorServer() {
         const dataStartTime = new Date(firstHour.startTime)
         const dataEndTime = new Date(lastHour.endTime)
         
-        // 🔧 修复：将时间转换到纽约时区进行比较，避免UTC与本地时间混淆
-        const nowInNY = toZonedTime(nowUTC, NY_TIMEZONE)
-        const dataStartInNY = toZonedTime(dataStartTime, NY_TIMEZONE)
-        const dataEndInNY = toZonedTime(dataEndTime, NY_TIMEZONE)
+        // 增加30分钟的容错边界，避免边界时间的计算错误
+        const TOLERANCE_MS = 30 * 60 * 1000; // 30分钟容错
         
-        logger.info('[时区验证] 时间范围检查', {
+        logger.info('[时区验证] 检查当前时间是否在预计算数据范围内', {
           currentTimeUTC: nowUTC.toISOString(),
-          currentTimeNY: formatInTimeZone(nowUTC, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
-          dataStartNY: formatInTimeZone(dataStartTime, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
-          dataEndNY: formatInTimeZone(dataEndTime, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
+          currentTimeLocal: formatInTimeZone(nowUTC, timezone, 'yyyy-MM-dd HH:mm:ss zzz'),
+          dataStartUTC: dataStartTime.toISOString(),
+          dataEndUTC: dataEndTime.toISOString(),
+          dataStartLocal: formatInTimeZone(dataStartTime, timezone, 'yyyy-MM-dd HH:mm:ss zzz'),
+          dataEndLocal: formatInTimeZone(dataEndTime, timezone, 'yyyy-MM-dd HH:mm:ss zzz'),
+          toleranceMs: TOLERANCE_MS,
+          isInRangeWithTolerance: nowUTC >= new Date(dataStartTime.getTime() - TOLERANCE_MS) && 
+                                   nowUTC < new Date(dataEndTime.getTime() + TOLERANCE_MS)
         })
         
-        // 使用纽约时区的时间进行比较
-        if (nowInNY < dataStartInNY || nowInNY > dataEndInNY) {
-          logger.warn('[数据验证] 当前纽约时间超出预计算数据范围，尝试加载前一天数据', {
-            currentTimeNY: formatInTimeZone(nowUTC, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
-            dataStartNY: formatInTimeZone(dataStartTime, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
-            dataEndNY: formatInTimeZone(dataEndTime, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
+        // 使用UTC时间进行比较，避免时区转换问题
+        
+        if (nowUTC < new Date(dataStartTime.getTime() - TOLERANCE_MS) || 
+            nowUTC >= new Date(dataEndTime.getTime() + TOLERANCE_MS)) {
+          logger.warn('[数据验证] 当前时间超出预计算数据范围，尝试加载前一天数据', {
+            currentTimeLocal: formatInTimeZone(nowUTC, timezone, 'yyyy-MM-dd HH:mm:ss zzz'),
+            dataStartLocal: formatInTimeZone(dataStartTime, timezone, 'yyyy-MM-dd HH:mm:ss zzz'),
+            dataEndLocal: formatInTimeZone(dataEndTime, timezone, 'yyyy-MM-dd HH:mm:ss zzz'),
             cacheKey,
           })
           
-          // 智能数据选择：如果当前纽约时间早于今天的数据开始时间，尝试加载前一天的数据
-          if (nowInNY < dataStartInNY) {
-            const yesterdayDate = new Date(nowInNY.getTime() - 24 * 60 * 60 * 1000)
-            const yesterdayStr = formatInTimeZone(yesterdayDate, NY_TIMEZONE, 'yyyy-MM-dd')
-            const yesterdayCacheKey = `ny-${yesterdayStr}`
+          // 智能数据选择：如果当前时间早于今天的数据开始时间，尝试加载前一天的数据
+          if (nowUTC < dataStartTime) {
+            // 计算前一天的日期（在目标时区）
+            const yesterdayUTC = new Date(nowUTC.getTime() - 24 * 60 * 60 * 1000)
+            const yesterdayStr = formatInTimeZone(yesterdayUTC, timezone, 'yyyy-MM-dd')
+            const yesterdayCacheKey = `${cityKey}-${yesterdayStr}`
             
             logger.info('[智能数据选择] 尝试加载前一天数据', { 
               yesterdayCacheKey,
@@ -187,20 +215,17 @@ export default async function CalculatorServer() {
               if (yesterdayLastHour) {
                 const yesterdayEndTime = new Date(yesterdayLastHour.endTime)
                 
-                // 检查当前纽约时间是否在前一天数据的覆盖范围内
-                const yesterdayDataStartInNY = toZonedTime(new Date(yesterdayData.planetaryHours[0].startTime), NY_TIMEZONE)
-                const yesterdayDataEndInNY = toZonedTime(yesterdayEndTime, NY_TIMEZONE)
-                
-                if (nowInNY >= yesterdayDataStartInNY && nowInNY < yesterdayDataEndInNY) {
+                // 检查当前时间是否在前一天数据的覆盖范围内
+                if (nowUTC >= new Date(yesterdayData.planetaryHours[0].startTime) && nowUTC < yesterdayEndTime) {
                   logger.info('[智能数据选择] 使用前一天数据', {
-                    dataRange: `${formatInTimeZone(new Date(yesterdayData.planetaryHours[0].startTime), NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz')} - ${formatInTimeZone(yesterdayEndTime, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz')}`,
-                    currentTimeNY: formatInTimeZone(nowUTC, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz')
+                    dataRange: `${formatInTimeZone(new Date(yesterdayData.planetaryHours[0].startTime), timezone, 'yyyy-MM-dd HH:mm:ss zzz')} - ${formatInTimeZone(yesterdayEndTime, timezone, 'yyyy-MM-dd HH:mm:ss zzz')}`,
+                    currentTimeLocal: formatInTimeZone(nowUTC, timezone, 'yyyy-MM-dd HH:mm:ss zzz')
                   })
                   precomputed = yesterdayData
                 } else {
-                  logger.warn('[智能数据选择] 前一天数据也无法覆盖当前纽约时间', {
-                    currentTimeNY: formatInTimeZone(nowUTC, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz'),
-                    yesterdayEndTimeNY: formatInTimeZone(yesterdayEndTime, NY_TIMEZONE, 'yyyy-MM-dd HH:mm:ss zzz')
+                  logger.warn('[智能数据选择] 前一天数据也无法覆盖当前时间', {
+                    currentTimeLocal: formatInTimeZone(nowUTC, timezone, 'yyyy-MM-dd HH:mm:ss zzz'),
+                    yesterdayEndTimeLocal: formatInTimeZone(yesterdayEndTime, timezone, 'yyyy-MM-dd HH:mm:ss zzz')
                   })
                   precomputed = null
                 }
@@ -210,20 +235,25 @@ export default async function CalculatorServer() {
               precomputed = null
             }
           } else {
+            // 当前时间晚于今天数据结束时间，可能需要明天的数据
             precomputed = null
           }
+        } else {
+          logger.info('[时区验证] 当前时间在预计算数据范围内，使用当前数据', {
+            currentTimeLocal: formatInTimeZone(nowUTC, timezone, 'yyyy-MM-dd HH:mm:ss zzz')
+          })
         }
       }
     }
 
     if (!precomputed) {
-      logger.info('[即时计算] 预计算文件不存在，开始即时计算')
+      logger.info('[即时计算] 预计算文件不存在或不适用，开始即时计算')
       // 回退即时计算
       calculationResult = await planetaryHoursCalculator.calculate(
         nowUTC,
-        LATITUDE_NY,
-        LONGITUDE_NY,
-        NY_TIMEZONE
+        latitude,
+        longitude,
+        timezone
       )
 
       if (calculationResult) {
