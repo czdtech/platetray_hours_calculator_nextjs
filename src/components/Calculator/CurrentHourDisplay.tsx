@@ -300,33 +300,10 @@ export function CurrentHourDisplay({
               </div>
             )}
 
-            {/* Message for before sunrise */}
-            {shouldShowPreSunriseMessage && (
-              <div className="p-2.5 text-center text-gray-500 text-sm">
-                Planetary hours will begin after today&apos;s sunrise.
-                <br />
-                Please check {formattedYesterday} for current hour.
-              </div>
-            )}
-
             {/* Message for non-today dates */}
-            {!isSelectedDateToday && !shouldShowPreSunriseMessage && (
+            {!isSelectedDateToday && (
               <div className="p-2.5 text-center text-gray-500 text-sm">
-                {isSelectedDatePast && (
-                  <>
-                    You&apos;re viewing planetary hours for {formattedToday}.
-                    <br />
-                    &quot;Current hour&quot; is only shown for today&apos;s
-                    date.
-                  </>
-                )}
-                {isSelectedDateFuture && (
-                  <>
-                    You&apos;re viewing planetary hours for {formattedToday}.
-                    <br />
-                    &quot;Current hour&quot; will be available on this date.
-                  </>
-                )}
+                You&apos;re viewing planetary hours for {formattedToday}.
               </div>
             )}
           </div>

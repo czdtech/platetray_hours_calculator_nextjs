@@ -187,21 +187,25 @@ export class DateService {
       "yyyy-MM-dd",
     );
 
-    // 2. 获取一个 Date 对象，它代表 baseDate 在目标时区的午夜0点，并表示为 UTC 时间戳
-    const baseDateAtMidnightUtc = timeZoneService.zonedTimeToUtc(
-      `${baseDateInTimezoneStr}T00:00:00`,
+    // 2. 获取一个 Date 对象，它代表 baseDate 在目标时区的中午12点，避免时区边界问题
+    const baseDateAtNoonUtc = timeZoneService.zonedTimeToUtc(
+      `${baseDateInTimezoneStr}T12:00:00`,
       timezone,
     );
 
-    // 3. 为了准确获取 baseDateAtMidnightUtc 在目标时区的星期几，先将其转换为目标时区的 Date 对象
+    // 3. 为了准确获取 baseDateAtNoonUtc 在目标时区的星期几，先将其转换为目标时区的 Date 对象
     const baseDateInTimezoneForDayCalculation = timeZoneService.utcToZonedTime(
-      baseDateAtMidnightUtc,
+      baseDateAtNoonUtc,
       timezone,
     );
     const dayOfWeekForBase = baseDateInTimezoneForDayCalculation.getDay(); // 0 代表周日, 1 代表周一 ...
 
-    // 4. 计算包含 baseDate 的那一周的周日午夜0点 (在目标时区) 的 UTC 时间戳
-    //    subDays 直接操作 Date 对象的内部 UTC 值
+    // 4. 计算包含 baseDate 的那一周的周日，使用中午12点避免日期偏移
+    //    先回到baseDate在时区的零点，然后减去天数，再设置为中午12点
+    const baseDateAtMidnightUtc = timeZoneService.zonedTimeToUtc(
+      `${baseDateInTimezoneStr}T00:00:00`,
+      timezone,
+    );
     const sundayAtMidnightUtc = subDays(
       baseDateAtMidnightUtc,
       dayOfWeekForBase,
@@ -219,16 +223,27 @@ export class DateService {
     for (let i = 0; i < 7; i++) {
       // currentIterationDayUtc 是当前迭代日的午夜0点 (在目标时区) 的 UTC 时间戳
       const currentIterationDayUtc = addDays(sundayAtMidnightUtc, i);
+      
+      // 为了避免时区边界问题，将日期调整到中午12点
+      const currentIterationDayStr = timeZoneService.formatInTimeZone(
+        currentIterationDayUtc,
+        timezone,
+        "yyyy-MM-dd"
+      );
+      const currentIterationDayNoonUtc = timeZoneService.zonedTimeToUtc(
+        `${currentIterationDayStr}T12:00:00`,
+        timezone
+      );
 
       // 为了获取显示名称和格式化日期，将当前迭代日的 UTC 时间戳转换为目标时区的 Date 对象
       const currentIterationDayInTimezone = timeZoneService.utcToZonedTime(
-        currentIterationDayUtc,
+        currentIterationDayNoonUtc,
         timezone,
       );
 
       const displayFormat = "MMM d"; // 与 formatDate 中的 'short' 格式一致
       const displayDate = timeZoneService.formatInTimeZone(
-        currentIterationDayUtc,
+        currentIterationDayNoonUtc,
         timezone,
         displayFormat,
       );
@@ -238,7 +253,7 @@ export class DateService {
 
       // 比较当前迭代日和高亮选择日在目标时区的 YYYY-MM-DD 字符串
       const currentIterationDayInTimezoneStr = timeZoneService.formatInTimeZone(
-        currentIterationDayUtc,
+        currentIterationDayNoonUtc,
         timezone,
         "yyyy-MM-dd",
       );
@@ -246,7 +261,7 @@ export class DateService {
         currentIterationDayInTimezoneStr === selectedDateForHighlightStr;
 
       weekDaysArray.push({
-        date: currentIterationDayUtc, // 存储代表目标时区当日零点的 UTC 时间戳
+        date: currentIterationDayNoonUtc, // 存储代表目标时区当日中午12点的 UTC 时间戳
         displayDate: displayDate,
         name: rulerInfo.name,
         planet: rulerInfo.planet,

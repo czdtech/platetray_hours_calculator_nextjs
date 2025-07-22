@@ -113,7 +113,7 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
 
   const [location, setLocation] = useState("New York, NY");
   const [coordinates, setCoordinates] = useState<Coordinates>(DEFAULT_COORDINATES);
-  const [timeFormat, setTimeFormat] = useState<"12h" | "24h">("24h");
+  const [timeFormat, setTimeFormat] = useState<"12h" | "24h">("12h");
   const [isTimezoneUpdating, setIsTimezoneUpdating] = useState(false);
   const [activeTab, setActiveTab] = useState<"day" | "night">("day");
   const [hasInitialCalculated, setHasInitialCalculated] = useState(false);
@@ -455,22 +455,23 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
   // 优化的渲染逻辑计算
   const renderData = useMemo(() => {
     const sunriseLocal = planetaryHoursRaw?.sunriseLocal;
-    let ephemDateStr = formatInTimeZoneDirect(selectedDate, timezone, "yyyy-MM-dd");
-
-    if (sunriseLocal) {
-      const nowUtc = now;
-      const nowInTzDay = formatInTimeZoneDirect(nowUtc, timezone, "yyyy-MM-dd");
-      const sunriseDay = formatInTimeZoneDirect(sunriseLocal, timezone, "yyyy-MM-dd");
-
-      if (nowInTzDay === sunriseDay && nowUtc < sunriseLocal) {
-        const yesterday = subDays(sunriseLocal, 1);
-        ephemDateStr = formatInTimeZoneDirect(yesterday, timezone, "yyyy-MM-dd");
-      } else {
-        ephemDateStr = sunriseDay;
-      }
+    const requestedDate = planetaryHoursRaw?.requestedDate;
+    
+    // 简单比较：用户选择的日期与计算请求的日期是否一致
+    const selectedDateStr = formatInTimeZoneDirect(selectedDate, timezone, "yyyy-MM-dd");
+    const isSameDate = selectedDateStr === requestedDate;
+    
+    // 调试日志
+    if (process.env.NODE_ENV === 'development') {
+      logger.debug('[RenderData] 日期比较:', {
+        selectedDateStr,
+        requestedDate,
+        isSameDate,
+        selectedDateISO: selectedDate.toISOString(),
+        timezone
+      });
     }
-
-    const isSameDate = formatInTimeZoneDirect(selectedDate, timezone, "yyyy-MM-dd") === ephemDateStr;
+    
     const selectedDayRuler = planetaryHoursRaw?.dayRuler;
 
     return {
