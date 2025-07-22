@@ -165,7 +165,7 @@ export function usePlanetaryHours(
     [networkDedupe],
   );
 
-  // 使用useMemo优化格式化计算 - 移除 memoize 缓存，直接使用 useMemo 避免缓存问题
+  // 优化格式化计算 - 移除currentHour依赖，避免重复计算
   const daytimeHours = useMemo(() => {
     if (!planetaryHoursRaw?.planetaryHours || !planetaryHoursRaw.timezone) {
       return [];
@@ -178,9 +178,10 @@ export function usePlanetaryHours(
       ),
       planetaryHoursRaw.timezone,
       timeFormat,
-      currentHour,
+      undefined, // 不传递currentHour，让formatHoursToList内部计算高亮
+      true, // 允许高亮
     );
-  }, [planetaryHoursRaw, timeFormat, currentHour]);
+  }, [planetaryHoursRaw, timeFormat]);
 
   const nighttimeHours = useMemo(() => {
     if (!planetaryHoursRaw?.planetaryHours || !planetaryHoursRaw.timezone) {
@@ -194,9 +195,10 @@ export function usePlanetaryHours(
       ),
       planetaryHoursRaw.timezone,
       timeFormat,
-      currentHour,
+      undefined, // 不传递currentHour，让formatHoursToList内部计算高亮
+      true, // 允许高亮
     );
-  }, [planetaryHoursRaw, timeFormat, currentHour]);
+  }, [planetaryHoursRaw, timeFormat]);
 
   return {
     planetaryHoursRaw,

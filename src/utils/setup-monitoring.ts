@@ -49,11 +49,17 @@ export function setupGlobalErrorHandling() {
   });
 }
 
-// 性能优化建议检测
+// 性能优化建议检测 - 优化为仅生产环境或性能测试时启用
 export function setupPerformanceHints() {
-  if (typeof window === 'undefined' || process.env.NODE_ENV !== 'development') return;
+  if (typeof window === 'undefined') return;
+  
+  // 只在生产环境或显式启用性能监控时才启用
+  const enableMonitoring = process.env.NODE_ENV === 'production' || 
+                          process.env.NEXT_PUBLIC_ENABLE_PERF_MONITORING === 'true';
+  
+  if (!enableMonitoring) return;
 
-  // 检测长任务
+  // 检测长任务 - 仅生产环境
   if ('PerformanceObserver' in window) {
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
@@ -70,7 +76,7 @@ export function setupPerformanceHints() {
     }
   }
 
-  // 内存使用检测
+  // 内存使用检测 - 减少频率，避免开发环境性能影响
   const checkMemoryUsage = () => {
     if ('memory' in performance) {
       const memory = (performance as unknown as { memory?: { usedJSHeapSize: number; totalJSHeapSize: number } }).memory;
@@ -78,13 +84,13 @@ export function setupPerformanceHints() {
         const usedMB = Math.round(memory.usedJSHeapSize / 1048576);
         const totalMB = Math.round(memory.totalJSHeapSize / 1048576);
 
-        if (usedMB > 50) { // 超过 50MB 提醒
+        if (usedMB > 100) { // 提高阈值到100MB，减少噪音
           logger.warn(`内存使用: ${usedMB}MB / ${totalMB}MB`);
         }
       }
     }
   };
 
-  // 每30秒检查一次内存
-  setInterval(checkMemoryUsage, 30000);
+  // 减少频率：每5分钟检查一次内存，避免影响开发体验
+  setInterval(checkMemoryUsage, 5 * 60 * 1000);
 }

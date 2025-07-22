@@ -9,7 +9,6 @@ import {
   FormattedPlanetaryHour,
   formatSingleHour,
 } from "../utils/planetaryHourFormatters";
-import { useUnifiedPlanetaryTime } from './useUnifiedPlanetaryTime';
 
 // 将 logger 创建移到组件外部，避免每次渲染时重新创建
 const logger = createLogger('UseCurrentLivePlanetaryHour');
@@ -50,43 +49,17 @@ export function useCurrentLivePlanetaryHour({
   currentCoordinatesForYesterdayCalc,
   dateForPlanetaryHoursRaw, // 传入用于计算 planetaryHoursRaw 的原始Date对象
   timeFormat,
-  enablePreciseSync = true, // 默认启用精确同步
+  enablePreciseSync = false, // 默认禁用精确同步，使用简单的60秒轮询
 }: UseCurrentLivePlanetaryHourProps): FormattedPlanetaryHour | null {
   const [currentLiveHour, setCurrentLiveHour] =
     useState<FormattedPlanetaryHour | null>(null);
 
-  // 精确同步模式的状态管理
-  const unifiedTimeState = useUnifiedPlanetaryTime({
-    planetaryData: planetaryHoursRaw,
-    timezone: planetaryHoursRaw?.timezone || '',
-    timeFormat,
-    enablePreciseSync: enablePreciseSync && !!planetaryHoursRaw?.timezone,
-    timerConfig: {
-      preloadMs: 30000, // 30秒预加载
-      syncIntervalMs: 5 * 60 * 1000, // 5分钟同步校正
-    }
-  });
-
-  // 兼容模式的引用（fallback）
+  // 简化版本：移除复杂的精确同步，只保留兼容模式
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastCalculationRef = useRef<string>("");
 
   /**
-   * 判断是否可以使用精确同步模式
-   */
-  const canUsePreciseMode = useCallback((): boolean => {
-    if (!enablePreciseSync || !planetaryHoursRaw) return false;
-
-    // 检查是否有足够的数据支持精确模式
-    const now = new Date();
-    const current = planetaryHoursCalculator.getCurrentHour(planetaryHoursRaw, now);
-
-    // 如果能找到当前行星时，且不是跨日边界情况，则可以使用精确模式
-    return !!current;
-  }, [enablePreciseSync, planetaryHoursRaw]);
-
-  /**
-   * 兼容模式的计算逻辑（保持原有逻辑）
+   * 简化的计算逻辑（保持原有逻辑）
    */
   const calculateAndSetCurrentHour = useCallback(
     async (nowUtc: Date) => {
@@ -223,53 +196,35 @@ export function useCurrentLivePlanetaryHour({
   );
 
   /**
-   * 智能模式选择和状态更新
+   * 简化的状态更新 - 只使用60秒轮询
    */
   useEffect(() => {
-    const usePreciseMode = canUsePreciseMode();
+    logger.info("✨ [LiveHour] 启用简化同步模式", {
+      currentPlanet: currentLiveHour?.planet,
+      syncStatus: 'synced',
+      remainingMs: 0
+    });
 
-    if (usePreciseMode) {
-      // 🚀 精确模式：使用统一时间状态
-      logger.info("✨ [LiveHour] 启用精确同步模式", {
-        currentPlanet: unifiedTimeState.currentHour?.planet,
-        syncStatus: unifiedTimeState.syncStatus,
-        remainingMs: unifiedTimeState.remainingMs
-      });
-
-      // 清理兼容模式的定时器
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-
-      // 使用精确模式的结果
-      setCurrentLiveHour(unifiedTimeState.currentHour);
-
-    } else {
-      // 🔄 兼容模式：使用原有的60秒轮询
-      logger.info("🔄 [LiveHour] 使用兼容模式（60秒轮询）");
-
-      // 清理之前的interval
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-
-      // 只有当有基本数据时才执行计算，避免初始化时的无意义警告
-      if (!planetaryHoursRaw || !dateForPlanetaryHoursRaw) {
-        setCurrentLiveHour(null);
-        return;
-      }
-
-      const nowUtc = new Date();
-      calculateAndSetCurrentHour(nowUtc); // Initial call
-
-      // 启动60秒定时器
-      intervalRef.current = setInterval(() => {
-        const nowUtc = new Date();
-        calculateAndSetCurrentHour(nowUtc);
-      }, 60000); // 每60秒更新一次
+    // 清理之前的interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
+
+    // 只有当有基本数据时才执行计算
+    if (!planetaryHoursRaw || !dateForPlanetaryHoursRaw) {
+      setCurrentLiveHour(null);
+      return;
+    }
+
+    const nowUtc = new Date();
+    calculateAndSetCurrentHour(nowUtc); // Initial call
+
+    // 启动60秒定时器
+    intervalRef.current = setInterval(() => {
+      const nowUtc = new Date();
+      calculateAndSetCurrentHour(nowUtc);
+    }, 60000); // 每60秒更新一次
 
     return () => {
       if (intervalRef.current) {
@@ -278,9 +233,6 @@ export function useCurrentLivePlanetaryHour({
       }
     };
   }, [
-    canUsePreciseMode,
-    unifiedTimeState.currentHour,
-    unifiedTimeState.syncStatus,
     planetaryHoursRaw,
     dateForPlanetaryHoursRaw,
     calculateAndSetCurrentHour,
