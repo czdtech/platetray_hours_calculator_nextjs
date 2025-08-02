@@ -19,6 +19,7 @@ import { subDays } from "date-fns";
 import { LayoutStabilizer } from "@/components/Performance/LayoutStabilizer";
 import { createLogger } from '@/utils/unified-logger';
 import { ServerCurrentHourPayload } from '@/utils/planetaryHourHelpers';
+import { getCurrentTime } from '@/utils/time';
 
 // 将 logger 创建移到组件外部，避免每次渲染时重新创建
 const logger = createLogger('CalculatorPageOptimized');
@@ -122,6 +123,23 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
   // 使用useRef存储函数引用，避免依赖变化
   const lastApiCallRef = useRef<number>(0);
   const calculationParamsRef = useRef<string>("");
+
+  // 实时更新的当前时间，用于动态显示页面日期
+  const [currentTime, setCurrentTime] = useState<Date>(() => getCurrentTime(serverTime));
+
+  // 添加定时器以实时更新时间
+  useEffect(() => {
+    // 立即更新一次时间（解决SSR时间不同步问题）
+    setCurrentTime(new Date());
+    
+    // 每分钟更新一次时间
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // 60秒更新一次
+
+    // 组件卸载时清理定时器
+    return () => clearInterval(interval);
+  }, []);
 
   const {
     planetaryHoursRaw,
@@ -559,7 +577,7 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
                 <div className="flex flex-col md:flex-row items-center justify-center md:justify-between">
                   <div className="flex flex-col md:flex-row items-center text-center md:text-left gap-1 md:gap-2 mb-3 md:mb-0">
                     <h2 className="text-xl font-semibold text-gray-800 flex flex-wrap items-center justify-center gap-1">
-                      <span>{formatDateWithTodayPrefix(selectedDate, "medium")}</span>
+                      <span>{formatDateWithTodayPrefix(currentTime, "medium")}</span>
                       <span className="text-gray-500 hidden md:inline">•</span>
                       <span>{location}</span>
                     </h2>
