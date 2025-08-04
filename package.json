@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "prebuild": "npm run generate:blog-metadata",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -16,6 +17,7 @@
     "clean:precomputed": "tsx scripts/clean-precomputed.ts",
     "compress:blog-images": "tsx scripts/compress-blog-images.ts",
     "clean:blog-image-artifacts": "tsx scripts/clean-blog-image-artifacts.ts",
+    "generate:blog-metadata": "tsx scripts/generate-blog-metadata.ts",
     "test": "vitest run",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",

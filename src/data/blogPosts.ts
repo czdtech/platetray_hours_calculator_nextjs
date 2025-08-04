@@ -9,11 +9,52 @@ import introImg from "../../public/images/blog/planetary-hours-intro.jpg";
 import whatIsImg from "../../public/images/blog/what-are-planetary-hours.jpg";
 import usingImg from "../../public/images/blog/using-planetary-hours.jpg";
 import algoImg from "../../public/images/blog/algorithm-behind-calculator.jpg";
+import mobileImg from "../../public/images/blog/mobile-planetary-hours.jpg";
+import businessImg from "../../public/images/blog/business-planetary-hours.jpg";
+import faqImg from "../../public/images/blog/planetary-hours-faq.jpg";
+import historyImg from "../../public/images/blog/planetary-hours-history.jpg";
+import astronomicalImg from "../../public/images/blog/2025-planetary-alignment.jpg";
 
 /**
- * 博客文章数据
+ * 博客文章数据 - 按发布日期倒序排列（最新的在前）
  */
 export const blogPosts: BlogPost[] = [
+  {
+    slug: "planetary-hours-faq",
+    title: "Planetary Hours FAQ: Expert Answers to Your Most Important Questions",
+    excerpt:
+      "Get comprehensive answers to the 20 most frequently asked questions about Planetary Hours. From basic concepts to practical applications, our experts provide clear, accurate answers and actionable advice.",
+    imageUrl: faqImg as StaticImageData,
+    date: blogDates["planetary-hours-faq"],
+    readingTime: blogRead["planetary-hours-faq"],
+  },
+  {
+    slug: "mobile-planetary-hours-guide",
+    title: "Mobile Planetary Hours: Master Cosmic Timing Anywhere, Anytime",
+    excerpt:
+      "Access cosmic timing on your mobile device. Learn how to install and use the Planetary Hours Calculator as a Progressive Web App for convenient celestial guidance wherever you are.",
+    imageUrl: mobileImg as StaticImageData,
+    date: blogDates["mobile-planetary-hours-guide"],
+    readingTime: blogRead["mobile-planetary-hours-guide"],
+  },
+  {
+    slug: "planetary-hours-history-culture",
+    title: "From Ancient Babylon to Modern Times: The Historical and Cultural Journey of Planetary Hours",
+    excerpt:
+      "Explore the fascinating evolution of planetary hours from ancient Babylonian astronomy to contemporary practice, discovering how different cultures shaped this timeless system of cosmic timekeeping.",
+    imageUrl: historyImg as StaticImageData,
+    date: blogDates["planetary-hours-history-culture"],
+    readingTime: blogRead["planetary-hours-history-culture"],
+  },
+  {
+    slug: "planetary-hours-business-success",
+    title: "The Business Professional's Secret Weapon: How Planetary Hours Can Boost Your Work Efficiency",
+    excerpt:
+      "Discover how successful entrepreneurs and executives use planetary hours to optimize meetings, negotiations, and strategic decisions. Transform your business timing with this ancient wisdom.",
+    imageUrl: businessImg as StaticImageData,
+    date: blogDates["planetary-hours-business-success"],
+    readingTime: blogRead["planetary-hours-business-success"],
+  },
   {
     slug: "introduction",
     title: "Introducing the Planetary Hours Calculator",
@@ -49,5 +90,14 @@ export const blogPosts: BlogPost[] = [
     imageUrl: algoImg as StaticImageData,
     date: blogDates["algorithm-behind-calculator"],
     readingTime: blogRead["algorithm-behind-calculator"],
+  },
+  {
+    slug: "2025-astronomical-events-planetary-hours",
+    title: "2025 Astronomical Spectacle: How Planetary Alignments Transform Your Planetary Hours",
+    excerpt:
+      "Discover the profound significance of January 2025's rare planetary parade and learn how these celestial alignments amplify the energies of your planetary hours for enhanced timing and spiritual practice.",
+    imageUrl: astronomicalImg as StaticImageData,
+    date: blogDates["2025-astronomical-events-planetary-hours"],
+    readingTime: blogRead["2025-astronomical-events-planetary-hours"],
   },
 ];

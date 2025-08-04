@@ -44,7 +44,7 @@ Curious about the nitty-gritty of how we ensure such accuracy? Explore the mecha
 
 ### A Seamless, Lightning-Fast User Experience
 
-Accessing this wisdom shouldn't be difficult. We've built a modern, responsive interface using cutting-edge web technologies like [React 18](https://react.dev/) and [Vite](https://vitejs.dev/) for a smooth and fast experience on any device.
+Accessing this wisdom shouldn't be difficult. We've built a modern, responsive interface using cutting-edge web technologies like [Next.js](https://nextjs.org/) and [TypeScript](https://www.typescriptlang.org/) for a smooth and fast experience on any device.
 
 - **Intuitive Location Input**: Easily enter your location manually, use Google Places-powered autocompletion, or get your current coordinates with a single click.
 - **At-a-Glance Information**: The current planetary hour is always highlighted, and you can effortlessly navigate through a week with our week navigation feature.
@@ -90,7 +90,7 @@ Our planetary hours calculator combines ancient wisdom with modern technology. H
 - **Location-aware**: Uses your current location or any place on Earth
 - **Historical and future dates**: Calculate planetary hours for any date
 - **Beautiful, responsive design**: Works on all your devices
-- **Open-source technology**: Built with React, TypeScript, and astronomical algorithms
+- **Open-source technology**: Built with Next.js, TypeScript, and precise astronomical algorithms
 
 ## How to Use the Calculator
 
