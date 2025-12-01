@@ -25,7 +25,7 @@ export function BlogPostCard({
   // 使用相对时间格式
   const relativeDate = formatDistanceToNow(new Date(date), { addSuffix: true });
   return (
-    <article className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 group hover:shadow-md transition-shadow">
+    <article className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 group hover:shadow-md transition-shadow">
       <Link href={`/blog/${slug}`} className="block">
         <div className="h-48 overflow-hidden relative">
           <Image
@@ -39,22 +39,22 @@ export function BlogPostCard({
         </div>
       </Link>
       <div className="p-6">
-        <div className="text-xs text-gray-500 mb-2">
+        <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
           {relativeDate}
           {readingTime && ` • ${readingTime}`}
         </div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
           <Link
             href={`/blog/${slug}`}
-            className="hover:text-indigo-600 transition-colors"
+            className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             {title}
           </Link>
         </h2>
-        <p className="text-gray-600 text-sm mb-4 line-clamp-3">{excerpt}</p>
+        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">{excerpt}</p>
         <Link
           href={`/blog/${slug}`}
-          className="text-indigo-600 font-medium text-sm hover:underline"
+          className="text-indigo-600 dark:text-indigo-400 font-medium text-sm hover:underline"
         >
           Read more →
         </Link>

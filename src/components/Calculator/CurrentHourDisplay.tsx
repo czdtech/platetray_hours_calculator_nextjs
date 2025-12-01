@@ -81,7 +81,7 @@ export function CurrentHourDisplay({
 
     // 找到当前被标记为 current 的行星时
     return allFormattedHours.find(hour => hour.current) || null;
-  }, [planetaryHoursRaw, timeFormat, isTodayPage, now]); // now 作为依赖确保实时更新
+  }, [planetaryHoursRaw, timeFormat, isTodayPage, now]); // now 作为依赖确保时间变化时重新计算当前行星时高亮
 
   // 选择要显示的当前行星时：优先使用重新计算的结果
   let currentHour = calculatedCurrentHour || fallbackCurrentHour;
@@ -158,19 +158,19 @@ export function CurrentHourDisplay({
 
   return (
     <div className="space-y-2" suppressHydrationWarning={true}>
-      <p className="block text-sm font-medium text-gray-700">
+      <p className="block text-sm font-medium text-gray-700 dark:text-gray-300">
         {showCurrentHour ? "Current Planetary Hour" : "Day Ruler"}
       </p>
       <div className="relative">
         {showCurrentHour ? (
           <div
             id="current-hour"
-            className="w-full rounded-lg border border-gray-200 bg-white overflow-hidden divide-y divide-gray-200 shadow-sm"
+            className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden divide-y divide-gray-200 dark:divide-gray-700 shadow-sm"
           >
             {/* Day Ruler Row */}
             {dayRuler && (
-              <div className="p-2.5 flex justify-between items-center bg-gray-50">
-                <span className="text-sm font-medium text-purple-700">
+              <div className="p-2.5 flex justify-between items-center bg-gray-50 dark:bg-gray-700/50">
+                <span className="text-sm font-medium text-purple-700 dark:text-purple-400">
                   Day Ruler
                 </span>
                 <div className="flex items-center gap-2">
@@ -204,7 +204,7 @@ export function CurrentHourDisplay({
             <div className="p-2.5 flex items-center">
               <div
                 className={`text-2xl ${
-                  currentHour?.planetColor || "text-gray-500"
+                  currentHour?.planetColor || "text-gray-500 dark:text-gray-400"
                 }`}
                 style={{ color: currentPlanetColor }}
               >
@@ -218,14 +218,14 @@ export function CurrentHourDisplay({
                 <div className="flex items-center space-x-2">
                   <span
                     className={`font-medium ${
-                      currentHour?.planetColor || "text-gray-500"
+                      currentHour?.planetColor || "text-gray-500 dark:text-gray-400"
                     }`}
                     style={{ color: currentPlanetColor }}
                   >
                     {currentHour?.planet}
                   </span>
-                  <span className="text-gray-300">|</span>
-                  <span className="text-gray-600 text-sm">
+                  <span className="text-gray-300 dark:text-gray-600">|</span>
+                  <span className="text-gray-600 dark:text-gray-400 text-sm">
                     {currentHour?.timeRange}
                   </span>
                 </div>
@@ -233,20 +233,20 @@ export function CurrentHourDisplay({
             </div>
 
             {/* Good For / Avoid Row */}
-            <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-gray-200">
+            <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-700">
               <div className="p-2.5 flex-1">
-                <div className="text-xs font-medium text-green-700 uppercase mb-1">
+                <div className="text-xs font-medium text-green-700 dark:text-green-400 uppercase mb-1">
                   Good For
                 </div>
-                <div className="text-sm text-gray-600 leading-snug break-words">
+                <div className="text-sm text-gray-600 dark:text-gray-300 leading-snug break-words">
                   {currentHour?.goodFor}
                 </div>
               </div>
               <div className="p-2.5 flex-1">
-                <div className="text-xs font-medium text-red-600 uppercase mb-1">
+                <div className="text-xs font-medium text-red-600 dark:text-red-400 uppercase mb-1">
                   Avoid
                 </div>
-                <div className="text-sm text-gray-600 leading-snug break-words">
+                <div className="text-sm text-gray-600 dark:text-gray-300 leading-snug break-words">
                   {currentHour?.avoid}
                 </div>
               </div>
@@ -254,7 +254,7 @@ export function CurrentHourDisplay({
 
             {/* Before Sunrise Message Row */}
             {shouldShowPreSunriseMessage && (
-              <div className="p-2.5 text-center text-indigo-600 text-sm italic">
+              <div className="p-2.5 text-center text-indigo-600 dark:text-indigo-400 text-sm italic">
                 It&apos;s early morning, before today&apos;s sunrise (
                 {formattedSunriseTime}). You&apos;re seeing the night hours from{" "}
                 {formattedYesterday}, continuing until sunrise on{" "}
@@ -265,12 +265,12 @@ export function CurrentHourDisplay({
         ) : (
           <div
             id="current-hour"
-            className="w-full rounded-lg border border-gray-200 bg-white overflow-hidden divide-y divide-gray-200 shadow-sm"
+            className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden divide-y divide-gray-200 dark:divide-gray-700 shadow-sm"
           >
             {/* Day Ruler Row */}
             {dayRuler && (
-              <div className="p-2.5 flex justify-between items-center bg-gray-50">
-                <span className="text-sm font-medium text-purple-700">
+              <div className="p-2.5 flex justify-between items-center bg-gray-50 dark:bg-gray-700/50">
+                <span className="text-sm font-medium text-purple-700 dark:text-purple-400">
                   Day Ruler
                 </span>
                 <div className="flex items-center gap-2">
@@ -302,7 +302,7 @@ export function CurrentHourDisplay({
 
             {/* Message for non-today dates */}
             {!isSelectedDateToday && (
-              <div className="p-2.5 text-center text-gray-500 text-sm">
+              <div className="p-2.5 text-center text-gray-500 dark:text-gray-400 text-sm">
                 You&apos;re viewing planetary hours for {formattedToday}.
               </div>
             )}

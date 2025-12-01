@@ -48,8 +48,8 @@ function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
         className={`
           w-full text-left flex items-center p-3 rounded-lg border transition-all duration-200 cursor-pointer
           ${hour.current
-            ? "border-l-4 border-purple-600 bg-purple-50"
-            : "border-gray-200 hover:border-gray-300 hover:shadow-sm hover:-translate-y-0.5"
+            ? "border-l-4 border-purple-600 dark:border-purple-400 bg-purple-50 dark:bg-purple-900/30"
+            : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm hover:-translate-y-0.5 bg-white dark:bg-gray-800"
           }
         `}
         onClick={handleClick}
@@ -61,7 +61,7 @@ function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
         }}
         aria-expanded={isOpen}
       >
-        <span className="w-8 text-sm text-gray-500 font-medium">
+        <span className="w-8 text-sm text-gray-500 dark:text-gray-400 font-medium">
           {String(index + 1).padStart(2, "0")}
         </span>
         {/* 使用双重方式应用颜色：CSS类 + 内联样式作为备选 */}
@@ -72,7 +72,7 @@ function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
           {hour.planet}
         </span>
         <div className="ml-auto flex items-center shrink-0">
-          <span className="text-sm text-gray-600 truncate">
+          <span className="text-sm text-gray-600 dark:text-gray-400 truncate">
             {hour.timeRange}
           </span>
           <span
@@ -83,28 +83,30 @@ function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
           </span>
           <ChevronRight
             size={16}
-            className="chevron-mobile ml-2 text-gray-300 transition-colors duration-200 group-hover:text-gray-400"
+            className="chevron-mobile ml-2 text-gray-300 dark:text-gray-600 transition-colors duration-200 group-hover:text-gray-400 dark:group-hover:text-gray-500"
           />
         </div>
       </button>
 
-      <div className="hidden md:block absolute left-1/2 top-full transform -translate-x-1/2 mt-2 w-72 z-20 pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 opacity-0 transition-opacity duration-200">
-        <div className="p-3 bg-white border border-gray-200 rounded-lg shadow-lg text-xs leading-relaxed">
-          <div className="font-semibold text-green-700 mb-1">Good For</div>
-          <div className="text-gray-700">{hour.goodFor}</div>
-          <hr className="my-2 border-gray-100" />
-          <div className="font-semibold text-red-600 mb-1">Avoid</div>
-          <div className="text-gray-700">{hour.avoid}</div>
+      {/* Desktop tooltip */}
+      <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 mt-2 w-72 z-20 pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 opacity-0 transition-opacity duration-200"
+           style={{ top: 'calc(100% + 8px)' }}>
+        <div className="p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg text-xs leading-relaxed">
+          <div className="font-semibold text-green-700 dark:text-green-400 mb-1">Good For</div>
+          <div className="text-gray-700 dark:text-gray-300">{hour.goodFor}</div>
+          <hr className="my-2 border-gray-100 dark:border-gray-600" />
+          <div className="font-semibold text-red-600 dark:text-red-400 mb-1">Avoid</div>
+          <div className="text-gray-700 dark:text-gray-300">{hour.avoid}</div>
         </div>
       </div>
 
       {isOpen && (
-        <div className="md:hidden mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg text-xs leading-relaxed">
-          <div className="font-semibold text-green-700 mb-1">Good For</div>
-          <div className="text-gray-700">{hour.goodFor}</div>
-          <hr className="my-2 border-gray-100" />
-          <div className="font-semibold text-red-600 mb-1">Avoid</div>
-          <div className="text-gray-700">{hour.avoid}</div>
+        <div className="md:hidden mt-2 p-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-xs leading-relaxed">
+          <div className="font-semibold text-green-700 dark:text-green-400 mb-1">Good For</div>
+          <div className="text-gray-700 dark:text-gray-300">{hour.goodFor}</div>
+          <hr className="my-2 border-gray-100 dark:border-gray-600" />
+          <div className="font-semibold text-red-600 dark:text-red-400 mb-1">Avoid</div>
+          <div className="text-gray-700 dark:text-gray-300">{hour.avoid}</div>
         </div>
       )}
     </div>

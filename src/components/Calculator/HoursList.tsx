@@ -20,10 +20,10 @@ function HoursListComponent({ title, hours, titleColor, showTitle = true }: Hour
 
   return (
     <div>
-      {/* 根据 showTitle 属性决定是否显示标题 */}
+      {/* 根据 showTitle 属性决定是否显示标题，移动端通过CSS隐藏 */}
       {showTitle && (
         <h3
-          className={`text-base font-medium ${titleColor} mb-3 pb-2 border-b border-gray-200 text-center`}
+          className={`hidden md:block text-base font-medium ${titleColor} mb-3 pb-2 border-b border-gray-200 dark:border-gray-700 text-center`}
         >
           {title}
         </h3>

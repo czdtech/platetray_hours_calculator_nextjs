@@ -1,5 +1,8 @@
+import typography from '@tailwindcss/typography';
+
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class', // 启用基于 class 的暗色模式，配合 next-themes 使用
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -8,16 +11,9 @@ export default {
   ],
   theme: {
     extend: {
-      animation: {
-        'fadeIn': 'fadeIn 0.3s ease-in-out',
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: 0, transform: 'translateY(10px)' },
-          '100%': { opacity: 1, transform: 'translateY(0)' },
-        }
-      },
       colors: {
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
         'planet-sun': '#B45309',   // amber-800
         'planet-moon': '#6366F1',  // indigo-500
         'planet-mercury': '#0EA5E9', // sky-500
@@ -163,5 +159,5 @@ export default {
       }),
     },
   },
-  plugins: [require('@tailwindcss/typography')],
+  plugins: [typography],
 };

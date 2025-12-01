@@ -180,7 +180,7 @@ export function EnhancedDatePicker({
 
       {/* 日历弹出层 */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden animate-fadeIn">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden animate-fade-in">
           {/* 快捷选择 - 只在选中今天时显示 */}
           {(() => {
             // 检查选中的日期是否为用户时区的今天

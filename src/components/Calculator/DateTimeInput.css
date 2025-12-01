@@ -224,7 +224,7 @@
 }
 
 /* 暗色模式支持 */
-@media (prefers-color-scheme: dark) {
+.dark {
   .react-datepicker {
     background-color: #1f2937;
     border-color: #374151;

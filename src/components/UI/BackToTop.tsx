@@ -82,8 +82,8 @@ export function BackToTop({
         focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2
         ${className}
       `}
-      aria-label="返回顶部"
-      title="返回顶部"
+      aria-label="Back to top"
+      title="Back to top"
     >
       <ChevronUp className="w-6 h-6" />
     </button>

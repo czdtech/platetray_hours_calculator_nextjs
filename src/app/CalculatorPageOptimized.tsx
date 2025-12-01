@@ -347,7 +347,6 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
         setActiveTab(currentHour.type === "night" ? "night" : "day");
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentHour, planetaryHoursRaw?.sunriseLocal, now]);
 
   // 延迟加载FAQ部分 - 避免布局偏移，直接显示
@@ -456,15 +455,13 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
         logger.error('Error in handleCitySelect', error as Error);
       }
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [serverTime, setTimezone, setSelectedDate, setCoordinates, setLocation, setHasInitialCalculated]);
 
   const handleDateChange = useCallback((date: Date) => {
     logger.info("📅 [Date] 日期更新:", date.toISOString());
     setSelectedDate(date);
     calculationParamsRef.current = ""; // 清空参数缓存，强制重新计算
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setSelectedDate]);
 
   const handleTimeFormatChange = useCallback((format: "12h" | "24h") => {
     setTimeFormat(format);
@@ -504,16 +501,16 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
     <>
       <Header activePage="calculator" />
       <div className="container mx-auto px-4 py-8 space-y-8">
-        <Section className="bg-gradient-to-b from-white to-gray-50 rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6 md:p-8 mb-8 w-full max-w-full">
-          <div className="flex flex-col md:flex-row justify-between items-center border-b border-gray-100 pb-6 mb-8">
+        <Section className="bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-4 sm:p-6 md:p-8 mb-8 w-full max-w-full">
+          <div className="flex flex-col md:flex-row justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-6 mb-8">
             <div className="w-full md:w-2/5 pr-0 md:pr-6">
               {/* 页面主标题 */}
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-500 to-indigo-400 bg-clip-text text-transparent mb-3 md:mb-0 leading-tight overflow-hidden text-ellipsis">
                 Planetary Hours Calculator
               </h1>
             </div>
-            <div className="w-full md:w-3/5 mt-3 md:mt-0 md:pl-6 md:border-l border-gray-200">
-              <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+            <div className="w-full md:w-3/5 mt-3 md:mt-0 md:pl-6 md:border-l border-gray-200 dark:border-gray-700">
+              <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg leading-relaxed">
                 Find the perfect timing for your activities based on ancient planetary wisdom.
                 Enter your location and date below to get started.
               </p>
@@ -521,7 +518,7 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
           </div>
 
           {hoursError && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400">
               {hoursError}
             </div>
           )}
@@ -573,15 +570,15 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
             </div>
 
             <div>
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 mb-6">
                 <div className="flex flex-col md:flex-row items-center justify-center md:justify-between">
                   <div className="flex flex-col md:flex-row items-center text-center md:text-left gap-1 md:gap-2 mb-3 md:mb-0">
-                    <h2 className="text-xl font-semibold text-gray-800 flex flex-wrap items-center justify-center gap-1">
+                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex flex-wrap items-center justify-center gap-1">
                       <span>{formatDateWithTodayPrefix(currentTime, "medium")}</span>
-                      <span className="text-gray-500 hidden md:inline">•</span>
+                      <span className="text-gray-500 dark:text-gray-400 hidden md:inline">•</span>
                       <span>{location}</span>
                     </h2>
-                    <div className="flex items-center justify-center text-sm text-gray-500">
+                    <div className="flex items-center justify-center text-sm text-gray-500 dark:text-gray-400">
                       <svg
                         className="w-4 h-4 mr-1"
                         xmlns="http://www.w3.org/2000/svg"
@@ -616,12 +613,12 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
               {/* 行星时间列表：移动端单列（可切换），桌面端双列并排 */}
               <div className="mb-4">
                 {/* 移动端 Tab 切换按钮 */}
-                <div className="flex md:hidden rounded-lg bg-gray-100 p-1">
+                <div className="flex md:hidden rounded-lg bg-gray-100 dark:bg-gray-700 p-1">
                   <button
                     onClick={() => setActiveTab("day")}
                     className={`flex items-center justify-center w-1/2 py-2 text-sm font-medium rounded-md ${activeTab === "day"
-                      ? "bg-white text-amber-600 shadow-sm"
-                      : "text-gray-600 hover:text-gray-800"
+                      ? "bg-white dark:bg-gray-800 text-amber-600 dark:text-amber-400 shadow-sm"
+                      : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
                       } transition-colors duration-200`}
                   >
                     <svg
@@ -641,8 +638,8 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
                   <button
                     onClick={() => setActiveTab("night")}
                     className={`flex items-center justify-center w-1/2 py-2 text-sm font-medium rounded-md ${activeTab === "night"
-                      ? "bg-white text-indigo-600 shadow-sm"
-                      : "text-gray-600 hover:text-gray-800"
+                      ? "bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 shadow-sm"
+                      : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
                       } transition-colors duration-200`}
                   >
                     <svg
@@ -662,91 +659,51 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
 
                 {/* 列表区域：grid-1（移动端） / grid-2（桌面端） */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mt-4">
-                  {/* Daytime list */}
+                  {/* Daytime list - 使用CSS控制标题显隐，避免重复渲染DOM */}
                   <div
                     className={`${activeTab === "day" ? "" : "hidden"} md:block`}
                   >
                     <LayoutStabilizer minHeight="400px">
                       {showHourListLoading ? (
-                        <>
-                          {/* 移动端：不显示标题 */}
-                          <div className="md:hidden">
-                            <HoursListSkeleton title="Daytime Planetary Hours" showTitle={false} />
-                          </div>
-                          {/* 桌面端：显示标题 */}
-                          <div className="hidden md:block">
-                            <HoursListSkeleton title="Daytime Planetary Hours" showTitle={true} />
-                          </div>
-                        </>
+                        <HoursListSkeleton 
+                          title="Daytime Planetary Hours" 
+                          showTitle={true} 
+                        />
                       ) : (
                         <Suspense fallback={
-                          <div className="h-[400px]" style={{ minHeight: '400px' }}>
-                            {/* 静默fallback，不显示loading文本 */}
-                          </div>
+                          <div className="h-[400px]" style={{ minHeight: '400px' }} />
                         }>
-                          {/* 移动端：不显示标题 */}
-                          <div className="md:hidden">
-                            <LazyHoursList
-                              title="Daytime Planetary Hours"
-                              hours={daytimeHours}
-                              titleColor="text-amber-600"
-                              showTitle={false}
-                            />
-                          </div>
-                          {/* 桌面端：显示标题 */}
-                          <div className="hidden md:block">
-                            <LazyHoursList
-                              title="Daytime Planetary Hours"
-                              hours={daytimeHours}
-                              titleColor="text-amber-600"
-                              showTitle={true}
-                            />
-                          </div>
+                          <LazyHoursList
+                            title="Daytime Planetary Hours"
+                            hours={daytimeHours}
+                            titleColor="text-amber-600"
+                            showTitle={true}
+                          />
                         </Suspense>
                       )}
                     </LayoutStabilizer>
                   </div>
 
-                  {/* Nighttime list */}
+                  {/* Nighttime list - 使用CSS控制标题显隐，避免重复渲染DOM */}
                   <div
                     className={`${activeTab === "night" ? "" : "hidden"} md:block`}
                   >
                     <LayoutStabilizer minHeight="400px">
                       {showHourListLoading ? (
-                        <>
-                          {/* 移动端：不显示标题 */}
-                          <div className="md:hidden">
-                            <HoursListSkeleton title="Nighttime Planetary Hours" showTitle={false} />
-                          </div>
-                          {/* 桌面端：显示标题 */}
-                          <div className="hidden md:block">
-                            <HoursListSkeleton title="Nighttime Planetary Hours" showTitle={true} />
-                          </div>
-                        </>
+                        <HoursListSkeleton 
+                          title="Nighttime Planetary Hours" 
+                          showTitle={true} 
+                        />
                       ) : (
                         <Suspense fallback={
-                          <div className="h-[400px]" style={{ minHeight: '400px' }}>
-                            {/* 静默fallback，不显示loading文本 */}
-                          </div>
+                          <div className="h-[400px]" style={{ minHeight: '400px' }} />
                         }>
-                          {/* 移动端：不显示标题 */}
-                          <div className="md:hidden">
-                            <LazyHoursList
-                              title="Nighttime Planetary Hours"
-                              hours={nighttimeHours}
-                              titleColor="text-indigo-600"
-                              showTitle={false}
-                            />
-                          </div>
-                          {/* 桌面端：显示标题 */}
-                          <div className="hidden md:block">
-                            <LazyHoursList
-                              title="Nighttime Planetary Hours"
-                              hours={nighttimeHours}
-                              titleColor="text-indigo-600"
-                              showTitle={true}
-                            />
-                          </div>
+                          <LazyHoursList
+                            title="Nighttime Planetary Hours"
+                            hours={nighttimeHours}
+                            titleColor="text-indigo-600"
+                            showTitle={true}
+                          />
                         </Suspense>
                       )}
                     </LayoutStabilizer>

@@ -1,16 +1,21 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+/* CSS变量定义 - 亮色模式默认值 */
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+
+/* 暗色模式变量覆盖 */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
@@ -21,9 +26,9 @@ html {
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  /* Tailwind 默认的系统字体栈 */
+  transition: background-color 0.3s ease, color 0.3s ease;
   font-family:
     ui-sans-serif,
     system-ui,
@@ -106,6 +111,26 @@ body {
   font-weight: 500;
 }
 
+.dark .pac-container {
+  background-color: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.dark .pac-item {
+  color: #e5e7eb;
+  border-top-color: #374151;
+}
+
+.dark .pac-item:hover,
+.dark .pac-item-selected {
+  background-color: #374151;
+}
+
+.dark .pac-item-query {
+  color: #ffffff;
+}
+
 /* Animation utilities */
 @keyframes fadeIn {
   from {
@@ -121,53 +146,6 @@ body {
 
 .animate-fade-in {
   animation: fadeIn 0.3s ease-in-out forwards;
-}
-
-/* 滚动捕捉类 */
-.snap-x {
-  scroll-snap-type: x mandatory;
-}
-
-.snap-center {
-  scroll-snap-align: center;
-}
-
-@layer utilities {
-  /* Override low-contrast gray text to a darker shade for accessibility */
-  .text-gray-500 {
-    color: #4b5563 !important; /* Tailwind gray-600 */
-  }
-  .text-gray-400 {
-    color: #4b5563 !important;
-  }
-  .text-gray-300 {
-    color: #6b7280 !important;
-  }
-  .text-gray-200 {
-    color: #6b7280 !important;
-  }
-  .text-gray-100 {
-    color: #9ca3af !important;
-  }
-
-  .animate-fadeIn {
-    animation: fadeIn 0.3s ease-in-out;
-  }
-  
-  /* 文本截断工具类 */
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
 }
 
 /* 博客文章内容特定样式 */
@@ -200,68 +178,7 @@ body {
   @apply text-gray-300;
 }
 
-/* 日历组件暗色模式支持 */
-.dark .react-datepicker {
-  background-color: #1f2937;
-  border-color: #374151;
-  color: #f9fafb;
-}
-
-.dark .react-datepicker__header {
-  background-color: #1f2937;
-  border-bottom-color: #374151;
-}
-
-.dark .react-datepicker__current-month {
-  color: #f9fafb;
-}
-
-.dark .react-datepicker__day-name {
-  color: #9ca3af;
-}
-
-.dark .react-datepicker__day {
-  color: #e5e7eb;
-}
-
-.dark .react-datepicker__day:hover {
-  background-color: #374151;
-  color: #f9fafb;
-}
-
-.dark .react-datepicker__day--today {
-  background-color: #451a03;
-  color: #fbbf24;
-  border-color: #f59e0b;
-}
-
-.dark .react-datepicker__day--today:hover {
-  background-color: #78350f;
-  color: #fcd34d;
-}
-
-.dark .react-datepicker__day--outside-month {
-  color: #6b7280;
-}
-
-.dark .react-datepicker__day--outside-month:hover {
-  background-color: #2d3748;
-  color: #9ca3af;
-}
-
-.dark .react-datepicker__day--disabled {
-  color: #4b5563;
-}
-
-.dark .react-datepicker__day--keyboard-selected {
-  background-color: #312e81;
-  color: #c7d2fe;
-  border-color: #6366f1;
-}
-
-.dark .react-datepicker__day--weekend {
-  color: #f87171;
-}
+/* 日历组件暗色模式支持 - 详细样式见 DateTimeInput.css */
 
 /* 控制 Chevron 图标仅在触屏设备显示的样式 */
 .chevron-mobile {

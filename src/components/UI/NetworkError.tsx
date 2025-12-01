@@ -12,19 +12,19 @@ export function NetworkError({
   message = "Network connection issue detected. Please check your internet connection and try again.",
 }: NetworkErrorProps) {
   return (
-    <div className="p-6 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 animate-fade-in">
+    <div className="p-6 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-amber-800 dark:text-amber-300 animate-fade-in">
       <div className="flex flex-col sm:flex-row items-center gap-4">
-        <div className="bg-amber-100 p-3 rounded-full">
-          <WifiOff size={24} className="text-amber-600" />
+        <div className="bg-amber-100 dark:bg-amber-800/50 p-3 rounded-full">
+          <WifiOff size={24} className="text-amber-600 dark:text-amber-400" />
         </div>
         <div className="flex-1 text-center sm:text-left">
           <h3 className="font-medium text-lg mb-1">Connection Error</h3>
-          <p className="text-amber-700">{message}</p>
+          <p className="text-amber-700 dark:text-amber-400">{message}</p>
         </div>
         {onRetry && (
           <button
             onClick={onRetry}
-            className="mt-4 sm:mt-0 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg transition-colors duration-200 inline-flex items-center"
+            className="mt-4 sm:mt-0 px-4 py-2 bg-amber-600 dark:bg-amber-700 hover:bg-amber-700 dark:hover:bg-amber-600 text-white font-medium rounded-lg transition-colors duration-200 inline-flex items-center"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

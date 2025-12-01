@@ -12,6 +12,9 @@ import { FontOptimizer, FontDisplayCSS } from "@/components/Performance/FontOpti
 // 添加新的简化监控系统
 import { SimpleMonitoringSetup } from "@/components/Monitoring/SimpleMonitoringSetup";
 
+// 主题支持
+import { ThemeProvider } from "@/components/Theme/ThemeProvider";
+
 import { getDefaultSiteMetadata } from "@/utils/seo/metadata";
 import { getGSCVerificationMeta } from "@/config/seo-monitoring";
 
@@ -34,41 +37,43 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="flex flex-col min-h-screen" suppressHydrationWarning={true}>
-        {/* 只添加跳过导航链接，不修改main标签结构 */}
-        <a
-          href="#content-start"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 bg-purple-600 text-white px-4 py-2 rounded-md focus:outline-none"
-        >
-          Skip to content
-        </a>
+        <ThemeProvider>
+          {/* 只添加跳过导航链接，不修改main标签结构 */}
+          <a
+            href="#content-start"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 bg-purple-600 text-white px-4 py-2 rounded-md focus:outline-none"
+          >
+            Skip to content
+          </a>
 
-        {/* 保持原始结构不变，只在children前添加锚点 */}
-        <main className="flex-grow">
-          <div
-            id="content-start"
-            className="outline-none"
-            tabIndex={-1}
-            aria-hidden="true"
-          ></div>
-          {children}
-        </main>
-        <Footer />
-        <AnalyticsWrapper />
-        {/* Google AdSense 优化加载 */}
-        <AdSense />
-        {/* 性能优化组件 */}
-        <ResourcePreloader />
-        <SmartPrefetcher />
-        <FontOptimizer />
-        <FontDisplayCSS />
+          {/* 保持原始结构不变，只在children前添加锚点 */}
+          <main className="flex-grow">
+            <div
+              id="content-start"
+              className="outline-none"
+              tabIndex={-1}
+              aria-hidden="true"
+            ></div>
+            {children}
+          </main>
+          <Footer />
+          <AnalyticsWrapper />
+          {/* Google AdSense 优化加载 */}
+          <AdSense />
+          {/* 性能优化组件 */}
+          <ResourcePreloader />
+          <SmartPrefetcher />
+          <FontOptimizer />
+          <FontDisplayCSS />
 
-        {/* 新增：简化版监控系统 */}
-        <SimpleMonitoringSetup />
+          {/* 新增：简化版监控系统 */}
+          <SimpleMonitoringSetup />
 
-        {/* 返回顶部按钮 */}
-        <BackToTop />
+          {/* 返回顶部按钮 */}
+          <BackToTop />
+        </ThemeProvider>
       </body>
     </html>
   );

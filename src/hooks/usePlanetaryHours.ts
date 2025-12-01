@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useMemo } from "react";
+import { useState, useCallback, useRef, useMemo, useEffect } from "react";
 import {
   planetaryHoursCalculator,
   PlanetaryHoursCalculationResult,
@@ -59,13 +59,17 @@ export function usePlanetaryHours(
   );
 
   const lastParamsRef = useRef<string | null>(null);
+  const initialDataProcessedRef = useRef(false);
   const { dedupeRequest: networkDedupe } = useNetworkOptimization();
 
-  // 若提供 initialData，提前设定 lastParamsRef，避免首次多余的重新计算导致与服务器不一致
-  if (initialData && !lastParamsRef.current) {
-    const initialKey = `${initialData.latitude.toFixed(6)}_${initialData.longitude.toFixed(6)}_${initialData.requestedDate}_${initialData.timezone}`;
-    lastParamsRef.current = initialKey;
-  }
+  // 若提供 initialData，在 useEffect 中设定 lastParamsRef，避免在渲染期间修改 ref
+  useEffect(() => {
+    if (initialData && !initialDataProcessedRef.current) {
+      const initialKey = `${initialData.latitude.toFixed(6)}_${initialData.longitude.toFixed(6)}_${initialData.requestedDate}_${initialData.timezone}`;
+      lastParamsRef.current = initialKey;
+      initialDataProcessedRef.current = true;
+    }
+  }, [initialData]);
 
   // 使用新的 Hook 获取实时当前行星时
   const currentHour = useCurrentLivePlanetaryHour({

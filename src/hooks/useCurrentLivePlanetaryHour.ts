@@ -27,9 +27,19 @@ interface UseCurrentLivePlanetaryHourProps {
   enablePreciseSync?: boolean;
 }
 
-// 前一天数据缓存
+// 前一天数据缓存（带大小限制）
+const MAX_CACHE_SIZE = 20;
 const yesterdayCache = new Map<string, PlanetaryHoursCalculationResult>();
 const pendingRequests = new Map<string, Promise<PlanetaryHoursCalculationResult | null>>();
+
+// 缓存清理函数
+function cleanupOldCache() {
+  if (yesterdayCache.size > MAX_CACHE_SIZE) {
+    // 删除最早添加的条目（Map 保持插入顺序）
+    const keysToDelete = Array.from(yesterdayCache.keys()).slice(0, yesterdayCache.size - MAX_CACHE_SIZE);
+    keysToDelete.forEach(key => yesterdayCache.delete(key));
+  }
+}
 
 /**
  * Hook to manage and update the current live planetary hour.
@@ -135,6 +145,7 @@ export function useCurrentLivePlanetaryHour({
                 yesterdayResult = await requestPromise;
                 if (yesterdayResult) {
                   yesterdayCache.set(cacheKey, yesterdayResult);
+                  cleanupOldCache(); // 检查并清理超出限制的缓存
                   // 设置缓存过期时间（24小时后清理）
                   setTimeout(() => {
                     yesterdayCache.delete(cacheKey);

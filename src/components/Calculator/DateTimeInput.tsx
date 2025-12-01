@@ -182,12 +182,12 @@ export function DateTimeInput({
           Date
         </label>
 
-        {/* 快捷选择按钮 - 优化性能 */}
-        <div className="flex gap-1.5">
+        {/* 快捷选择按钮 - 优化性能和响应式 */}
+        <div className="flex gap-1 sm:gap-1.5 flex-shrink-0">
           {[
-            { days: 0, label: 'Today', type: 'today' },
-            { days: -1, label: 'Yesterday', type: 'yesterday' },
-            { days: 1, label: 'Tomorrow', type: 'tomorrow' }
+            { days: 0, label: 'Today', shortLabel: 'Tod', type: 'today' },
+            { days: -1, label: 'Yesterday', shortLabel: 'Yes', type: 'yesterday' },
+            { days: 1, label: 'Tomorrow', shortLabel: 'Tom', type: 'tomorrow' }
           ].map((dateButton) => {
             const isSelected = getSelectedDateType() === dateButton.type;
             const isToday = dateButton.type === 'today';
@@ -197,7 +197,7 @@ export function DateTimeInput({
                 key={dateButton.type}
                 type="button"
                 onClick={() => handleQuickSelect(dateButton.days)}
-                className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all duration-200 ease-in-out border hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500/30 transform ${isSelected
+                className={`px-1.5 sm:px-2.5 py-1 text-[10px] sm:text-xs font-medium rounded-md transition-all duration-200 ease-in-out border hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500/30 transform whitespace-nowrap ${isSelected
                   ? 'text-white bg-purple-600 dark:bg-purple-500 border-purple-600 dark:border-purple-500 shadow-md ring-2 ring-purple-400 dark:ring-purple-300'
                   : isToday
                     ? 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 border-purple-200 dark:border-purple-700 hover:scale-105 active:scale-95'
@@ -206,7 +206,9 @@ export function DateTimeInput({
                 aria-label={`Select ${dateButton.label.toLowerCase()}`}
                 aria-pressed={isSelected}
               >
-                {dateButton.label}
+                {/* 在<640px屏幕显示缩写，>=640px显示完整文本 */}
+                <span className="inline sm:hidden">{dateButton.shortLabel}</span>
+                <span className="hidden sm:inline">{dateButton.label}</span>
               </button>
             );
           })}

@@ -39,8 +39,8 @@ const WeekNavigationButton = React.memo(React.forwardRef<HTMLButtonElement, Week
         "hover:scale-105 transform origin-center active:scale-95",
         "focus:outline-none focus:ring-2 focus:ring-purple-500/30",
         isActive
-          ? "bg-purple-50 hover:bg-purple-100 shadow-sm"
-          : "hover:bg-gray-50 hover:shadow-sm active:bg-gray-100"
+          ? "bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 shadow-sm"
+          : "hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:shadow-sm active:bg-gray-100 dark:active:bg-gray-700"
       ];
       return classes.join(" ");
     }, [isActive]);
@@ -48,7 +48,7 @@ const WeekNavigationButton = React.memo(React.forwardRef<HTMLButtonElement, Week
     const textClassName = useMemo(() => {
       const classes = [
         "text-sm font-medium",
-        isActive ? "text-purple-700" : "text-gray-600"
+        isActive ? "text-purple-700 dark:text-purple-400" : "text-gray-600 dark:text-gray-300"
       ];
       return classes.join(" ");
     }, [isActive]);
@@ -56,7 +56,7 @@ const WeekNavigationButton = React.memo(React.forwardRef<HTMLButtonElement, Week
     const dateClassName = useMemo(() => {
       const classes = [
         "text-xs",
-        isActive ? "text-purple-600" : "text-gray-500"
+        isActive ? "text-purple-600 dark:text-purple-400" : "text-gray-500 dark:text-gray-400"
       ];
       return classes.join(" ");
     }, [isActive]);
@@ -70,7 +70,7 @@ const WeekNavigationButton = React.memo(React.forwardRef<HTMLButtonElement, Week
     const iconClassName = useMemo(() => {
       const classes = [
         "text-2xl",
-        isActive ? "text-purple-500" : planetColorClass
+        isActive ? "text-purple-500 dark:text-purple-400" : planetColorClass
       ];
       return classes.join(" ");
     }, [isActive, planetColorClass]);
@@ -147,7 +147,8 @@ export function WeekNavigation({ onDaySelect }: WeekNavigationProps) {
 
   // 每当选中日期变化，在移动端将其居中
   useEffect(() => {
-    if (window.innerWidth < 768) {
+    // 安全检查：确保在客户端环境
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
       requestAnimationFrame(() => centerActiveButton());
     }
   }, [selectedDate]);
@@ -162,8 +163,8 @@ export function WeekNavigation({ onDaySelect }: WeekNavigationProps) {
         setSelectedDate(date);
         onDaySelect(date);
 
-        // 移动端居中逻辑
-        if (window.innerWidth < 768) {
+        // 移动端居中逻辑（安全检查：确保在客户端环境）
+        if (typeof window !== 'undefined' && window.innerWidth < 768) {
           requestAnimationFrame(() => centerActiveButton());
         }
 
@@ -181,14 +182,13 @@ export function WeekNavigation({ onDaySelect }: WeekNavigationProps) {
   }, [setSelectedDate, onDaySelect]);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden relative">
-      {/* 左右渐变遮罩，仅移动端显示 */}
-      <div className="hidden md:block" />
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden relative">
+      {/* 左右渐变遮罩，仅移动端显示 - 使用更窄的宽度避免遮挡首尾内容 */}
       <div className="block md:hidden pointer-events-none">
-        {/* 左遮罩 */}
-        <div className="absolute left-0 top-0 h-full w-6 z-10 bg-gradient-to-r from-white via-white/80 to-transparent" />
-        {/* 右遮罩 */}
-        <div className="absolute right-0 top-0 h-full w-6 z-10 bg-gradient-to-l from-white via-white/80 to-transparent" />
+        {/* 左遮罩 - 减小宽度并降低不透明度 */}
+        <div className="absolute left-0 top-0 h-full w-3 z-10 bg-gradient-to-r from-white/90 dark:from-gray-800/90 to-transparent" />
+        {/* 右遮罩 - 减小宽度并降低不透明度 */}
+        <div className="absolute right-0 top-0 h-full w-3 z-10 bg-gradient-to-l from-white/90 dark:from-gray-800/90 to-transparent" />
       </div>
       <div
         ref={scrollContainerRef}
@@ -200,7 +200,7 @@ export function WeekNavigation({ onDaySelect }: WeekNavigationProps) {
         }}
       >
         {/* 移动端flex可滚动，大屏grid等分 */}
-        <div className="flex md:grid md:grid-cols-7 divide-x divide-gray-100 min-w-max md:min-w-0">
+        <div className="flex md:grid md:grid-cols-7 divide-x divide-gray-100 dark:divide-gray-700 min-w-max md:min-w-0">
           {weekDays.map((day, index) => {
             const isActive = day.active;
 
