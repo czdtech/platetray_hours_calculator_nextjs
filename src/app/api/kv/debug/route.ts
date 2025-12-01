@@ -3,6 +3,7 @@ import { kv } from '@vercel/kv'
 import { formatInTimeZone } from 'date-fns-tz'
 import { getCurrentUTCDate } from '@/utils/time'
 import { createLogger } from '@/utils/unified-logger'
+import { assertBearerToken, UnauthorizedError, jsonUnauthorizedResponse } from '@/utils/server/auth'
 
 const logger = createLogger('KVDebugAPI')
 
@@ -13,7 +14,17 @@ export const dynamic = 'force-dynamic'
  * KV存储调试API
  * 用于检查当前存储的预计算数据
  */
-export async function GET() {
+export async function GET(request: Request) {
+  const tokenEnv = process.env.KV_DEBUG_TOKEN ? 'KV_DEBUG_TOKEN' : 'CRON_SECRET'
+  try {
+    assertBearerToken(request, tokenEnv)
+  } catch (error) {
+    if (error instanceof UnauthorizedError) {
+      return jsonUnauthorizedResponse('未授权访问')
+    }
+    throw error
+  }
+
   try {
     const nowUTC = getCurrentUTCDate()
     const nyTimezone = 'America/New_York'

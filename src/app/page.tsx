@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { getSoftwareApplicationSchema } from "@/utils/seo/jsonld";
 import CalculatorServer from "./CalculatorServer";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
 
-// 🔧 关键修复：设置页面级别的revalidate时间
-export const revalidate = 900; // 15分钟重新验证
+// 页面完全动态渲染，配合 CalculatorServer 的实时 TTL 策略
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Planetary Hours Calculator - Find Your Perfect Timing",
@@ -69,24 +70,24 @@ export const metadata: Metadata = {
   verification: {
     google: "your-google-verification-code",
   },
-  other: {
-    "application-ld+json": JSON.stringify(getSoftwareApplicationSchema({
-      name: "Planetary Hours Calculator",
-      description: "Calculate planetary hours for any location with our advanced calculator. Discover optimal timing based on ancient wisdom. Free astronomical tool.",
-      url: SITE_URL,
-      applicationCategory: "UtilityApplication",
-      featureList: [
-        "Global location support with automatic timezone detection",
-        "Accurate astronomical calculations for sunrise/sunset",
-        "Real-time planetary hours display",
-        "Interactive date and location selection",
-        "Mobile-responsive design",
-        "Free to use with no registration required"
-      ],
-      publisherName: "Planetary Hours Calculator"
-    })),
-  },
 };
+
+const softwareAppSchema = getSoftwareApplicationSchema({
+  name: "Planetary Hours Calculator",
+  description:
+    "Calculate planetary hours for any location with our advanced calculator. Discover optimal timing based on ancient wisdom. Free astronomical tool.",
+  url: SITE_URL,
+  applicationCategory: "UtilityApplication",
+  featureList: [
+    "Global location support with automatic timezone detection",
+    "Accurate astronomical calculations for sunrise/sunset",
+    "Real-time planetary hours display",
+    "Interactive date and location selection",
+    "Mobile-responsive design",
+    "Free to use with no registration required",
+  ],
+  publisherName: "Planetary Hours Calculator",
+});
 
 /**
  * 主页面组件 - 实现动态缓存策略
@@ -102,5 +103,16 @@ export const metadata: Metadata = {
  * - 错误情况：15分钟后备缓存
  */
 export default function HomePage() {
-  return <CalculatorServer />;
+  return (
+    <>
+      <Script
+        id="software-ld-json"
+        type="application/ld+json"
+        strategy="afterInteractive"
+      >
+        {JSON.stringify(softwareAppSchema)}
+      </Script>
+      <CalculatorServer />
+    </>
+  );
 }

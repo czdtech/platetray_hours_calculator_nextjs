@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { createLogger } from '@/utils/unified-logger'
+import { assertBearerToken, UnauthorizedError, jsonUnauthorizedResponse } from '@/utils/server/auth'
 
 const logger = createLogger('RevalidateAPI')
 
@@ -13,23 +14,18 @@ export const dynamic = 'force-dynamic'
  */
 export async function POST(request: NextRequest) {
   try {
-    // 验证授权token
-    const authHeader = request.headers.get('authorization')
-    const token = authHeader?.replace('Bearer ', '')
-    
-    // 简单token验证（生产环境应使用更安全的方式）
-    if (!token || !['daily-precompute-token', process.env.REVALIDATE_TOKEN].includes(token)) {
-      logger.warn('缓存重新验证请求授权失败', { 
-        hasToken: !!token,
-        userAgent: request.headers.get('user-agent')
+    assertBearerToken(request, 'REVALIDATE_TOKEN')
+  } catch (error) {
+    if (error instanceof UnauthorizedError) {
+      logger.warn('缓存重新验证请求授权失败', {
+        userAgent: request.headers.get('user-agent'),
       })
-      
-      return NextResponse.json(
-        { error: '未授权访问' },
-        { status: 401 }
-      )
+      return jsonUnauthorizedResponse('未授权访问')
     }
+    throw error
+  }
 
+  try {
     const body = await request.json()
     const { paths } = body
 
@@ -73,7 +69,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logger.error('缓存重新验证API执行失败', error instanceof Error ? error : new Error(String(error)))
-    
+
     return NextResponse.json(
       {
         success: false,

@@ -15,7 +15,6 @@ import { CurrentHourSkeleton } from "@/components/Skeleton/CurrentHourSkeleton";
 import { Section } from "@/components/semantic/Section";
 import { timeZoneService } from "@/services/TimeZoneService";
 import { formatInTimeZone as formatInTimeZoneDirect, fromZonedTime } from "date-fns-tz";
-import { subDays } from "date-fns";
 import { LayoutStabilizer } from "@/components/Performance/LayoutStabilizer";
 import { createLogger } from '@/utils/unified-logger';
 import { ServerCurrentHourPayload } from '@/utils/planetaryHourHelpers';
@@ -239,9 +238,6 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
   const coordinatesKey = `${coordinates.latitude}_${coordinates.longitude}_${coordinates.source}`;
   const selectedDateKey = formatInTimeZoneDirect(selectedDate, timezone, "yyyy-MM-dd");
 
-  // 使用服务端传递的时间，确保 SSR/CSR 一致性
-  const [now] = useState<Date>(() => serverTime ? new Date(serverTime) : new Date());
-
   useEffect(() => {
     let isCancelled = false;
 
@@ -340,14 +336,14 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
   useEffect(() => {
     if (currentHour) {
       const sunrise = planetaryHoursRaw?.sunriseLocal;
-      const isBeforeSunrise = sunrise ? now < sunrise : false;
+      const isBeforeSunrise = sunrise ? currentTime < sunrise : false;
       if (isBeforeSunrise) {
         setActiveTab("day");
       } else {
         setActiveTab(currentHour.type === "night" ? "night" : "day");
       }
     }
-  }, [currentHour, planetaryHoursRaw?.sunriseLocal, now]);
+  }, [currentHour, planetaryHoursRaw?.sunriseLocal, currentTime]);
 
   // 延迟加载FAQ部分 - 避免布局偏移，直接显示
   useEffect(() => {
@@ -493,9 +489,9 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
       sunriseLocal,
       isSameDate,
       selectedDayRuler,
-      beforeSunrise: sunriseLocal ? now < sunriseLocal : false,
+      beforeSunrise: sunriseLocal ? currentTime < sunriseLocal : false,
     };
-  }, [planetaryHoursRaw, selectedDate, timezone, now]);
+  }, [planetaryHoursRaw, selectedDate, timezone, currentTime]);
 
   return (
     <>
@@ -594,9 +590,9 @@ function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, tt
                       </svg>
                       <span suppressHydrationWarning={true}>
                         {timezone} (
-                        {timeZoneService.getTimeZoneAbbreviation(now, timezone)}
+                        {timeZoneService.getTimeZoneAbbreviation(currentTime, timezone)}
                         ,{" "}
-                        {timeZoneService.getUTCOffset(now, timezone)}
+                        {timeZoneService.getUTCOffset(currentTime, timezone)}
                         )
                       </span>
                     </div>
