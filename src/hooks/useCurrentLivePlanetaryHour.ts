@@ -88,7 +88,7 @@ export function useCurrentLivePlanetaryHour({
         return;
       }
 
-      const { timezone, sunriseLocal } =
+      const { timezone, sunriseLocal, nextSunriseLocal } =
         planetaryHoursRaw as PlanetaryHoursCalculationResult;
 
       // 创建计算标识符，避免重复计算

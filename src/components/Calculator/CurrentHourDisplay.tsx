@@ -1,6 +1,6 @@
 "use client";
 
-import { FormattedPlanetaryHour } from "@/utils/planetaryHourFormatters";
+import { FormattedPlanetaryHour, formatHoursToList } from "@/utils/planetaryHourFormatters";
 import { PlanetaryHoursCalculationResult } from "@/services/PlanetaryHoursCalculator";
 import { useDateContext } from "@/contexts/DateContext";
 import { timeZoneService } from "@/services/TimeZoneService";
@@ -37,7 +37,7 @@ export function CurrentHourDisplay({
   beforeSunrise = false,
   initialHourPayload = null,
   serverTime,
-  _planetaryHoursRaw = null,
+  planetaryHoursRaw = null,
 }: CurrentHourDisplayProps) {
   // 使用DateContext获取时区及选中日期
   const { timezone, selectedDate, formatDate } = useDateContext();
@@ -64,6 +64,21 @@ export function CurrentHourDisplay({
                       timeZoneService.formatInTimeZone(now, timezone, "yyyy-MM-dd");
 
   let currentHour = fallbackCurrentHour;
+
+  // 如果钩子尚未提供当前小时，但有完整原始数据，则从原始数据中计算一次当前行星时
+  if (!currentHour && planetaryHoursRaw?.planetaryHours && planetaryHoursRaw.timezone) {
+    const allFormattedHours = formatHoursToList(
+      planetaryHoursRaw.planetaryHours,
+      planetaryHoursRaw.timezone,
+      timeFormat,
+      undefined,
+      true,
+    );
+    const active = allFormattedHours.find(hour => hour.current) || null;
+    if (active) {
+      currentHour = active;
+    }
+  }
 
 
   // 如果还是没有当前小时且有服务器提供的初始化数据，使用初始化数据
