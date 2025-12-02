@@ -1,6 +1,6 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { ChevronRight } from "lucide-react";
 import { FormattedPlanetaryHour } from "@/utils/planetaryHourFormatters";
 // 导入全局行星颜色常量
@@ -18,12 +18,8 @@ interface HourItemProps {
 }
 
 function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
-  const handleClick = () => {
-    const isCoarse = window.matchMedia("(pointer: coarse)").matches;
-    if (isCoarse) {
-      onToggle(index);
-    }
-  };
+  // 为按钮和可折叠详情区域建立稳定的关联 id
+  const detailsId = useMemo(() => `hour-details-${index}`, [index]);
 
   // 检查行星名称是否有效
   const isValidPlanet = hour.planet && hour.planet in PLANET_COLOR_CLASSES;
@@ -52,14 +48,15 @@ function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
             : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm hover:-translate-y-0.5 bg-white dark:bg-gray-800"
           }
         `}
-        onClick={handleClick}
-        tabIndex={0}
+        onClick={() => onToggle(index)}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
-            handleClick();
+            e.preventDefault();
+            onToggle(index);
           }
         }}
         aria-expanded={isOpen}
+        aria-controls={detailsId}
       >
         <span className="w-8 text-sm text-gray-500 dark:text-gray-400 font-medium">
           {String(index + 1).padStart(2, "0")}
@@ -101,7 +98,10 @@ function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
       </div>
 
       {isOpen && (
-        <div className="md:hidden mt-2 p-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-xs leading-relaxed">
+        <div
+          id={detailsId}
+          className="mt-2 p-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-xs leading-relaxed"
+        >
           <div className="font-semibold text-green-700 dark:text-green-400 mb-1">Good For</div>
           <div className="text-gray-700 dark:text-gray-300">{hour.goodFor}</div>
           <hr className="my-2 border-gray-100 dark:border-gray-600" />

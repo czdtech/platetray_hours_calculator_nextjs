@@ -698,6 +698,7 @@ function LocationInputComponent({
         />
         {showPredictions && predictions.length > 0 && (
           <ul
+            id="predictions-list"
             className="absolute z-10 w-full left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg mt-1 max-h-60 overflow-y-auto"
             role="listbox"
             aria-activedescendant={

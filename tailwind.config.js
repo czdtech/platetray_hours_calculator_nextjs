@@ -1,4 +1,5 @@
 import typography from '@tailwindcss/typography';
+import { PLANET_COLOR_HEX } from './src/constants/planetColors.shared.js';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -14,13 +15,14 @@ export default {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
-        'planet-sun': '#B45309',   // amber-800
-        'planet-moon': '#6366F1',  // indigo-500
-        'planet-mercury': '#0EA5E9', // sky-500
-        'planet-venus': '#BE185D', // pink-800
-        'planet-mars': '#DC2626',  // red-600
-        'planet-jupiter': '#A855F7', // purple-600
-        'planet-saturn': '#6B7280', // gray-500
+        // 行星主题色：统一从共享配置中读取，确保与 TS 常量保持一致
+        'planet-sun': PLANET_COLOR_HEX.Sun,       // amber-800
+        'planet-moon': PLANET_COLOR_HEX.Moon,     // indigo-500
+        'planet-mercury': PLANET_COLOR_HEX.Mercury, // sky-500
+        'planet-venus': PLANET_COLOR_HEX.Venus,   // pink-800
+        'planet-mars': PLANET_COLOR_HEX.Mars,     // red-600
+        'planet-jupiter': PLANET_COLOR_HEX.Jupiter, // purple-600
+        'planet-saturn': PLANET_COLOR_HEX.Saturn, // gray-500
       },
       typography: (theme) => ({
         DEFAULT: {
