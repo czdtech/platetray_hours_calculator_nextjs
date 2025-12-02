@@ -23,25 +23,6 @@ const DEFAULT_COORDINATES = {
   cityKey: 'ny'
 }
 
-// 城市坐标映射
-const CITY_COORDS = {
-  ny: { latitude: 40.7128, longitude: -74.006, timezone: 'America/New_York' },
-  sydney: { latitude: -33.8688, longitude: 151.2093, timezone: 'Australia/Sydney' },
-  london: { latitude: 51.5074, longitude: -0.1278, timezone: 'Europe/London' },
-  dubai: { latitude: 25.2048, longitude: 55.2708, timezone: 'Asia/Dubai' }
-}
-
-// 根据坐标识别城市
-function identifyCity(lat: number, lng: number): string {
-  const tolerance = 0.1
-  for (const [key, coords] of Object.entries(CITY_COORDS)) {
-    if (Math.abs(coords.latitude - lat) < tolerance && Math.abs(coords.longitude - lng) < tolerance) {
-      return key
-    }
-  }
-  return 'ny' // 默认返回纽约
-}
-
 const ISO_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/
 
 function reviveDates<T>(data: T): T {

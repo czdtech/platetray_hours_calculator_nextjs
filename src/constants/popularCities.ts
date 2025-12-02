@@ -8,8 +8,19 @@ export interface PopularCity {
   country: string;
 }
 
-// Most popular cities worldwide (excluding New York which is the default)
+// Default city (New York)
+export const DEFAULT_CITY: PopularCity = {
+  name: "New York",
+  displayName: "New York, NY",
+  latitude: 40.7128,
+  longitude: -74.006,
+  timezone: "America/New_York",
+  country: "United States"
+};
+
+// Popular cities quick shortcuts (include New York as the first option)
 export const POPULAR_CITIES: PopularCity[] = [
+  DEFAULT_CITY,
   {
     name: "London",
     displayName: "London, UK",
@@ -35,13 +46,3 @@ export const POPULAR_CITIES: PopularCity[] = [
     country: "Australia"
   }
 ];
-
-// Default city (New York)
-export const DEFAULT_CITY: PopularCity = {
-  name: "New York",
-  displayName: "New York, NY",
-  latitude: 40.7128,
-  longitude: -74.006,
-  timezone: "America/New_York",
-  country: "United States"
-};

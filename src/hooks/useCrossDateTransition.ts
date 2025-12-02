@@ -364,6 +364,7 @@ export function useCrossDateTransition(config: CrossDateTransitionConfig): Cross
   }, []);
 
   // 定期检查预取触发条件
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!enabled) return;
 
@@ -379,8 +380,11 @@ export function useCrossDateTransition(config: CrossDateTransitionConfig): Cross
 
     return () => {
       clearInterval(interval);
-      if (prefetchTimeoutRef.current) {
-        clearTimeout(prefetchTimeoutRef.current);
+      // 将 ref 的当前值复制到局部变量，避免在 cleanup 执行时引用已变化的 ref
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      const timeoutId = prefetchTimeoutRef.current;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
       }
     };
   }, [enabled, checkPrefetchTrigger, performCacheCleanup]);

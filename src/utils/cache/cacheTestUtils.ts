@@ -31,7 +31,7 @@ export function generateTestScenarios(planetaryData: PlanetaryHoursCalculationRe
   const scenarios: TTLTestScenario[] = [];
 
   // 为每个行星时生成测试场景
-  planetaryHours.forEach((hour, index) => {
+  planetaryHours.forEach((hour) => {
     const startTime = hour.startTime.getTime();
     const endTime = hour.endTime.getTime();
     const duration = endTime - startTime;

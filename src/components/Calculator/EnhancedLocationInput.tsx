@@ -164,9 +164,15 @@ function EnhancedLocationInputComponent({
     logger.debug('🗺️ 位置输入组件挂载')
     logger.debug(`📍 默认位置: ${defaultLocation}`)
 
-    // 如果是默认位置（New York, NY），跳过会话令牌获取
-    if (defaultLocation === 'New York, NY') {
-      logger.debug('🏠 使用默认位置，跳过会话令牌获取')
+    // 如果是默认位置（New York, NY），预填充坐标并跳过会话令牌获取
+    if (defaultLocation === DEFAULT_CITY.displayName) {
+      logger.debug('🏠 使用默认位置，预填充默认城市坐标并跳过会话令牌获取')
+      setCurrentCoords({
+        latitude: DEFAULT_CITY.latitude,
+        longitude: DEFAULT_CITY.longitude,
+        source: 'preset',
+        address: DEFAULT_CITY.displayName,
+      })
       return
     }
 

@@ -249,15 +249,6 @@ export function useUnifiedPlanetaryTime(config: UnifiedPlanetaryTimeConfig): Uni
     logger.info('清理预加载缓存');
   }, []);
 
-  /**
-   * 手动触发同步
-   */
-  const manualSync = useCallback(() => {
-    logger.info('手动触发时间同步');
-    const newState = calculateCurrentState();
-    setState(prev => ({ ...prev, ...newState }));
-  }, [calculateCurrentState]);
-
   // 响应定时器状态变化
   useEffect(() => {
     const newState = calculateCurrentState();

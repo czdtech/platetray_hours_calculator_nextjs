@@ -59,7 +59,7 @@ export function useCurrentLivePlanetaryHour({
   currentCoordinatesForYesterdayCalc,
   dateForPlanetaryHoursRaw, // 传入用于计算 planetaryHoursRaw 的原始Date对象
   timeFormat,
-  enablePreciseSync = false, // 默认禁用精确同步，使用简单的60秒轮询
+  enablePreciseSync: _enablePreciseSync = false, // 保留参数以兼容第二阶段配置，当前简化版本未使用
 }: UseCurrentLivePlanetaryHourProps): FormattedPlanetaryHour | null {
   const [currentLiveHour, setCurrentLiveHour] =
     useState<FormattedPlanetaryHour | null>(null);
@@ -88,7 +88,7 @@ export function useCurrentLivePlanetaryHour({
         return;
       }
 
-      const { timezone, sunriseLocal, nextSunriseLocal } =
+      const { timezone, sunriseLocal } =
         planetaryHoursRaw as PlanetaryHoursCalculationResult;
 
       // 创建计算标识符，避免重复计算
@@ -247,6 +247,7 @@ export function useCurrentLivePlanetaryHour({
     planetaryHoursRaw,
     dateForPlanetaryHoursRaw,
     calculateAndSetCurrentHour,
+    currentLiveHour?.planet,
   ]);
 
   // 🎯 返回最终结果

@@ -87,7 +87,7 @@ const FAQ_DATA = [
       "Because planetary hours divide sunrise-to-sunset into 12 slices, the length of each slice stretches in summer and shrinks in winter. Near the equator they stay close to 60 minutes all year.",
   },
   {
-    question: 'Why is it still "night hours" before today\'s sunrise?',
+    question: "Why is it still night hours before today's sunrise?",
     answer:
       "By tradition the planetary day starts at sunrise. Any time before sunrise belongs to the previous night set, even if the clock shows 3 AM of the new calendar date.",
   },
@@ -102,12 +102,20 @@ interface CalculatorPageOptimizedProps {
   precomputed?: PlanetaryHoursCalculationResult | null;
   initialHour?: ServerCurrentHourPayload | null;
   serverTime?: string; // 服务端时间戳，确保 SSR/CSR 一致性
-  cacheControl?: string; // 缓存控制头信息
-  ttlInfo?: import('@/utils/cache/dynamicTTL').TTLCalculationResult; // TTL计算结果
-  error?: string; // 错误信息
+  cacheControl?: string; // 缓存控制头信息（当前仅透传用于调试）
+  ttlInfo?: import('@/utils/cache/dynamicTTL').TTLCalculationResult; // TTL计算结果（当前仅透传用于调试）
+  error?: string; // 错误信息（当前仅透传用于调试）
 }
 
-function CalculatorCore({ precomputed, initialHour, serverTime, cacheControl, ttlInfo, error }: CalculatorPageOptimizedProps) {
+function CalculatorCore({
+  precomputed,
+  initialHour,
+  serverTime,
+  // 以下参数当前未在 UI 中直接使用，但保留以便未来调试和扩展
+  cacheControl: _cacheControl,
+  ttlInfo: _ttlInfo,
+  error: _error,
+}: CalculatorPageOptimizedProps) {
   const { selectedDate, timezone, setSelectedDate, setTimezone, formatDate, formatDateWithTodayPrefix } =
     useDateContext();
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { notFound } from 'next/navigation';
 
 interface DebugInfo {
@@ -26,7 +26,7 @@ export default function DebugPage() {
   const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const testAPI = async (url: string, label: string) => {
+  const testAPI = async (url: string, _label: string) => {
     try {
       // 智能添加调试参数：如果URL已有参数则用&，否则用?
       const debugParam = url.includes('?') ? '&_debug=' : '?_debug=';
@@ -56,7 +56,7 @@ export default function DebugPage() {
     }
   };
 
-  const getCacheInfo = async () => {
+  const getCacheInfo = useCallback(async () => {
     const info = {
       serviceWorker: !!navigator.serviceWorker,
       cacheStorage: [] as string[]
@@ -72,9 +72,9 @@ export default function DebugPage() {
     }
 
     return info;
-  };
+  }, []);
 
-  const collectDebugInfo = async () => {
+  const collectDebugInfo = useCallback(async () => {
     setIsLoading(true);
     const errors: string[] = [];
 
@@ -111,7 +111,7 @@ export default function DebugPage() {
       window.removeEventListener('error', errorHandler);
       setIsLoading(false);
     }
-  };
+  }, [getCacheInfo]);
 
   const testCitySelection = async () => {
     console.log('🧪 [Debug] 测试城市选择功能');
@@ -163,7 +163,7 @@ export default function DebugPage() {
 
   useEffect(() => {
     collectDebugInfo();
-  }, []);
+  }, [collectDebugInfo]);
 
   if (!debugInfo && isLoading) {
     return (
@@ -314,8 +314,8 @@ export default function DebugPage() {
             <li>首先查看环境信息确认当前环境</li>
             <li>检查API测试结果，确认接口是否正常</li>
             <li>查看缓存信息，了解缓存状态</li>
-            <li>点击"测试城市选择"按钮，观察控制台输出</li>
-            <li>如有问题，尝试"清理所有缓存"后重新测试</li>
+            <li>点击「测试城市选择」按钮，观察控制台输出</li>
+            <li>如有问题，尝试「清理所有缓存」后重新测试</li>
           </ol>
           <p className="mt-2 text-xs text-gray-600">
             💡 提示: 打开浏览器开发者工具的Console标签查看详细日志

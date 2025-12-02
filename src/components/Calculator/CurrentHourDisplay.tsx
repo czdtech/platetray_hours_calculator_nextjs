@@ -65,6 +65,9 @@ export function CurrentHourDisplay({
 
   // 🎯 核心修复：使用与 HoursList 相同的逻辑计算当前行星时
   const calculatedCurrentHour = useMemo(() => {
+    // 使用 now 作为依赖以在当前时间变化时重新计算当前小时高亮
+    // 通过 void now 标记为已使用，避免 ESLint 将其视为多余依赖
+    void now;
     // 只有当是今天且有完整数据时才重新计算
     if (!isTodayPage || !planetaryHoursRaw?.planetaryHours || !planetaryHoursRaw.timezone) {
       return null;
@@ -118,7 +121,6 @@ export function CurrentHourDisplay({
   const shouldShowPreSunriseMessage = !_isSameDate || isPreSunrise;
 
   // 计算所选日期与今天（同一时区）的先后关系
-  const isSelectedDatePast = selectedDateStr < todayStr;
   const isSelectedDateFuture = selectedDateStr > todayStr;
 
   // 仅在非未来日期且行星时数据匹配时显示实时小时。

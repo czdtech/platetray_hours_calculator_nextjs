@@ -9,7 +9,6 @@
  */
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { useCurrentLivePlanetaryHour } from './useCurrentLivePlanetaryHour';
 import { useCrossDateTransition, useMergedCrossDateData } from './useCrossDateTransition';
 import { PlanetaryHoursCalculationResult, PlanetaryHour } from '@/services/PlanetaryHoursCalculator';
 import { createLogger } from '@/utils/unified-logger';
@@ -100,7 +99,7 @@ export function useAdvancedPlanetaryTimeClock(config: AdvancedClockConfig): Adva
 
   // 状态管理
   const [errors, setErrors] = useState<string[]>([]);
-  const [warnings, setWarnings] = useState<string[]>([]);
+  const [warnings, _setWarnings] = useState<string[]>([]);
   const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
 
   // 上次更新时间
@@ -201,14 +200,6 @@ export function useAdvancedPlanetaryTimeClock(config: AdvancedClockConfig): Adva
       return newErrors.slice(-5); // 最多保留5个错误
     });
     logger.error('系统错误', new Error(error));
-  }, []);
-
-  const addWarning = useCallback((warning: string) => {
-    setWarnings(prev => {
-      const newWarnings = [...prev, warning];
-      return newWarnings.slice(-5); // 最多保留5个警告
-    });
-    logger.warn('系统警告', { warning });
   }, []);
 
   // 监控跨日处理错误
