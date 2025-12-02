@@ -68,6 +68,14 @@ export function usePlanetaryHours(
       const initialKey = `${initialData.latitude.toFixed(6)}_${initialData.longitude.toFixed(6)}_${initialData.requestedDate}_${initialData.timezone}`;
       lastParamsRef.current = initialKey;
       initialDataProcessedRef.current = true;
+
+      // 使用预计算数据初始化原始数据和坐标
+      setPlanetaryHoursRaw(initialData);
+      setCurrentCoordinates({
+        latitude: initialData.latitude,
+        longitude: initialData.longitude,
+      });
+      setSelectedDateForCalc(initialData.dateUsedForCalculation);
     }
   }, [initialData]);
 
