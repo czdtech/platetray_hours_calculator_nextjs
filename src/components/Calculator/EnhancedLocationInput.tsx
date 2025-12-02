@@ -587,7 +587,7 @@ function EnhancedLocationInputComponent({
         } else {
           setError(
             locationServiceError ||
-              'Location suggestions unavailable: session not ready.'
+              'Suggestions not ready. Press Enter to search.'
           )
           setPredictions([])
           setShowPredictions(false)

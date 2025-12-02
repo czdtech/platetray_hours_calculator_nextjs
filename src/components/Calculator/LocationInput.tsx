@@ -430,7 +430,7 @@ function LocationInputComponent({
         // This case might be hit if fetchNewSessionToken above failed.
         setError(
           locationServiceError ||
-          "Location suggestions unavailable: session not ready.",
+          "Suggestions not ready. Press Enter to search.",
         );
         setPredictions([]);
         setShowPredictions(false);
