@@ -1,10 +1,10 @@
 "use client";
 
-import { FormattedPlanetaryHour, formatHoursToList } from "@/utils/planetaryHourFormatters";
+import { FormattedPlanetaryHour } from "@/utils/planetaryHourFormatters";
 import { PlanetaryHoursCalculationResult } from "@/services/PlanetaryHoursCalculator";
 import { useDateContext } from "@/contexts/DateContext";
 import { timeZoneService } from "@/services/TimeZoneService";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { getCurrentTime } from '@/utils/time';
 // 导入全局行星颜色常量
 import {
@@ -37,7 +37,7 @@ export function CurrentHourDisplay({
   beforeSunrise = false,
   initialHourPayload = null,
   serverTime,
-  planetaryHoursRaw = null,
+  _planetaryHoursRaw = null,
 }: CurrentHourDisplayProps) {
   // 使用DateContext获取时区及选中日期
   const { timezone, selectedDate, formatDate } = useDateContext();
@@ -63,31 +63,8 @@ export function CurrentHourDisplay({
   const isTodayPage = timeZoneService.formatInTimeZone(selectedDate ?? now, timezone, "yyyy-MM-dd") ===
                       timeZoneService.formatInTimeZone(now, timezone, "yyyy-MM-dd");
 
-  // 🎯 核心修复：使用与 HoursList 相同的逻辑计算当前行星时
-  const calculatedCurrentHour = useMemo(() => {
-    // 使用 now 作为依赖以在当前时间变化时重新计算当前小时高亮
-    // 通过 void now 标记为已使用，避免 ESLint 将其视为多余依赖
-    void now;
-    // 只有当是今天且有完整数据时才重新计算
-    if (!isTodayPage || !planetaryHoursRaw?.planetaryHours || !planetaryHoursRaw.timezone) {
-      return null;
-    }
+  let currentHour = fallbackCurrentHour;
 
-    // 使用与 HoursList 完全相同的逻辑
-    const allFormattedHours = formatHoursToList(
-      planetaryHoursRaw.planetaryHours,
-      planetaryHoursRaw.timezone,
-      timeFormat,
-      undefined, // 不传递 currentHourForHighlighting，让函数自己计算
-      true, // 允许高亮
-    );
-
-    // 找到当前被标记为 current 的行星时
-    return allFormattedHours.find(hour => hour.current) || null;
-  }, [planetaryHoursRaw, timeFormat, isTodayPage, now]); // now 作为依赖确保时间变化时重新计算当前行星时高亮
-
-  // 选择要显示的当前行星时：优先使用重新计算的结果
-  let currentHour = calculatedCurrentHour || fallbackCurrentHour;
 
   // 如果还是没有当前小时且有服务器提供的初始化数据，使用初始化数据
   if (!currentHour && isTodayPage && initialHourPayload?.currentHour) {
