@@ -9,6 +9,8 @@ import {
   FormattedPlanetaryHour,
   formatSingleHour,
 } from "../utils/planetaryHourFormatters";
+import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
+import { addDaysToISODate } from "@/utils/timezoneDates";
 
 // 将 logger 创建移到组件外部，避免每次渲染时重新创建
 const logger = createLogger('UseCurrentLivePlanetaryHour');
@@ -109,15 +111,18 @@ export function useCurrentLivePlanetaryHour({
         logger.debug("🌄 [LiveHour] 当前时间在日出前，尝试计算前一天的夜间小时");
         if (currentCoordinatesForYesterdayCalc) {
           try {
-            const yesterdayDate = new Date(sunriseLocal);
-            yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+            // 注意：不能用 Date#setDate（依赖运行环境本地时区），否则跨时区时会算错“昨天”
+            // 用目标时区的 yyyy-MM-dd 做纯日期运算，再锚定到目标时区中午。
+            const todayStr = formatInTimeZone(sunriseLocal, timezone, "yyyy-MM-dd");
+            const yesterdayStr = addDaysToISODate(todayStr, -1);
+            const yesterdayDate = fromZonedTime(`${yesterdayStr}T12:00:00`, timezone);
             logger.debug(
               "📆 [LiveHour] 前一天日期: ",
               yesterdayDate.toISOString(),
             );
 
             // 创建缓存键
-            const cacheKey = `${yesterdayDate.toDateString()}_${currentCoordinatesForYesterdayCalc.latitude}_${currentCoordinatesForYesterdayCalc.longitude}_${timezone}`;
+            const cacheKey = `${yesterdayStr}_${currentCoordinatesForYesterdayCalc.latitude}_${currentCoordinatesForYesterdayCalc.longitude}_${timezone}`;
 
             let yesterdayResult: PlanetaryHoursCalculationResult | null = null;
 

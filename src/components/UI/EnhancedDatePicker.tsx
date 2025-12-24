@@ -31,8 +31,13 @@ export function EnhancedDatePicker({
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(selectedDate);
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
-  // 使用统一时间源，确保 SSR/CSR 一致性
-  const [now] = useState<Date>(() => getCurrentTime(serverTime));
+  // 使用统一时间源初始化，挂载后切换到实时更新时间（避免缓存/时区切换导致“Today/Tomorrow”错位）
+  const [now, setNow] = useState<Date>(() => getCurrentTime(serverTime));
+  useEffect(() => {
+    setNow(new Date());
+    const interval = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);

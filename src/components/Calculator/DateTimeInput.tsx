@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useId, useState, useCallback } from "react";
+import { useRef, useId, useState, useCallback, useEffect } from "react";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -31,8 +31,13 @@ export function DateTimeInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const inputId = useId();
 
-  // 使用统一时间源，确保 SSR/CSR 一致性
-  const [now] = useState<Date>(() => getCurrentTime(serverTime));
+  // 使用统一时间源初始化，挂载后切换到实时更新时间（避免缓存/时区切换导致“Today/Tomorrow”错位）
+  const [now, setNow] = useState<Date>(() => getCurrentTime(serverTime));
+  useEffect(() => {
+    setNow(new Date());
+    const interval = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Convert UTC date to zoned date for DatePicker
   const zonedDate = utcToZonedTime(selectedDate);

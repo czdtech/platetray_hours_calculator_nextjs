@@ -19,6 +19,7 @@ import { LayoutStabilizer } from "@/components/Performance/LayoutStabilizer";
 import { createLogger } from '@/utils/unified-logger';
 import { ServerCurrentHourPayload } from '@/utils/planetaryHourHelpers';
 import { getCurrentTime } from '@/utils/time';
+import { reanchorSelectedDateOnTimezoneChange } from "@/utils/timezoneDates";
 
 // 将 logger 创建移到组件外部，避免每次渲染时重新创建
 const logger = createLogger('CalculatorPageOptimized');
@@ -147,6 +148,31 @@ function CalculatorCore({
     // 组件卸载时清理定时器
     return () => clearInterval(interval);
   }, []);
+
+  const applyTimezoneUpdate = useCallback((newTimezone: string, reason: string) => {
+    // 统一用同一个基准时间做“今天”判断，避免 SSR/CSR 与缓存导致的错位
+    const baseTime = serverTime ? new Date(serverTime) : new Date();
+
+    const reanchored = reanchorSelectedDateOnTimezoneChange({
+      selectedDateUtc: selectedDate,
+      oldTimezone: timezone,
+      newTimezone,
+      baseTimeUtc: baseTime,
+    });
+
+    logger.info("🧭 [Timezone] 时区切换并重锚日期", {
+      reason,
+      from: timezone,
+      to: newTimezone,
+      selectedDateBefore: selectedDate.toISOString(),
+      selectedDateAfter: reanchored.toISOString(),
+    });
+
+    setSelectedDate(reanchored);
+    setTimezone(newTimezone);
+    setHasInitialCalculated(false);
+    calculationParamsRef.current = "";
+  }, [serverTime, selectedDate, timezone, setSelectedDate, setTimezone]);
 
   const {
     planetaryHoursRaw,
@@ -289,7 +315,7 @@ function CalculatorCore({
 
         if (newTimezone && newTimezone !== timezone) {
           logger.info("🌍 [Timezone] 时区已更新:", newTimezone);
-          setTimezone(newTimezone);
+          applyTimezoneUpdate(newTimezone, "timezone-api");
           return; // 时区更新后会触发下一次useEffect
         }
       }
@@ -537,7 +563,7 @@ function CalculatorCore({
                       defaultLocation={location}
                       onLocationChange={handleLocationChange}
                       onUseCurrentLocation={handleCoordinatesUpdate}
-                      onTimezoneChange={setTimezone}
+                      onTimezoneChange={(tz) => applyTimezoneUpdate(tz, "location-input")}
                       onCitySelect={handleCitySelect}
                       aria-label="Enter location for planetary hours calculation"
                     />
