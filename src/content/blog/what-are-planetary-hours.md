@@ -1,8 +1,13 @@
 ---
 title: "Planetary Hours Explained: A Beginner's Guide to Origins, Principles, and Meanings"
-excerpt: "Discover the origins, core principles of Planetary Hours, the Chaldean Order, and the symbolism of the 7 classical planets. Your essential introduction to this ancient time system."
+excerpt: "What are planetary hours? Discover the origins, core principles of Planetary Hours explained in simple terms — the Chaldean Order, the symbolism of the 7 classical planets, and how this ancient timing system works."
 date: "2025-05-19T17:39:49+08:00"
 author: "Planetary Hours Team"
+keywords:
+  - planetary hours explained
+  - what are planetary hours
+  - planetary hours beginners guide
+  - planetary hours meaning
 ---
 
 # Planetary Hours Explained: A Beginner's Guide to Origins, Principles, and Meanings
