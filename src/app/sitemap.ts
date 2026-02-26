@@ -1,10 +1,10 @@
 import { MetadataRoute } from "next";
 import { siteConfig } from "@/config/seo";
-import { blogPosts } from "@/data/blogPosts"; // 导入实际的博客文章数据
-import staticPageDates from "@/data/staticPageDates.json"; // 导入静态页面日期
-// blogDates.json is implicitly used by blogPosts.ts, so no direct import needed here if blogPosts already processes it.
-// However, if blogPosts only contains slugs and we need to fetch dates separately:
-import blogActualDates from "@/data/blogDates.json"; // Explicitly import for clarity if needed for direct use
+import { blogPosts } from "@/data/blogPosts";
+import { blogPostsEs } from "@/data/blogPosts-es";
+import { blogPostsPt } from "@/data/blogPosts-pt";
+import staticPageDates from "@/data/staticPageDates.json";
+import blogActualDates from "@/data/blogDates.json";
 import { cities } from "@/data/cities";
 import { createLogger } from '@/utils/unified-logger';
 
@@ -66,20 +66,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // 从导入的 blogPosts (它会使用 blogActualDates) 生成 sitemap 条目
+  const translatedSlugs = new Set(blogPostsEs.map((p) => p.slug));
+
   const blogPostEntries: MetadataRoute.Sitemap = blogPosts.map((post) => {
-    // Ensure post.slug exists in blogActualDates or post.date is a valid fallback
     const postDateString = blogActualDates[post.slug as keyof typeof blogActualDates] || post.date;
     const postDate = new Date(postDateString);
 
-    // Add a check for invalid dates
     if (isNaN(postDate.getTime())) {
       logger.warn(`Invalid date for blog post slug "${post.slug}": ${postDateString}. Falling back to site launch date.`);
       return {
         url: `${baseUrl}/blog/${post.slug}`,
-        lastModified: siteLaunchDate, // Fallback for invalid dates
+        lastModified: siteLaunchDate,
         changeFrequency: "monthly" as const,
         priority: 0.7,
+        ...(translatedSlugs.has(post.slug)
+          ? {
+              alternates: {
+                languages: {
+                  en: `${baseUrl}/blog/${post.slug}`,
+                  es: `${baseUrl}/es/blog/${post.slug}`,
+                  pt: `${baseUrl}/pt/blog/${post.slug}`,
+                },
+              },
+            }
+          : {}),
       };
     }
 
@@ -88,6 +98,55 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: postDate,
       changeFrequency: "monthly" as const,
       priority: 0.7,
+      ...(translatedSlugs.has(post.slug)
+        ? {
+            alternates: {
+              languages: {
+                en: `${baseUrl}/blog/${post.slug}`,
+                es: `${baseUrl}/es/blog/${post.slug}`,
+                pt: `${baseUrl}/pt/blog/${post.slug}`,
+              },
+            },
+          }
+        : {}),
+    };
+  });
+
+  const esBlogPostEntries: MetadataRoute.Sitemap = blogPostsEs.map((post) => {
+    const postDateString = blogActualDates[post.slug as keyof typeof blogActualDates] || post.date;
+    const postDate = new Date(postDateString);
+    const lastMod = isNaN(postDate.getTime()) ? siteLaunchDate : postDate;
+    return {
+      url: `${baseUrl}/es/blog/${post.slug}`,
+      lastModified: lastMod,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/blog/${post.slug}`,
+          es: `${baseUrl}/es/blog/${post.slug}`,
+          pt: `${baseUrl}/pt/blog/${post.slug}`,
+        },
+      },
+    };
+  });
+
+  const ptBlogPostEntries: MetadataRoute.Sitemap = blogPostsPt.map((post) => {
+    const postDateString = blogActualDates[post.slug as keyof typeof blogActualDates] || post.date;
+    const postDate = new Date(postDateString);
+    const lastMod = isNaN(postDate.getTime()) ? siteLaunchDate : postDate;
+    return {
+      url: `${baseUrl}/pt/blog/${post.slug}`,
+      lastModified: lastMod,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/blog/${post.slug}`,
+          es: `${baseUrl}/es/blog/${post.slug}`,
+          pt: `${baseUrl}/pt/blog/${post.slug}`,
+        },
+      },
     };
   });
 
@@ -269,7 +328,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // 合并所有页面
   return [
     ...staticPages,
     ...esStaticPages,
@@ -281,5 +339,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...ptCityIndexEntry,
     ...ptCityPageEntries,
     ...blogPostEntries,
+    ...esBlogPostEntries,
+    ...ptBlogPostEntries,
   ];
 }
