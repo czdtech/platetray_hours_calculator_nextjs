@@ -51,7 +51,7 @@ Moon hour is the ideal window for the heart's business:
 - **Heartfelt conversations** — if you need to tell someone how you truly feel, share a vulnerability, or discuss something that matters deeply, Moon hour creates the emotional openness for genuine connection.
 - **Family gatherings** — reunions, family dinners, and celebrations of kinship are enhanced by the Moon's nurturing energy. People tend to be more emotionally available and receptive.
 - **Reconciliation and forgiveness** — mending a rift with a loved one, offering an apology, or extending forgiveness flows more naturally during Moon hour, when empathy is heightened.
-- **Romantic intimacy** — deep emotional bonding, expressions of love, and intimate conversations benefit from the Moon's tender, feeling-centered energy.
+- **Romantic intimacy** — deep emotional bonding, expressions of love, and intimate conversations benefit from the Moon's tender, feeling-centered energy. For activities focused more on attraction and romance, you may also explore [Venus hour](/blog/venus-hour-guide) timing.
 - **Supportive listening** — if a friend or family member needs to be heard, Moon hour enhances your capacity to listen with genuine empathy and compassion.
 
 ### Home, Domestic Matters, and Real Estate
@@ -100,7 +100,7 @@ The Moon's gentle, feeling-centered energy is not suited to every task. Certain 
 - **Major rational decisions** — the Moon amplifies feelings, which can cloud cold logic. If a decision requires detached analysis, financial calculations, or ruthless cost-benefit evaluation, postpone it to a Mercury or Saturn hour.
 - **Aggressive confrontations** — Moon hour is about empathy and receptivity, not combativeness. If you need to assert yourself forcefully or engage in a competitive battle, Mars hour is the appropriate choice.
 - **High-risk speculative investments** — the Moon's emotional influence can lead to decisions driven by fear, hope, or intuition rather than sound financial reasoning. Wait for a more rational planetary hour.
-- **Demanding physical exertion** — while gentle yoga or walking suits Moon hour, intense athletic training or competition is better aligned with Mars's fiery energy.
+- **Demanding physical exertion** — while gentle yoga or walking suits Moon hour, intense athletic training or competition is better aligned with [Mars hour](/blog/mars-hour-guide) energy.
 - **Tasks requiring sharp analytical focus** — detailed technical work, debugging complex code, or intensive data analysis benefit from Mercury's mental clarity rather than the Moon's emotional diffusion.
 - **Confronting harsh realities** — if you need to deliver difficult news with clinical detachment or make a tough business decision that requires ignoring feelings, Moon hour will make it harder to maintain emotional distance.
 
@@ -213,6 +213,19 @@ It depends on the type of decision. For decisions that require emotional intelli
 ### How does the current Moon phase affect Moon hour?
 
 The Moon's zodiac sign and phase add nuance to Moon hour. A Moon hour during a Full Moon is emotionally intense and illuminating, ideal for culmination and celebration. A Moon hour during a New Moon is quieter and more introspective, perfect for intention-setting and new emotional beginnings. Tracking the lunar cycle alongside your Moon hours creates a sophisticated, layered timing practice.
+
+## Explore All Planetary Hour Guides
+
+Each planetary hour carries its own distinct energy. Explore our complete series to master every planetary hour:
+
+- [☉ Sun Hour Guide: Leadership, Vitality & Success](/blog/sun-hour-guide)
+- [☿ Mercury Hour Guide: Communication, Learning & Mental Clarity](/blog/mercury-hour-guide)
+- [♀ Venus Hour Guide: Love, Beauty & Perfect Timing](/blog/venus-hour-guide)
+- [♂ Mars Hour Guide: Energy, Courage & Action](/blog/mars-hour-guide)
+- [♃ Jupiter Hour Guide: Growth, Abundance & Opportunity](/blog/jupiter-hour-guide)
+- [♄ Saturn Hour Guide: Discipline, Structure & Strategic Timing](/blog/saturn-hour-guide)
+
+Ready to find your next planetary hour? Use our free [Planetary Hours Calculator](/) to see all 24 hours for your location today.
 
 ## Embrace the Lunar Current
 

@@ -92,7 +92,7 @@ Mars governs tools, metals, and the skilled use of force:
 
 Mars's intense energy, while powerfully useful, can also be destructive when misapplied. Certain activities are best postponed to a different planetary hour:
 
-- **Peace negotiations and reconciliation** — Mars amplifies assertiveness, which can easily tip into aggression during delicate peace talks. If you are trying to mend a relationship or find common ground, choose a Venus hour instead.
+- **Peace negotiations and reconciliation** — Mars amplifies assertiveness, which can easily tip into aggression during delicate peace talks. If you are trying to mend a relationship or find common ground, choose a [Venus hour](/blog/venus-hour-guide) instead.
 - **Gentle, nurturing activities** — caring for a sick person, having a tender heart-to-heart conversation, or engaging in activities that require softness and patience clash with Mars's forceful energy.
 - **Detailed intellectual work** — while Mars gives you the energy to power through, it is not the hour for careful proofreading, nuanced analysis, or meticulous editing. Mercury hour is far better suited for these tasks.
 - **Financial investments requiring caution** — Mars's impulsive energy can lead to rash financial decisions. Complex investment analysis and conservative financial planning are better handled during a Jupiter or Saturn hour.
@@ -203,7 +203,20 @@ During Mars retrograde (approximately every two years), Mars hours still occur b
 
 ### Can I combine Mars hour with other planetary hour strategies?
 
-Absolutely. Many practitioners use a multi-hour strategy: they prepare during a Mercury hour (research and planning), launch during a Mars hour (bold action), and consolidate during a Jupiter hour (expansion and growth). Learning to sequence planetary hours is an advanced technique covered in our [practical guide](/blog/using-planetary-hours).
+Absolutely. Many practitioners use a multi-hour strategy: they prepare during a [Mercury hour](/blog/mercury-hour-guide) (research and planning), launch during a Mars hour (bold action), and consolidate during a [Jupiter hour](/blog/jupiter-hour-guide) (expansion and growth). Learning to sequence planetary hours is an advanced technique covered in our [practical guide](/blog/using-planetary-hours).
+
+## Explore All Planetary Hour Guides
+
+Each planetary hour carries its own distinct energy. Explore our complete series to master every planetary hour:
+
+- [☉ Sun Hour Guide: Leadership, Vitality & Success](/blog/sun-hour-guide)
+- [☽ Moon Hour Guide: Intuition, Emotions & Lunar Timing](/blog/moon-hour-guide)
+- [☿ Mercury Hour Guide: Communication, Learning & Mental Clarity](/blog/mercury-hour-guide)
+- [♀ Venus Hour Guide: Love, Beauty & Perfect Timing](/blog/venus-hour-guide)
+- [♃ Jupiter Hour Guide: Growth, Abundance & Opportunity](/blog/jupiter-hour-guide)
+- [♄ Saturn Hour Guide: Discipline, Structure & Strategic Timing](/blog/saturn-hour-guide)
+
+Ready to find your next planetary hour? Use our free [Planetary Hours Calculator](/) to see all 24 hours for your location today.
 
 ## Ignite Your Action with Mars Hour
 

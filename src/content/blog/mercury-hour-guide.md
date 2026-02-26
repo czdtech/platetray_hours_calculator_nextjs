@@ -91,7 +91,7 @@ Mercury rules short journeys and the coordination of movement:
 
 While Mercury hour is ideal for mental and communicative tasks, it is less suited to certain activities:
 
-- **Deep emotional conversations** — Mercury favors logic over feelings. If you need a heart-to-heart that requires vulnerability and emotional depth, a [Moon hour](/blog/moon-hour-guide) may serve you better.
+- **Deep emotional conversations** — Mercury favors logic over feelings. If you need a heart-to-heart that requires vulnerability and emotional depth, a [Moon hour](/blog/moon-hour-guide) is better suited to that kind of emotional connection.
 - **Physical labor and athletic competition** — Mercury's energy is cerebral, not muscular. Heavy workouts or competitive sports are better aligned with a Mars hour.
 - **Decisions requiring slow deliberation** — Mercury is fast. If a decision demands patient contemplation and long-term strategic thinking, consider a Saturn or Jupiter hour instead.
 - **Relaxation and rest** — Mercury's buzzing mental energy can make it difficult to wind down. Avoid trying to meditate deeply or fall asleep during a strong Mercury hour.
@@ -201,11 +201,24 @@ In a full 24-hour cycle (sunrise to next sunrise), there are typically three or 
 
 ### Can I use Mercury hour for creative writing?
 
-Absolutely. While Venus hours are often associated with artistic creativity, Mercury hours excel for the structural and communicative aspects of writing — plotting, outlining, drafting, and especially editing. If your creative project requires clear prose, logical narrative flow, or persuasive copy, Mercury hour is an excellent choice.
+Absolutely. While [Venus hours](/blog/venus-hour-guide) are often associated with artistic creativity, Mercury hours excel for the structural and communicative aspects of writing — plotting, outlining, drafting, and especially editing. If your creative project requires clear prose, logical narrative flow, or persuasive copy, Mercury hour is an excellent choice.
 
 ### What if Mercury is retrograde — should I still use Mercury hours?
 
 Yes, Mercury hours remain active during retrograde periods. However, the energy shifts. Mercury retrograde hours favor revisiting, revising, and refining rather than launching entirely new projects. Use them for editing, reconnecting with old contacts, reviewing contracts, and completing unfinished work.
+
+## Explore All Planetary Hour Guides
+
+Each planetary hour carries its own distinct energy. Explore our complete series to master every planetary hour:
+
+- [☉ Sun Hour Guide: Leadership, Vitality & Success](/blog/sun-hour-guide)
+- [☽ Moon Hour Guide: Intuition, Emotions & Lunar Timing](/blog/moon-hour-guide)
+- [♀ Venus Hour Guide: Love, Beauty & Perfect Timing](/blog/venus-hour-guide)
+- [♂ Mars Hour Guide: Energy, Courage & Action](/blog/mars-hour-guide)
+- [♃ Jupiter Hour Guide: Growth, Abundance & Opportunity](/blog/jupiter-hour-guide)
+- [♄ Saturn Hour Guide: Discipline, Structure & Strategic Timing](/blog/saturn-hour-guide)
+
+Ready to find your next planetary hour? Use our free [Planetary Hours Calculator](/) to see all 24 hours for your location today.
 
 ## Start Timing Your Tasks with Mercury
 

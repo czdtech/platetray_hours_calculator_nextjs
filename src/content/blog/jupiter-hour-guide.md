@@ -35,7 +35,7 @@ Each day of the week begins with a specific planetary ruler. The first hour afte
 
 ## Jupiter as the Greater Benefic
 
-In classical astrology, two planets earned the honored title of "benefic" — planets whose influence is considered inherently helpful and fortunate. Venus is the Lesser Benefic, bringing harmony, beauty, and pleasure. Jupiter, however, holds the distinguished rank of **Greater Benefic**, the most auspicious and generous force in the celestial hierarchy.
+In classical astrology, two planets earned the honored title of "benefic" — planets whose influence is considered inherently helpful and fortunate. [Venus](/blog/venus-hour-guide) is the Lesser Benefic, bringing harmony, beauty, and pleasure. Jupiter, however, holds the distinguished rank of **Greater Benefic**, the most auspicious and generous force in the celestial hierarchy.
 
 ### The Astrological Significance of Jupiter
 
@@ -116,7 +116,7 @@ Jupiter's expansive nature is overwhelmingly positive, but "expansion" is a neut
 
 **Avoid excessive risk-taking.** Jupiter's optimism can inflate your confidence beyond what the situation warrants. If you are already inclined toward a risky gamble, doing it during a Jupiter hour may make you feel invincible — leading you to overcommit or overlook genuine dangers. Jupiter favors *calculated growth*, not reckless leaps.
 
-**Avoid overindulgence.** Jupiter rules excess as much as it rules abundance. Starting a diet, committing to austerity measures, or trying to restrain spending during a Jupiter hour works against the planet's natural inclination to expand. Save discipline and restriction for Saturn hours, which are purpose-built for structure and self-control.
+**Avoid overindulgence.** Jupiter rules excess as much as it rules abundance. Starting a diet, committing to austerity measures, or trying to restrain spending during a Jupiter hour works against the planet's natural inclination to expand. Save discipline and restriction for [Saturn hours](/blog/saturn-hour-guide), which are purpose-built for structure and self-control.
 
 **Avoid activities requiring meticulous detail.** Jupiter thinks in sweeping, big-picture terms. If your task requires painstaking attention to fine details — debugging code line by line, proofreading a legal brief for tiny errors, or performing precision-focused work — you may find Jupiter's broad energy distracting. Mercury hours are far better suited to detail-oriented tasks.
 
@@ -239,6 +239,19 @@ Planetary hours are a tool for optimization, not a substitute for preparation, s
 ### Adapt to Your Real Life
 
 Not every important activity can be scheduled during a Jupiter hour. When timing is outside your control, use whatever planetary hour is available to your advantage, and save deliberate Jupiter hour scheduling for the activities where you have flexibility. Pragmatism is a virtue in any astrological practice.
+
+## Explore All Planetary Hour Guides
+
+Each planetary hour carries its own distinct energy. Explore our complete series to master every planetary hour:
+
+- [☉ Sun Hour Guide: Leadership, Vitality & Success](/blog/sun-hour-guide)
+- [☽ Moon Hour Guide: Intuition, Emotions & Lunar Timing](/blog/moon-hour-guide)
+- [☿ Mercury Hour Guide: Communication, Learning & Mental Clarity](/blog/mercury-hour-guide)
+- [♀ Venus Hour Guide: Love, Beauty & Perfect Timing](/blog/venus-hour-guide)
+- [♂ Mars Hour Guide: Energy, Courage & Action](/blog/mars-hour-guide)
+- [♄ Saturn Hour Guide: Discipline, Structure & Strategic Timing](/blog/saturn-hour-guide)
+
+Ready to find your next planetary hour? Use our free [Planetary Hours Calculator](/) to see all 24 hours for your location today.
 
 ## Conclusion
 

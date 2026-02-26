@@ -43,7 +43,7 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 - Displaying excessive humility, lacking self-assurance, or shirking responsibility.
 - Actions that might provoke power struggles if you're unprepared.
 
-**In Practice:** Schedule your most impactful work, or a crucial presentation during a Sun hour. Use it for activities where you need to shine.
+**In Practice:** Schedule your most impactful work, or a crucial presentation during a Sun hour. Use it for activities where you need to shine. For a complete deep dive, see our [Sun Hour Guide](/blog/sun-hour-guide).
 
 ### Moon Hour: A Time for Emotional Connection, Intuition & Nurturing
 
@@ -61,7 +61,7 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 - Engaging in intense confrontations or initiating conflict.
 - High-risk speculative ventures.
 
-**In Practice:** Plan a heart-to-heart with a loved one during a Moon hour. Engage in relaxing yoga or meditation. Draft emotionally resonant content.
+**In Practice:** Plan a heart-to-heart with a loved one during a Moon hour. Engage in relaxing yoga or meditation. Draft emotionally resonant content. For a complete deep dive, see our [Moon Hour Guide](/blog/moon-hour-guide).
 
 ### Mercury Hour: A Window for Sharp Communication, Learning & Commerce
 
@@ -79,7 +79,7 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 - Making hasty decisions with insufficient information.
 - Monotonous physical labor requiring little mental input.
 
-**In Practice:** Schedule important contract signings or business negotiations during a Mercury hour. Use it for focused study sessions or writing clear, concise reports.
+**In Practice:** Schedule important contract signings or business negotiations during a Mercury hour. Use it for focused study sessions or writing clear, concise reports. For a complete deep dive, see our [Mercury Hour Guide](/blog/mercury-hour-guide).
 
 ### Venus Hour: Cultivating Love, Beauty, Harmony & Pleasure
 
@@ -97,7 +97,7 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 - Activities requiring intense competition or confrontation.
 - Overspending or indulging excessively.
 
-**In Practice:** Plan a romantic dinner or a gathering with friends during a Venus hour. Engage in artistic endeavors. Discuss collaborations in a relaxed atmosphere.
+**In Practice:** Plan a romantic dinner or a gathering with friends during a Venus hour. Engage in artistic endeavors. Discuss collaborations in a relaxed atmosphere. For a complete deep dive, see our [Venus Hour Guide](/blog/venus-hour-guide).
 
 ### Mars Hour: Fueling Decisive Action, Courage & Breakthroughs
 
@@ -115,7 +115,7 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 - Seeking peaceful negotiations or mediation (unless you are initiating a bold move for resolution).
 - Making irreversible decisions when emotionally charged, as conflicts can escalate.
 
-**In Practice:** Schedule the most intense part of your workout during a Mars hour. Tackle a difficult problem on a project. Make quick, decisive moves on short-term tasks.
+**In Practice:** Schedule the most intense part of your workout during a Mars hour. Tackle a difficult problem on a project. Make quick, decisive moves on short-term tasks. For a complete deep dive, see our [Mars Hour Guide](/blog/mars-hour-guide).
 
 ### Jupiter Hour: Opening Doors to Expansion, Luck & Wisdom
 
@@ -133,7 +133,7 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 - Extravagance or overindulgence.
 - Tasks requiring meticulous economizing or contraction.
 
-**In Practice:** Make significant investment decisions or explore new markets during a Jupiter hour. Begin a new course of study. Develop your long-term vision.
+**In Practice:** Make significant investment decisions or explore new markets during a Jupiter hour. Begin a new course of study. Develop your long-term vision. For a complete deep dive, see our [Jupiter Hour Guide](/blog/jupiter-hour-guide).
 
 ### Saturn Hour: A Time for Structure, Discipline & Enduring Effort
 
@@ -151,7 +151,7 @@ Let's now delve into each of the seven classical planetary hours, exploring thei
 - Social activities requiring a lighthearted and spontaneous atmosphere.
 - Expecting immediate rewards or evading responsibilities.
 
-**In Practice:** Dedicate a Saturn hour to completing a detailed report requiring intense focus. Conduct a thorough financial audit. Tackle a long-overdue but necessary difficult task.
+**In Practice:** Dedicate a Saturn hour to completing a detailed report requiring intense focus. Conduct a thorough financial audit. Tackle a long-overdue but necessary difficult task. For a complete deep dive, see our [Saturn Hour Guide](/blog/saturn-hour-guide).
 
 ## Scenario-Based Applications: Empowering Your Specific Goals with Planetary Hours
 

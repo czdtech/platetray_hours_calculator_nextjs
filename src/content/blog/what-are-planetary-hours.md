@@ -69,31 +69,31 @@ Each planetary hour carries the unique energetic signature and symbolism of its 
 
 ### Sun Hour: Radiance, Vitality & Leadership
 
-The Sun symbolizes life force, creativity, authority, success, and self-expression. Sun hours are generally considered potent times for taking initiative, showcasing leadership, and engaging in important or public-facing activities.
+The Sun symbolizes life force, creativity, authority, success, and self-expression. Sun hours are generally considered potent times for taking initiative, showcasing leadership, and engaging in important or public-facing activities. Learn more in our [Sun Hour Guide](/blog/sun-hour-guide).
 
 ### Moon Hour: Emotions, Intuition & Nurturing
 
-The Moon governs emotions, intuition, the subconscious, home, nurturing, and public sentiment. Moon hours are well-suited for matters of the heart and home, introspection, meditation, or connecting with the public emotionally.
+The Moon governs emotions, intuition, the subconscious, home, nurturing, and public sentiment. Moon hours are well-suited for matters of the heart and home, introspection, meditation, or connecting with the public emotionally. Learn more in our [Moon Hour Guide](/blog/moon-hour-guide).
 
 ### Mercury Hour: Communication, Intellect & Commerce
 
-Mercury rules communication, learning, writing, logical thought, commerce, and short journeys. Mercury hours are ideal for negotiations, signing contracts, studying, exchanging information, and handling correspondence.
+Mercury rules communication, learning, writing, logical thought, commerce, and short journeys. Mercury hours are ideal for negotiations, signing contracts, studying, exchanging information, and handling correspondence. Learn more in our [Mercury Hour Guide](/blog/mercury-hour-guide).
 
 ### Venus Hour: Love, Beauty & Harmony
 
-Venus is the emblem of love, beauty, art, social connections, pleasure, and harmony. Venus hours are perfect for socializing, dating, mending relationships, enjoying the arts, and anything that brings aesthetic pleasure.
+Venus is the emblem of love, beauty, art, social connections, pleasure, and harmony. Venus hours are perfect for socializing, dating, mending relationships, enjoying the arts, and anything that brings aesthetic pleasure. Learn more in our [Venus Hour Guide](/blog/venus-hour-guide).
 
 ### Mars Hour: Action, Courage & Drive
 
-Mars represents action, courage, determination, competition, and raw energy. Mars hours are suited for decisive action, overcoming obstacles, physical exertion, and tackling challenging tasks. However, caution against unnecessary conflict is advised.
+Mars represents action, courage, determination, competition, and raw energy. Mars hours are suited for decisive action, overcoming obstacles, physical exertion, and tackling challenging tasks. However, caution against unnecessary conflict is advised. Learn more in our [Mars Hour Guide](/blog/mars-hour-guide).
 
 ### Jupiter Hour: Expansion, Luck & Wisdom
 
-Jupiter symbolizes expansion, growth, good fortune, abundance, wisdom, and higher learning. Jupiter hours are considered auspicious for financial planning, seeking opportunities, studying profound subjects, and undertaking beneficial long-term ventures.
+Jupiter symbolizes expansion, growth, good fortune, abundance, wisdom, and higher learning. Jupiter hours are considered auspicious for financial planning, seeking opportunities, studying profound subjects, and undertaking beneficial long-term ventures. Learn more in our [Jupiter Hour Guide](/blog/jupiter-hour-guide).
 
 ### Saturn Hour: Structure, Discipline & Endurance
 
-Saturn stands for structure, discipline, responsibility, patience, boundaries, and accumulated experience. Saturn hours are appropriate for long-term projects requiring focus and perseverance, dealing with serious matters, establishing order, and periods of reflection.
+Saturn stands for structure, discipline, responsibility, patience, boundaries, and accumulated experience. Saturn hours are appropriate for long-term projects requiring focus and perseverance, dealing with serious matters, establishing order, and periods of reflection. Learn more in our [Saturn Hour Guide](/blog/saturn-hour-guide).
 
 ## Common Questions Answered (FAQ about Planetary Hours)
 

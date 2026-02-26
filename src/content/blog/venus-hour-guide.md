@@ -58,7 +58,7 @@ Venus hour is the premier window for all heart-centered activities.
 
 - **First dates and romantic outings.** Starting a date during a Venus hour sets a tone of warmth, openness, and mutual attraction. The energy naturally encourages people to present their most charming selves.
 - **Proposals and declarations of love.** If you're planning to propose marriage or confess your feelings, doing so during a Venus hour adds cosmic support to your words. The atmosphere favors "yes."
-- **Reconciliation and healing.** When a relationship needs repair, Venus hour softens defenses and opens hearts. Difficult conversations about feelings are more likely to reach a compassionate resolution.
+- **Reconciliation and healing.** When a relationship needs repair, Venus hour softens defenses and opens hearts. Difficult conversations about feelings are more likely to reach a compassionate resolution. For even deeper emotional bonding, consider pairing your efforts with a [Moon hour](/blog/moon-hour-guide), which heightens empathy and intuitive connection.
 - **Deepening intimacy.** Whether through heartfelt conversation, physical affection, or shared experiences, Venus hour enhances emotional and physical closeness between partners.
 - **Matchmaking and introductions.** Setting up friends, attending singles events, or joining a dating app during Venus hour increases the likelihood of harmonious connections.
 
@@ -84,7 +84,7 @@ Venus is the muse of the planetary system. Creative work initiated or continued 
 
 ### Financial Matters
 
-While Jupiter is the planet of expansion and large-scale wealth, Venus governs value, luxury goods, and the pleasure economy.
+While [Jupiter](/blog/jupiter-hour-guide) is the planet of expansion and large-scale wealth, Venus governs value, luxury goods, and the pleasure economy.
 
 - **Purchasing luxury items.** Buying jewelry, art, designer goods, or fine wines during Venus hour aligns your spending with Venus's discerning taste.
 - **Investing in beauty or lifestyle businesses.** If you're considering an investment in fashion, cosmetics, hospitality, art, or entertainment, Venus hour provides favorable energy for evaluating and committing.
@@ -200,6 +200,19 @@ Track your experiences across multiple Venus hours over several weeks. Note what
 ### 8. Combine with Friday for Peak Results
 
 As discussed in the Double Venus section above, Friday's Venus hours carry amplified power. Reserve your most consequential Venus-aligned activities — a proposal, a product launch, a major creative debut — for these peak windows whenever possible.
+
+## Explore All Planetary Hour Guides
+
+Each planetary hour carries its own distinct energy. Explore our complete series to master every planetary hour:
+
+- [☉ Sun Hour Guide: Leadership, Vitality & Success](/blog/sun-hour-guide)
+- [☽ Moon Hour Guide: Intuition, Emotions & Lunar Timing](/blog/moon-hour-guide)
+- [☿ Mercury Hour Guide: Communication, Learning & Mental Clarity](/blog/mercury-hour-guide)
+- [♂ Mars Hour Guide: Energy, Courage & Action](/blog/mars-hour-guide)
+- [♃ Jupiter Hour Guide: Growth, Abundance & Opportunity](/blog/jupiter-hour-guide)
+- [♄ Saturn Hour Guide: Discipline, Structure & Strategic Timing](/blog/saturn-hour-guide)
+
+Ready to find your next planetary hour? Use our free [Planetary Hours Calculator](/) to see all 24 hours for your location today.
 
 ## Conclusion
 

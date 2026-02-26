@@ -99,9 +99,9 @@ While Sun hour is exceptionally powerful for visibility and leadership, certain 
 - **Activities requiring secrecy or discretion** — the Sun makes everything visible. If your task requires stealth, confidentiality, or working behind the scenes, Sun hour is counterproductive. Choose a Saturn or Moon hour instead.
 - **Humble or submissive tasks** — the Sun's energy is regal and commanding. Tasks that require you to take a subordinate role, defer excessively, or minimize yourself clash with this energy.
 - **Detailed analytical work** — the Sun paints with broad strokes. Meticulous data entry, line-by-line proofreading, and granular technical analysis are better suited to Mercury or Saturn hours.
-- **Emotional vulnerability** — Sun hour favors strength and confidence. If you need to have a vulnerable, emotionally raw conversation, a Moon hour provides a more supportive container.
+- **Emotional vulnerability** — Sun hour favors strength and confidence. If you need to have a vulnerable, emotionally raw conversation, a [Moon hour](/blog/moon-hour-guide) provides a more supportive container.
 - **Rest and withdrawal** — the Sun's energy is outward-facing and active. Trying to rest, retreat, or disengage during Sun hour may feel uncomfortable, as the energy pushes toward expression and engagement.
-- **Picking unnecessary fights** — while the Sun provides confidence, overconfidence can provoke power struggles. Avoid ego-driven confrontations during Sun hour; save assertive battles for Mars hour, where the energy is designed for combat.
+- **Picking unnecessary fights** — while the Sun provides confidence, overconfidence can provoke power struggles. Avoid ego-driven confrontations during Sun hour; save assertive battles for [Mars hour](/blog/mars-hour-guide), where the energy is designed for combat.
 
 For guidance on matching every type of activity to its ideal planetary hour, explore our [practical guide to using planetary hours](/blog/using-planetary-hours).
 
@@ -209,6 +209,19 @@ The duration of Sun hours changes with the seasons, but the quality of solar ene
 ### How does Sun hour interact with solar eclipses?
 
 Traditional astrologers advise caution during solar eclipses, as the Sun's energy is disrupted. Sun hours during eclipse periods may feel unpredictable or charged with unusual intensity. Most practitioners avoid launching important ventures during eclipse-adjacent Sun hours and instead use them for reflection and release.
+
+## Explore All Planetary Hour Guides
+
+Each planetary hour carries its own distinct energy. Explore our complete series to master every planetary hour:
+
+- [☽ Moon Hour Guide: Intuition, Emotions & Lunar Timing](/blog/moon-hour-guide)
+- [☿ Mercury Hour Guide: Communication, Learning & Mental Clarity](/blog/mercury-hour-guide)
+- [♀ Venus Hour Guide: Love, Beauty & Perfect Timing](/blog/venus-hour-guide)
+- [♂ Mars Hour Guide: Energy, Courage & Action](/blog/mars-hour-guide)
+- [♃ Jupiter Hour Guide: Growth, Abundance & Opportunity](/blog/jupiter-hour-guide)
+- [♄ Saturn Hour Guide: Discipline, Structure & Strategic Timing](/blog/saturn-hour-guide)
+
+Ready to find your next planetary hour? Use our free [Planetary Hours Calculator](/) to see all 24 hours for your location today.
 
 ## Step Into the Light with Sun Hour
 
