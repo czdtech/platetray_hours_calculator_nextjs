@@ -144,9 +144,9 @@
 
 #### B1-交叉链接
 
-- [ ] **B1-XLINK-1**：7 篇文章全部完成后，回头在每篇文章中添加到其他 6 篇的内链
-- [ ] **B1-XLINK-2**：在首页 FAQ 部分的回答中添加到相关行星时专题的链接
-- [ ] **B1-XLINK-3**：在现有 9 篇博客中选择 3-5 篇，在相关段落自然插入到新行星时专题的链接
+- [x] **B1-XLINK-1**：7 篇文章全部完成后，回头在每篇文章中添加到其他 6 篇的内链
+- [x] **B1-XLINK-2**：在首页 FAQ 部分的回答中添加到相关行星时专题的链接
+- [x] **B1-XLINK-3**：在现有 9 篇博客中选择 3-5 篇，在相关段落自然插入到新行星时专题的链接
 
 ---
 
@@ -154,38 +154,38 @@
 
 #### B2-Pillar：行星日总览 Pillar Page
 
-- [ ] **B2-Pillar-1**：撰写 `src/content/blog/planetary-days-of-the-week.md`（~3500 词）
+- [x] **B2-Pillar-1**：撰写 `src/content/blog/planetary-days-of-the-week.md`（~3500 词）
   - keywords: `["planetary days of the week", "planetary days of the week meaning", "planetary days astrology", "what planet rules each day"]`
   - 内容：7 天概览、迦勒底顺序解释、每天简介 + 链接到各日专题
   - 包含一个 7×3 表格（Day / Ruling Planet / Best Activities）
 - [ ] **B2-Pillar-2**：准备封面图
-- [ ] **B2-Pillar-3**：注册 + 元数据生成
+- [x] **B2-Pillar-3**：注册 + 元数据生成
 
 #### B2-Days：7 个星期日专题
 
 对以下 7 篇文章，每篇执行相同步骤：
 
-- [ ] **B2-Sunday**：撰写 `src/content/blog/sunday-sun-day.md`（~1800 词）— keywords: what planet rules sunday, sun day meaning
-- [ ] **B2-Monday**：撰写 `src/content/blog/monday-moon-day.md`（~1800 词）
-- [ ] **B2-Tuesday**：撰写 `src/content/blog/tuesday-mars-day.md`（~1800 词）
-- [ ] **B2-Wednesday**：撰写 `src/content/blog/wednesday-mercury-day.md`（~1800 词）
-- [ ] **B2-Thursday**：撰写 `src/content/blog/thursday-jupiter-day.md`（~1800 词）
-- [ ] **B2-Friday**：撰写 `src/content/blog/friday-venus-day.md`（~1800 词）
-- [ ] **B2-Saturday**：撰写 `src/content/blog/saturday-saturn-day.md`（~1800 词）
+- [x] **B2-Sunday**：撰写 `src/content/blog/sunday-sun-day.md`（~1800 词）— keywords: what planet rules sunday, sun day meaning
+- [x] **B2-Monday**：撰写 `src/content/blog/monday-moon-day.md`（~1800 词）
+- [x] **B2-Tuesday**：撰写 `src/content/blog/tuesday-mars-day.md`（~1800 词）
+- [x] **B2-Wednesday**：撰写 `src/content/blog/wednesday-mercury-day.md`（~1800 词）
+- [x] **B2-Thursday**：撰写 `src/content/blog/thursday-jupiter-day.md`（~1800 词）
+- [x] **B2-Friday**：撰写 `src/content/blog/friday-venus-day.md`（~1800 词）
+- [x] **B2-Saturday**：撰写 `src/content/blog/saturday-saturn-day.md`（~1800 词）
 
 每篇文章都需要：
 - [ ] 准备封面图
-- [ ] 在 `src/data/blogPosts.ts` 中注册（共 8 篇新增：1 Pillar + 7 Days）
-- [ ] 运行 `npm run generate:blog-metadata`
-- [ ] 每篇都包含到对应行星时专题（B1）的双向内链
-- [ ] 每篇都包含到 Pillar 页面的内链
+- [x] 在 `src/data/blogPosts.ts` 中注册（共 8 篇新增：1 Pillar + 7 Days）
+- [x] 运行 `npm run generate:blog-metadata`
+- [x] 每篇都包含到对应行星时专题（B1）的双向内链
+- [x] 每篇都包含到 Pillar 页面的内链
 
 #### B2-XLINK：交叉链接
 
-- [ ] **B2-XLINK-1**：Pillar 页面链接到全部 7 个星期日专题
-- [ ] **B2-XLINK-2**：每个星期日专题链接到对应行星时专题（如 Friday → Venus Hour Guide）
-- [ ] **B2-XLINK-3**：每个行星时专题（B1）反向链接到对应星期日专题
-- [ ] **B2-XLINK-4**：构建验证全部 8 篇正常
+- [x] **B2-XLINK-1**：Pillar 页面链接到全部 7 个星期日专题
+- [x] **B2-XLINK-2**：每个星期日专题链接到对应行星时专题（如 Friday → Venus Hour Guide）
+- [x] **B2-XLINK-3**：每个行星时专题（B1）反向链接到对应星期日专题
+- [x] **B2-XLINK-4**：构建验证全部 8 篇正常
 
 ---
 
@@ -193,67 +193,67 @@
 
 #### B3-Love
 
-- [ ] **B3-Love-1**：撰写 `src/content/blog/planetary-hours-for-love.md`（~3000 词）
+- [x] **B3-Love-1**：撰写 `src/content/blog/planetary-hours-for-love.md`（~3000 词）
   - keywords: `["planetary hours for love", "best time for love astrology", "venus hora for love", "planetary hours for love and marriage"]`
   - faqs: Is Venus Hora a good time for love? / What planetary hour is best for a first date? / Can planetary hours improve my relationship?
   - 内容：Venus Hour for love（主推）+ Moon Hour for emotions + Jupiter Hour for commitment + 实操建议
   - 内链到 venus-hour-guide、moon-hour-guide、friday-venus-day
-- [ ] **B3-Love-2**：封面图 + 注册 + 元数据生成
+- [x] **B3-Love-2**：封面图 + 注册 + 元数据生成
 
 #### B3-Magic
 
-- [ ] **B3-Magic-1**：撰写 `src/content/blog/planetary-hours-for-magic.md`（~3000 词）
+- [x] **B3-Magic-1**：撰写 `src/content/blog/planetary-hours-for-magic.md`（~3000 词）
   - keywords: `["planetary hours and days for magic", "planetary hours for spells"]`
   - 内容：7 行星 × 魔法对应关系、施法时机选择、与星期日的双重增强
   - 注意：以教育/历史角度为主，保持中性专业语气
-- [ ] **B3-Magic-2**：封面图 + 注册 + 元数据生成
+- [x] **B3-Magic-2**：封面图 + 注册 + 元数据生成
 
 #### B3-Manifestation
 
-- [ ] **B3-Manifest-1**：撰写 `src/content/blog/planetary-hours-for-manifestation.md`（~2500 词）
+- [x] **B3-Manifest-1**：撰写 `src/content/blog/planetary-hours-for-manifestation.md`（~2500 词）
   - keywords: `["planetary hours for manifestation"]`
   - 内容：显化/意图设定与行星时的结合，Jupiter/Sun/Venus Hour 推荐
-- [ ] **B3-Manifest-2**：封面图 + 注册 + 元数据生成
+- [x] **B3-Manifest-2**：封面图 + 注册 + 元数据生成
 
 #### B3-Money
 
-- [ ] **B3-Money-1**：撰写 `src/content/blog/planetary-hours-for-money.md`（~2500 词）
+- [x] **B3-Money-1**：撰写 `src/content/blog/planetary-hours-for-money.md`（~2500 词）
   - keywords: `["best planetary hour for money", "jupiter hour for money", "best time for business astrology"]`
   - 内链到 jupiter-hour-guide、planetary-hours-business-success（已有文章）
-- [ ] **B3-Money-2**：封面图 + 注册 + 元数据生成
+- [x] **B3-Money-2**：封面图 + 注册 + 元数据生成
 
 #### B3-Marriage
 
-- [ ] **B3-Marriage-1**：撰写 `src/content/blog/best-planetary-hour-for-marriage.md`（~2000 词）
+- [x] **B3-Marriage-1**：撰写 `src/content/blog/best-planetary-hour-for-marriage.md`（~2000 词）
   - keywords: `["best time for marriage astrology", "planetary hours for marriage"]`
-- [ ] **B3-Marriage-2**：封面图 + 注册 + 元数据生成
+- [x] **B3-Marriage-2**：封面图 + 注册 + 元数据生成
 
 #### B3-Interview
 
-- [ ] **B3-Interview-1**：撰写 `src/content/blog/best-planetary-hour-for-interview.md`（~2000 词）
+- [x] **B3-Interview-1**：撰写 `src/content/blog/best-planetary-hour-for-interview.md`（~2000 词）
   - keywords: `["best time for interview astrology"]`
   - 推荐 Mercury Hour（沟通）+ Jupiter Hour（好运）+ Sun Hour（权威印象）
-- [ ] **B3-Interview-2**：封面图 + 注册 + 元数据生成
+- [x] **B3-Interview-2**：封面图 + 注册 + 元数据生成
 
 #### B3-Surgery
 
-- [ ] **B3-Surgery-1**：撰写 `src/content/blog/best-planetary-hour-for-surgery.md`（~2000 词）
+- [x] **B3-Surgery-1**：撰写 `src/content/blog/best-planetary-hour-for-surgery.md`（~2000 词）
   - keywords: `["best time for surgery astrology"]`
   - 重要：添加医疗免责声明
-- [ ] **B3-Surgery-2**：封面图 + 注册 + 元数据生成
+- [x] **B3-Surgery-2**：封面图 + 注册 + 元数据生成
 
 #### B3-Chart-PDF
 
 - [ ] **B3-PDF-1**：设计可打印的行星时参考表 PDF（7 行星 × 7 星期矩阵 + 每个行星的属性/活动摘要）
 - [ ] **B3-PDF-2**：将 PDF 放置在 `public/downloads/planetary-hours-chart.pdf`
-- [ ] **B3-PDF-3**：撰写 `src/content/blog/planetary-hours-chart-pdf.md`（~1500 词）
+- [x] **B3-PDF-3**：撰写 `src/content/blog/planetary-hours-chart-pdf.md`（~1500 词）
   - keywords: `["planetary hours chart", "planetary hours chart pdf", "planetary hours pdf", "planetary days and hours chart"]`
   - 内容：表格预览图 + PDF 下载按钮 + 如何使用说明
-- [ ] **B3-PDF-4**：封面图（可以是 PDF 预览截图）+ 注册 + 元数据生成
+- [x] **B3-PDF-4**：封面图（可以是 PDF 预览截图）+ 注册 + 元数据生成
 
 #### B3-构建验证
 
-- [ ] **B3-BUILD**：全部 8 篇完成后运行 `npm run build` 验证所有页面正常生成
+- [x] **B3-BUILD**：全部 8 篇完成后运行 `npm run build` 验证所有页面正常生成
 
 ---
 
@@ -261,43 +261,43 @@
 
 #### B4-Meanings-Pillar
 
-- [ ] **B4-Meanings-1**：撰写 `src/content/blog/planetary-hours-and-their-meanings.md`（~3000 词）
+- [x] **B4-Meanings-1**：撰写 `src/content/blog/planetary-hours-and-their-meanings.md`（~3000 词）
   - keywords: `["planetary hours and their meanings", "planetary hours meaning"]`
   - 内容：7 大行星时总览，每个行星 1 段摘要 + 链接到 B1 专题
   - 作为 B1 集群的 Pillar Page
 
 #### B4-Calculation
 
-- [ ] **B4-Calc-1**：评估现有 `algorithm-behind-calculator.md` 是否需要补充 "how are planetary hours calculated" 关键词优化
-- [ ] **B4-Calc-2**：如果需要，撰写新文章 `src/content/blog/how-planetary-hours-are-calculated.md`（~2000 词）
+- [x] **B4-Calc-1**：评估现有 `algorithm-behind-calculator.md` 是否需要补充 "how are planetary hours calculated" 关键词优化
+- [x] **B4-Calc-2**：如果需要，撰写新文章 `src/content/blog/how-planetary-hours-are-calculated.md`（~2000 词）
   - keywords: `["how are planetary hours calculated"]`
   - 或者优化现有文章的 H1/meta/内容以覆盖此关键词
 
 #### B4-Explained
 
-- [ ] **B4-Explained-1**：审查现有 `what-are-planetary-hours.md` 的 H1 和 meta description
-- [ ] **B4-Explained-2**：如果当前 title 没有包含 "planetary hours explained"，考虑优化 title/H1
-- [ ] **B4-Explained-3**：确保内容覆盖 "what are planetary hours in astrology" 和 "what are the planetary hours of each day" 等 autocomplete 词
+- [x] **B4-Explained-1**：审查现有 `what-are-planetary-hours.md` 的 H1 和 meta description
+- [x] **B4-Explained-2**：如果当前 title 没有包含 "planetary hours explained"，考虑优化 title/H1
+- [x] **B4-Explained-3**：确保内容覆盖 "what are planetary hours in astrology" 和 "what are the planetary hours of each day" 等 autocomplete 词
 
 #### B4-HowToUse
 
-- [ ] **B4-HowTo-1**：审查现有 `using-planetary-hours.md` 的 H1 和 meta description
-- [ ] **B4-HowTo-2**：如果需要，优化 title 以包含 "how to use planetary hours" / "how to work with planetary hours"
+- [x] **B4-HowTo-1**：审查现有 `using-planetary-hours.md` 的 H1 和 meta description
+- [x] **B4-HowTo-2**：如果需要，优化 title 以包含 "how to use planetary hours" / "how to work with planetary hours"
 
 #### B4-注册与验证
 
-- [ ] **B4-REG**：新文章注册到 `blogPosts.ts` + 元数据生成 + 构建验证
+- [x] **B4-REG**：新文章注册到 `blogPosts.ts` + 元数据生成 + 构建验证
 
 ---
 
 ### B-FINAL：Phase B 收尾检查
 
-- [ ] **B-FINAL-1**：运行 `npm run lint` 确保无 lint 错误
-- [ ] **B-FINAL-2**：运行 `npm run typecheck` 确保无类型错误
-- [ ] **B-FINAL-3**：运行 `npm run build` 确保全部页面正常生成
-- [ ] **B-FINAL-4**：检查 sitemap（访问 `/sitemap.xml`）确认所有新文章都被包含
-- [ ] **B-FINAL-5**：抽查 3-5 篇文章的 HTML 源码，确认 FAQ Schema / Article Schema / Breadcrumb Schema / OG / Twitter Card 均正确渲染
-- [ ] **B-FINAL-6**：统计总文章数，预期从 9 篇增至 ~36 篇
+- [x] **B-FINAL-1**：运行 `npm run lint` 确保无 lint 错误
+- [x] **B-FINAL-2**：运行 `npm run typecheck` 确保无类型错误
+- [x] **B-FINAL-3**：运行 `npm run build` 确保全部页面正常生成
+- [x] **B-FINAL-4**：检查 sitemap（访问 `/sitemap.xml`）确认所有新文章都被包含
+- [x] **B-FINAL-5**：抽查 3-5 篇文章的 HTML 源码，确认 FAQ Schema / Article Schema / Breadcrumb Schema / OG / Twitter Card 均正确渲染
+- [x] **B-FINAL-6**：统计总文章数，预期从 9 篇增至 ~36 篇
 - [ ] **B-FINAL-7**：在 Google Search Console 提交更新后的 sitemap
 
 ---
