@@ -20,6 +20,28 @@ import astronomicalImg from "../../public/images/blog/2025-planetary-alignment.j
  */
 export const blogPosts: BlogPost[] = [
   {
+    slug: "venus-hour-guide",
+    title: "Venus Hour in Astrology: Meaning, Best Activities & Today's Times",
+    excerpt:
+      "Discover the Venus hour meaning in astrology, the best activities during Venus planetary hours, and why Friday amplifies Venus energy. Learn how to find your next Venus hour today.",
+    imageUrl: usingImg as StaticImageData,
+    date: blogDates["venus-hour-guide"],
+    readingTime: blogRead["venus-hour-guide"],
+    category: "planet-hours",
+    tags: ["venus", "planetary hours", "love", "beauty"],
+  },
+  {
+    slug: "jupiter-hour-guide",
+    title: "Jupiter Hour in Astrology: Growth, Abundance & Opportunity Timing",
+    excerpt:
+      "Learn about Jupiter hour meaning in astrology — the Greater Benefic's most auspicious time for growth, wealth, legal matters, and expansion. Discover why Thursday amplifies Jupiter's power.",
+    imageUrl: businessImg as StaticImageData,
+    date: blogDates["jupiter-hour-guide"],
+    readingTime: blogRead["jupiter-hour-guide"],
+    category: "planet-hours",
+    tags: ["jupiter", "planetary hours", "abundance", "growth"],
+  },
+  {
     slug: "saturn-hour-guide",
     title: "Saturn Hour in Astrology: Discipline, Structure & Strategic Timing",
     excerpt:
@@ -28,7 +50,51 @@ export const blogPosts: BlogPost[] = [
     date: blogDates["saturn-hour-guide"],
     readingTime: blogRead["saturn-hour-guide"],
     category: "planet-hours",
-    tags: ["saturn", "planetary hours", "astrology", "discipline"],
+    tags: ["saturn", "planetary hours", "discipline", "structure"],
+  },
+  {
+    slug: "mercury-hour-guide",
+    title: "Mercury Hour in Astrology: Communication, Learning & Mental Clarity",
+    excerpt:
+      "Explore Mercury hour meaning in astrology. Discover the best activities for Mercury's planetary hours — from writing and studying to negotiations and travel planning.",
+    imageUrl: algoImg as StaticImageData,
+    date: blogDates["mercury-hour-guide"],
+    readingTime: blogRead["mercury-hour-guide"],
+    category: "planet-hours",
+    tags: ["mercury", "planetary hours", "communication", "learning"],
+  },
+  {
+    slug: "mars-hour-guide",
+    title: "Mars Hour in Astrology: Energy, Courage & the Power of Action",
+    excerpt:
+      "Learn about Mars hour meaning in astrology — the warrior planet's time for action, courage, competition, and physical energy. Discover why Tuesday amplifies Mars power.",
+    imageUrl: astronomicalImg as StaticImageData,
+    date: blogDates["mars-hour-guide"],
+    readingTime: blogRead["mars-hour-guide"],
+    category: "planet-hours",
+    tags: ["mars", "planetary hours", "action", "courage"],
+  },
+  {
+    slug: "sun-hour-guide",
+    title: "Sun Hour in Astrology: Leadership, Vitality & Success Timing",
+    excerpt:
+      "Discover Sun hour meaning in astrology — the most radiant planetary hour for leadership, success, vitality, and seeking favor from authorities.",
+    imageUrl: introImg as StaticImageData,
+    date: blogDates["sun-hour-guide"],
+    readingTime: blogRead["sun-hour-guide"],
+    category: "planet-hours",
+    tags: ["sun", "planetary hours", "leadership", "success"],
+  },
+  {
+    slug: "moon-hour-guide",
+    title: "Moon Hour in Astrology: Intuition, Emotions & Lunar Timing",
+    excerpt:
+      "Explore Moon hour meaning in astrology — the lunar planetary hour for intuition, emotions, domestic matters, and public engagement.",
+    imageUrl: mobileImg as StaticImageData,
+    date: blogDates["moon-hour-guide"],
+    readingTime: blogRead["moon-hour-guide"],
+    category: "planet-hours",
+    tags: ["moon", "planetary hours", "intuition", "emotions"],
   },
   {
     slug: "planetary-hours-faq",
