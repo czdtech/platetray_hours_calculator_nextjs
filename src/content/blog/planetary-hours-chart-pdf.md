@@ -20,6 +20,8 @@ faqs:
 
 **A planetary hours chart is the single most useful reference tool for anyone working with the ancient system of planetary timing.** Whether you're a seasoned astrologer or a curious beginner, having a clear, at-a-glance chart that shows the sequence of planetary rulers, their associated activities, and the weekly day-planet correspondences transforms planetary hours from an abstract concept into a practical, daily tool. This page provides a complete planetary hours reference in markdown table format that you can bookmark, print, or save as a PDF from your browser.
 
+**[Download Printable Chart](/downloads/planetary-hours-chart.html)** — open in your browser and use *Print &rarr; Save as PDF* for a permanent copy.
+
 For real-time, location-specific planetary hour calculations, use our free [Planetary Hours Calculator](/) — it does the math for you automatically based on your local sunrise and sunset times.
 
 ## What Is a Planetary Hours Chart?
