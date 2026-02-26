@@ -20,6 +20,94 @@ import astronomicalImg from "../../public/images/blog/2025-planetary-alignment.j
  */
 export const blogPosts: BlogPost[] = [
   {
+    slug: "planetary-hours-for-love",
+    title: "Planetary Hours for Love & Relationships: Complete Timing Guide",
+    excerpt:
+      "Discover the best planetary hours for love, romance, and relationships. Learn why Venus hour is ideal for dates, Moon hour for emotional bonds, and how to time your romantic activities.",
+    imageUrl: usingImg as StaticImageData,
+    date: blogDates["planetary-hours-for-love"],
+    readingTime: blogRead["planetary-hours-for-love"],
+    category: "practical-use",
+    tags: ["love", "relationships", "venus", "romance"],
+  },
+  {
+    slug: "planetary-hours-for-magic",
+    title: "Planetary Hours and Days for Magic: A Practitioner's Guide",
+    excerpt:
+      "Learn how to align your magical workings with planetary hours and days for enhanced efficacy. A comprehensive guide to planetary correspondences, spell timing, and ritual planning.",
+    imageUrl: historyImg as StaticImageData,
+    date: blogDates["planetary-hours-for-magic"],
+    readingTime: blogRead["planetary-hours-for-magic"],
+    category: "practical-use",
+    tags: ["magic", "spells", "ritual", "correspondences"],
+  },
+  {
+    slug: "planetary-hours-for-manifestation",
+    title: "Planetary Hours for Manifestation: Align Your Intentions with Cosmic Timing",
+    excerpt:
+      "Learn how to use planetary hours for manifestation and intention-setting. Discover which planetary hours amplify abundance, love, career success, and spiritual growth.",
+    imageUrl: introImg as StaticImageData,
+    date: blogDates["planetary-hours-for-manifestation"],
+    readingTime: blogRead["planetary-hours-for-manifestation"],
+    category: "practical-use",
+    tags: ["manifestation", "intention", "abundance"],
+  },
+  {
+    slug: "planetary-hours-for-money",
+    title: "Best Planetary Hours for Money, Business & Financial Success",
+    excerpt:
+      "Discover the best planetary hours for financial decisions, business deals, and wealth building. Learn why Jupiter hour is the premier time for money matters in astrology.",
+    imageUrl: businessImg as StaticImageData,
+    date: blogDates["planetary-hours-for-money"],
+    readingTime: blogRead["planetary-hours-for-money"],
+    category: "practical-use",
+    tags: ["money", "business", "finance", "jupiter"],
+  },
+  {
+    slug: "best-planetary-hour-for-marriage",
+    title: "Best Planetary Hour for Marriage & Wedding Timing",
+    excerpt:
+      "Find the best planetary hours for marriage ceremonies, proposals, and wedding planning. Learn which cosmic timing creates the most auspicious conditions for lasting love.",
+    imageUrl: usingImg as StaticImageData,
+    date: blogDates["best-planetary-hour-for-marriage"],
+    readingTime: blogRead["best-planetary-hour-for-marriage"],
+    category: "practical-use",
+    tags: ["marriage", "wedding", "venus", "timing"],
+  },
+  {
+    slug: "best-planetary-hour-for-interview",
+    title: "Best Planetary Hour for Job Interviews & Career Moves",
+    excerpt:
+      "Discover the best planetary hours for job interviews, career moves, and professional success. Learn which cosmic timing helps you make the strongest impression.",
+    imageUrl: algoImg as StaticImageData,
+    date: blogDates["best-planetary-hour-for-interview"],
+    readingTime: blogRead["best-planetary-hour-for-interview"],
+    category: "practical-use",
+    tags: ["interview", "career", "job", "mercury"],
+  },
+  {
+    slug: "best-planetary-hour-for-surgery",
+    title: "Best Planetary Hour for Surgery & Medical Procedures",
+    excerpt:
+      "Learn about astrological traditions regarding surgical timing and planetary hours. Understand the historical and cultural perspectives on timing medical procedures.",
+    imageUrl: faqImg as StaticImageData,
+    date: blogDates["best-planetary-hour-for-surgery"],
+    readingTime: blogRead["best-planetary-hour-for-surgery"],
+    category: "practical-use",
+    tags: ["surgery", "medical", "health", "mars"],
+  },
+  {
+    slug: "planetary-hours-chart-pdf",
+    title: "Planetary Hours Chart: Free Printable Reference Guide (PDF)",
+    excerpt:
+      "Download our free printable planetary hours chart PDF. A complete reference guide showing all seven planetary hours, their meanings, best activities, and the weekly planetary day rulers.",
+    imageUrl: whatIsImg as StaticImageData,
+    date: blogDates["planetary-hours-chart-pdf"],
+    readingTime: blogRead["planetary-hours-chart-pdf"],
+    category: "education",
+    tags: ["chart", "pdf", "reference", "printable"],
+  },
+  {
     slug: "planetary-days-of-the-week",
     title: "Planetary Days of the Week: Complete Guide to Daily Planetary Rulers",
     excerpt:
