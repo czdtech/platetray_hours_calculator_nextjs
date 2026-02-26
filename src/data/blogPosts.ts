@@ -20,6 +20,94 @@ import astronomicalImg from "../../public/images/blog/2025-planetary-alignment.j
  */
 export const blogPosts: BlogPost[] = [
   {
+    slug: "planetary-days-of-the-week",
+    title: "Planetary Days of the Week: Complete Guide to Daily Planetary Rulers",
+    excerpt:
+      "Discover which planet rules each day of the week and how planetary days influence your daily energy. A comprehensive guide to the seven planetary days from Sunday to Saturday.",
+    imageUrl: whatIsImg as StaticImageData,
+    date: blogDates["planetary-days-of-the-week"],
+    readingTime: blogRead["planetary-days-of-the-week"],
+    category: "planet-days",
+    tags: ["planetary days", "astrology", "weekly planning"],
+  },
+  {
+    slug: "sunday-sun-day",
+    title: "Sunday: Day of the Sun — Meaning, Energy & Best Activities",
+    excerpt:
+      "Sunday is ruled by the Sun, bringing energy of leadership, vitality, and success. Learn the best activities for the Sun's day and how to harness solar energy.",
+    imageUrl: introImg as StaticImageData,
+    date: blogDates["sunday-sun-day"],
+    readingTime: blogRead["sunday-sun-day"],
+    category: "planet-days",
+    tags: ["sunday", "sun", "planetary days", "leadership"],
+  },
+  {
+    slug: "monday-moon-day",
+    title: "Monday: Day of the Moon — Meaning, Energy & Best Activities",
+    excerpt:
+      "Monday is ruled by the Moon, governing emotions, intuition, and domestic life. Discover the best activities for the Moon's day and how to work with lunar energy.",
+    imageUrl: mobileImg as StaticImageData,
+    date: blogDates["monday-moon-day"],
+    readingTime: blogRead["monday-moon-day"],
+    category: "planet-days",
+    tags: ["monday", "moon", "planetary days", "intuition"],
+  },
+  {
+    slug: "tuesday-mars-day",
+    title: "Tuesday: Day of Mars — Meaning, Energy & Best Activities",
+    excerpt:
+      "Tuesday is ruled by Mars, the planet of action, courage, and energy. Learn the best activities for Mars day and how to channel warrior energy productively.",
+    imageUrl: astronomicalImg as StaticImageData,
+    date: blogDates["tuesday-mars-day"],
+    readingTime: blogRead["tuesday-mars-day"],
+    category: "planet-days",
+    tags: ["tuesday", "mars", "planetary days", "action"],
+  },
+  {
+    slug: "wednesday-mercury-day",
+    title: "Wednesday: Day of Mercury — Meaning, Energy & Best Activities",
+    excerpt:
+      "Wednesday is ruled by Mercury, the planet of communication and intellect. Discover the best activities for Mercury's day and how to maximize mental clarity.",
+    imageUrl: algoImg as StaticImageData,
+    date: blogDates["wednesday-mercury-day"],
+    readingTime: blogRead["wednesday-mercury-day"],
+    category: "planet-days",
+    tags: ["wednesday", "mercury", "planetary days", "communication"],
+  },
+  {
+    slug: "thursday-jupiter-day",
+    title: "Thursday: Day of Jupiter — Meaning, Energy & Best Activities",
+    excerpt:
+      "Thursday is ruled by Jupiter, the Greater Benefic of abundance and growth. Learn the best activities for Jupiter's day and how to attract opportunity and prosperity.",
+    imageUrl: businessImg as StaticImageData,
+    date: blogDates["thursday-jupiter-day"],
+    readingTime: blogRead["thursday-jupiter-day"],
+    category: "planet-days",
+    tags: ["thursday", "jupiter", "planetary days", "abundance"],
+  },
+  {
+    slug: "friday-venus-day",
+    title: "Friday: Day of Venus — Meaning, Energy & Best Activities",
+    excerpt:
+      "Friday is ruled by Venus, the planet of love, beauty, and pleasure. Discover the best activities for Venus day and why Friday is the ultimate day for romance and art.",
+    imageUrl: usingImg as StaticImageData,
+    date: blogDates["friday-venus-day"],
+    readingTime: blogRead["friday-venus-day"],
+    category: "planet-days",
+    tags: ["friday", "venus", "planetary days", "love"],
+  },
+  {
+    slug: "saturday-saturn-day",
+    title: "Saturday: Day of Saturn — Meaning, Energy & Best Activities",
+    excerpt:
+      "Saturday is ruled by Saturn, the planet of discipline, structure, and long-term achievement. Learn the best activities for Saturn's day and how to use its focused energy.",
+    imageUrl: historyImg as StaticImageData,
+    date: blogDates["saturday-saturn-day"],
+    readingTime: blogRead["saturday-saturn-day"],
+    category: "planet-days",
+    tags: ["saturday", "saturn", "planetary days", "discipline"],
+  },
+  {
     slug: "venus-hour-guide",
     title: "Venus Hour in Astrology: Meaning, Best Activities & Today's Times",
     excerpt:
