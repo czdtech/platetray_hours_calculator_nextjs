@@ -527,12 +527,12 @@
 
 #### C1-Content：核心博客内容翻译
 
-- [ ] **C1-Content-1**：翻译 7 篇行星时专题（B1）为西班牙语
+- [x] **C1-Content-1**：翻译 7 篇行星时专题（B1）为西班牙语
   - 放置在 `src/content/blog/es/` 目录（或 `src/content/blog/` 中以 `es-` 前缀命名）
-- [ ] **C1-Content-2**：翻译行星日总览 Pillar（B2）
-- [ ] **C1-Content-3**：翻译 5 篇最重要的应用场景（love / magic / manifestation / money / marriage）
-- [ ] **C1-Content-4**：在西班牙语版 `blogPosts` 中注册翻译后的文章
-- [ ] **C1-Content-5**：翻译后的文章需要本地化 keywords（如 "venus hour" → "hora de venus"）
+- [ ] **C1-Content-2**：翻译行星日总览 Pillar（B2）(planetary-days-of-the-week pillar not translated)
+- [x] **C1-Content-3**：翻译 5 篇最重要的应用场景（love / magic / manifestation / money / marriage）
+- [x] **C1-Content-4**：在西班牙语版 `blogPosts` 中注册翻译后的文章
+- [x] **C1-Content-5**：翻译后的文章需要本地化 keywords（如 "venus hour" → "hora de venus"）
 
 #### C1-Cities：拉美城市页面
 
@@ -558,7 +558,7 @@
 
 - [x] **C2-1**：翻译 `src/i18n/messages/pt.json`
 - [x] **C2-2**：翻译计算器 UI 全部文本为葡萄牙语
-- [ ] **C2-3**：翻译 7 篇行星时专题 + 1 篇 Pillar + 5 篇应用场景 = 13 篇内容
+- [x] **C2-3**：翻译 7 篇行星时专题 + 1 篇 Pillar + 5 篇应用场景 = 13 篇内容 (13 core articles: 7 planet hours + meanings pillar + 5 applications)
 - [x] **C2-4**：添加 5 个巴西/葡萄牙城市（São Paulo, Rio, Brasília, Lisbon, Porto） (São Paulo, Rio already in city data)
 - [x] **C2-5**：配置 `/pt/` 路径 SEO + hreflang
 - [x] **C2-6**：构建验证
