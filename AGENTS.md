@@ -176,6 +176,9 @@ Planetary Hours Calculator — a Next.js 15 App Router project deployed on Verce
 - English at `/` (default, no prefix), Spanish at `/es/`, Portuguese at `/pt/`
 - Each locale has its own layout (`src/app/es/layout.tsx`, `src/app/pt/layout.tsx`) setting `<html lang="...">`
 - hreflang utility at `src/utils/seo/hreflang.ts`
+- All three locales have: homepage, about, blog listing, blog articles, city index, city pages
+- Blog data files: `blogPosts.ts` (English), `blogPosts-es.ts`, `blogPosts-pt.ts` (re-export English data until translated)
+- Blog article pages look for markdown in `src/content/blog/{es,pt}/[slug].md` first, then fall back to English `src/content/blog/[slug].md`
 
 ### Key commands
 - **Lint:** `npm run lint`
