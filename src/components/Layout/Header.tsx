@@ -7,7 +7,7 @@ import { ThemeToggle } from "@/components/Theme/ThemeToggle";
 // import { HashLink } from 'react-router-hash-link'; // HashLink might need a Next.js alternative or different handling
 
 interface HeaderProps {
-  activePage: "calculator" | "about" | "blog";
+  activePage: "calculator" | "about" | "blog" | "cities";
 }
 
 export function Header({ activePage }: HeaderProps) {
@@ -71,6 +71,16 @@ export function Header({ activePage }: HeaderProps) {
               FAQ
             </Link>
           )}
+          <Link
+            href="/planetary-hours"
+            className={`text-sm ${
+              activePage === "cities"
+                ? "text-purple-600 dark:text-purple-400 font-medium border-b-2 border-purple-600 dark:border-purple-400 pb-1"
+                : "text-gray-600 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 transition-colors duration-200"
+            }`}
+          >
+            Cities
+          </Link>
           <Link
             href="/blog"
             className={`text-sm ${
@@ -148,6 +158,13 @@ export function Header({ activePage }: HeaderProps) {
               FAQ
             </Link>
           )}
+          <Link
+            href="/planetary-hours"
+            className="block py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400"
+            onClick={() => setMenuOpen(false)}
+          >
+            Cities
+          </Link>
           <Link
             href="/blog"
             className="block py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400"

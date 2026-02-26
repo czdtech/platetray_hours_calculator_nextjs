@@ -5,6 +5,7 @@ import staticPageDates from "@/data/staticPageDates.json"; // 导入静态页面
 // blogDates.json is implicitly used by blogPosts.ts, so no direct import needed here if blogPosts already processes it.
 // However, if blogPosts only contains slugs and we need to fetch dates separately:
 import blogActualDates from "@/data/blogDates.json"; // Explicitly import for clarity if needed for direct use
+import { cities } from "@/data/cities";
 import { createLogger } from '@/utils/unified-logger';
 
 const logger = createLogger('Sitemap');
@@ -90,6 +91,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
+  // City pages
+  const cityIndexEntry: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/planetary-hours`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+    },
+  ];
+
+  const cityPageEntries: MetadataRoute.Sitemap = cities.map((city) => ({
+    url: `${baseUrl}/planetary-hours/${city.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "daily" as const,
+    priority: 0.8,
+  }));
+
   // 合并所有页面
-  return [...staticPages, ...blogPostEntries];
+  return [...staticPages, ...cityIndexEntry, ...cityPageEntries, ...blogPostEntries];
 }

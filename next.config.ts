@@ -121,6 +121,11 @@ const nextConfig: NextConfig = {
         destination: '/blog/:slug',
         permanent: true,
       },
+      {
+        source: '/planetary-hours/:city/',
+        destination: '/planetary-hours/:city',
+        permanent: true,
+      },
     ];
   },
 
