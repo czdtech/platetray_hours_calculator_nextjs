@@ -184,9 +184,96 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   }));
 
+  // Spanish & Portuguese static pages
+  const esStaticPages: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/es`,
+      lastModified: new Date(staticPageDates.home),
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+      alternates: {
+        languages: {
+          en: baseUrl,
+          es: `${baseUrl}/es`,
+          pt: `${baseUrl}/pt`,
+        },
+      },
+    },
+    {
+      url: `${baseUrl}/es/about`,
+      lastModified: new Date(staticPageDates.about),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/about`,
+          es: `${baseUrl}/es/about`,
+          pt: `${baseUrl}/pt/about`,
+        },
+      },
+    },
+    {
+      url: `${baseUrl}/es/blog`,
+      lastModified: getLatestBlogPostDate(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/blog`,
+          es: `${baseUrl}/es/blog`,
+          pt: `${baseUrl}/pt/blog`,
+        },
+      },
+    },
+  ];
+
+  const ptStaticPages: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/pt`,
+      lastModified: new Date(staticPageDates.home),
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+      alternates: {
+        languages: {
+          en: baseUrl,
+          es: `${baseUrl}/es`,
+          pt: `${baseUrl}/pt`,
+        },
+      },
+    },
+    {
+      url: `${baseUrl}/pt/about`,
+      lastModified: new Date(staticPageDates.about),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/about`,
+          es: `${baseUrl}/es/about`,
+          pt: `${baseUrl}/pt/about`,
+        },
+      },
+    },
+    {
+      url: `${baseUrl}/pt/blog`,
+      lastModified: getLatestBlogPostDate(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/blog`,
+          es: `${baseUrl}/es/blog`,
+          pt: `${baseUrl}/pt/blog`,
+        },
+      },
+    },
+  ];
+
   // 合并所有页面
   return [
     ...staticPages,
+    ...esStaticPages,
+    ...ptStaticPages,
     ...cityIndexEntry,
     ...cityPageEntries,
     ...esCityIndexEntry,

@@ -49,5 +49,41 @@
     "title": "Planetary Hours by City",
     "description": "Select a city to view today's planetary hours calculated with precise local coordinates and timezone.",
     "dontSeeCity": "Don't see your city? Use the full calculator for any location worldwide."
+  },
+  "blog": {
+    "title": "Planetary Hours Blog",
+    "description": "Read the latest guides and articles about planetary hours, astrology and ancient wisdom.",
+    "readMore": "Read more →",
+    "readFullArticle": "Read full article →",
+    "minRead": "min read",
+    "relatedArticles": "Related Articles",
+    "shareArticle": "Share this article:",
+    "tableOfContents": "Table of Contents",
+    "faq": "Frequently Asked Questions",
+    "all": "All",
+    "categoryFilterLabel": "Filter by category"
+  },
+  "about": {
+    "title": "About Planetary Hours",
+    "description": "Learn about the mission, methodology and team behind the Planetary Hours Calculator.",
+    "whatArePH": "What are Planetary Hours?",
+    "whatArePHText": "Planetary hours are an ancient astrological system that divides the time between sunrise and sunset, and between sunset and sunrise, into 12 unequal \"hours.\" Each hour is ruled by one of the seven traditional planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn).",
+    "howCanBeUsed": "How Can They Be Used?",
+    "howCanBeUsedText": "Practitioners believe that the nature of the ruling planet influences the energy and suitability of that hour for certain activities.",
+    "keyFeatures": "Key Features",
+    "limitations": "Limitations & Disclaimer"
+  },
+  "home": {
+    "title": "Planetary Hours Calculator",
+    "subtitle": "Find the perfect timing for your activities based on ancient planetary wisdom. Enter your location and date to get started.",
+    "metaTitle": "Planetary Hours Calculator - Find Your Perfect Timing",
+    "metaDescription": "Discover the perfect timing with our planetary hours calculator. Calculate astrological planetary hours based on your location and date."
+  },
+  "categories": {
+    "planet-hours": "Planet Hours",
+    "planet-days": "Planet Days",
+    "practical-use": "Practical Use",
+    "education": "Education",
+    "news": "News & Events"
   }
 }

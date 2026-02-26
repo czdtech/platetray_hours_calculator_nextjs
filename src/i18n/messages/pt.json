@@ -49,5 +49,41 @@
     "title": "Horas Planetárias por Cidade",
     "description": "Selecione uma cidade para ver as horas planetárias de hoje calculadas com coordenadas locais precisas e fuso horário.",
     "dontSeeCity": "Não encontrou sua cidade? Use a calculadora completa para qualquer localização do mundo."
+  },
+  "blog": {
+    "title": "Blog de Horas Planetárias",
+    "description": "Leia os últimos guias e artigos sobre horas planetárias, astrologia e sabedoria antiga.",
+    "readMore": "Leia mais →",
+    "readFullArticle": "Ler artigo completo →",
+    "minRead": "min de leitura",
+    "relatedArticles": "Artigos Relacionados",
+    "shareArticle": "Compartilhar este artigo:",
+    "tableOfContents": "Índice",
+    "faq": "Perguntas Frequentes",
+    "all": "Todos",
+    "categoryFilterLabel": "Filtrar por categoria"
+  },
+  "about": {
+    "title": "Sobre Horas Planetárias",
+    "description": "Saiba mais sobre a missão, metodologia e a equipe por trás da Calculadora de Horas Planetárias.",
+    "whatArePH": "O que são Horas Planetárias?",
+    "whatArePHText": "As horas planetárias são um antigo sistema astrológico que divide o tempo entre o nascer e o pôr do sol, e entre o pôr do sol e o nascer do sol seguinte, em 12 \"horas\" desiguais. Cada hora é regida por um dos sete planetas tradicionais (Sol, Lua, Mercúrio, Vênus, Marte, Júpiter, Saturno).",
+    "howCanBeUsed": "Como podem ser usadas?",
+    "howCanBeUsedText": "Os praticantes acreditam que a natureza do planeta regente influencia a energia e a adequação dessa hora para certas atividades.",
+    "keyFeatures": "Principais Recursos",
+    "limitations": "Limitações e Aviso Legal"
+  },
+  "home": {
+    "title": "Calculadora de Horas Planetárias",
+    "subtitle": "Encontre o momento perfeito para suas atividades com base na sabedoria planetária antiga. Insira sua localização e data para começar.",
+    "metaTitle": "Calculadora de Horas Planetárias - Encontre Seu Momento Perfeito",
+    "metaDescription": "Descubra o momento perfeito com nossa calculadora de horas planetárias. Calcule as horas planetárias astrológicas com base na sua localização e data."
+  },
+  "categories": {
+    "planet-hours": "Horas Planetárias",
+    "planet-days": "Dias Planetários",
+    "practical-use": "Uso Prático",
+    "education": "Educação",
+    "news": "Notícias e Eventos"
   }
 }
