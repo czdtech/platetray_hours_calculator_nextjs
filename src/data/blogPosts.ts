@@ -20,6 +20,17 @@ import astronomicalImg from "../../public/images/blog/2025-planetary-alignment.j
  */
 export const blogPosts: BlogPost[] = [
   {
+    slug: "saturn-hour-guide",
+    title: "Saturn Hour in Astrology: Discipline, Structure & Strategic Timing",
+    excerpt:
+      "Understand Saturn hour meaning and activities in astrology. Learn why Saturn's planetary hours favor discipline, long-term planning, and serious work — especially on Saturday.",
+    imageUrl: historyImg as StaticImageData,
+    date: blogDates["saturn-hour-guide"],
+    readingTime: blogRead["saturn-hour-guide"],
+    category: "planet-hours",
+    tags: ["saturn", "planetary hours", "astrology", "discipline"],
+  },
+  {
     slug: "planetary-hours-faq",
     title: "Planetary Hours FAQ: Expert Answers to Your Most Important Questions",
     excerpt:
