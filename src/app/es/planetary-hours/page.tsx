@@ -6,38 +6,42 @@ import { JsonLd } from "@/components/SEO/JsonLd";
 import { getBreadcrumbSchema } from "@/utils/seo/jsonld";
 import { siteConfig } from "@/config/seo";
 import { cities } from "@/data/cities";
+import { getMessagesSync } from "@/i18n/getMessages";
 import { getHreflangTags } from "@/utils/seo/hreflang";
+
+const locale = "es";
+const messages = getMessagesSync(locale);
 
 const hreflang = getHreflangTags("/planetary-hours");
 
 export const metadata: Metadata = {
-  title: "Planetary Hours by City | Free Calculator for 20+ Cities",
+  title: "Horas Planetarias por Ciudad | Calculadora Gratuita para 100+ Ciudades",
   description:
-    "Calculate planetary hours for cities worldwide. View today's planetary hours, sunrise, sunset, and day ruler for New York, London, Tokyo, and 17 more cities.",
+    "Calcula las horas planetarias para ciudades de todo el mundo. Consulta las horas planetarias de hoy, amanecer, atardecer y regente del día para más de 100 ciudades.",
   keywords: [
-    "planetary hours by city",
-    "city planetary hours",
-    "planetary hours worldwide",
-    "planetary hours calculator cities",
+    "horas planetarias por ciudad",
+    "horas planetarias ciudades",
+    "horas planetarias mundial",
+    "calculadora horas planetarias",
   ],
   alternates: {
-    canonical: `${siteConfig.url}/planetary-hours`,
+    canonical: `${siteConfig.url}/es/planetary-hours`,
     languages: hreflang,
   },
   openGraph: {
-    title: "Planetary Hours by City | Free Calculator for 20+ Cities",
+    title: "Horas Planetarias por Ciudad | Calculadora Gratuita",
     description:
-      "Calculate planetary hours for cities worldwide. View today's planetary hours, sunrise, sunset, and day ruler for 20+ cities.",
-    url: `${siteConfig.url}/planetary-hours`,
+      "Calcula las horas planetarias para ciudades de todo el mundo.",
+    url: `${siteConfig.url}/es/planetary-hours`,
     type: "website",
     siteName: siteConfig.name,
   },
 };
 
-export default function PlanetaryHoursCityIndex() {
+export default function SpanishCityIndex() {
   const breadcrumbItems = [
-    { name: "Home", url: "/" },
-    { name: "Cities", url: "/planetary-hours" },
+    { name: messages.common.home, url: "/es" },
+    { name: messages.common.cities, url: "/es/planetary-hours" },
   ];
   const breadcrumbSchema = getBreadcrumbSchema(
     breadcrumbItems.map((item) => ({ name: item.name, url: `${siteConfig.url}${item.url}` })),
@@ -61,12 +65,10 @@ export default function PlanetaryHoursCityIndex() {
 
         <div className="text-center max-w-2xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">
-            Planetary Hours by City
+            {messages.cityIndex.title}
           </h1>
           <p className="mt-3 text-gray-600 dark:text-gray-300">
-            Select a city to view today&apos;s planetary hours calculated with precise local
-            coordinates and timezone. Each page shows real-time sunrise, sunset, day ruler, and all
-            24 planetary hours.
+            {messages.cityIndex.description}
           </p>
         </div>
 
@@ -79,7 +81,7 @@ export default function PlanetaryHoursCityIndex() {
               {regionCities.map((city) => (
                 <Link
                   key={city.slug}
-                  href={`/planetary-hours/${city.slug}`}
+                  href={`/es/planetary-hours/${city.slug}`}
                   className="block bg-white dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700 p-5 transition-colors"
                 >
                   <h3 className="font-semibold text-gray-900 dark:text-gray-100">{city.name}</h3>
@@ -100,13 +102,13 @@ export default function PlanetaryHoursCityIndex() {
 
         <div className="text-center py-8">
           <p className="text-gray-600 dark:text-gray-300 mb-4">
-            Don&apos;t see your city? Use the full calculator for any location worldwide.
+            {messages.cityIndex.dontSeeCity}
           </p>
           <Link
             href="/"
             className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
           >
-            Open Full Calculator
+            {messages.calculator.openCalculator}
           </Link>
         </div>
       </div>

@@ -1,0 +1,53 @@
+{
+  "common": {
+    "home": "Home",
+    "blog": "Blog",
+    "about": "About",
+    "cities": "Cities",
+    "calculator": "Calculator",
+    "skipToContent": "Skip to content",
+    "backToTop": "Back to top"
+  },
+  "planets": {
+    "Sun": "Sun",
+    "Moon": "Moon",
+    "Mercury": "Mercury",
+    "Venus": "Venus",
+    "Mars": "Mars",
+    "Jupiter": "Jupiter",
+    "Saturn": "Saturn"
+  },
+  "calculator": {
+    "daytimeHours": "Daytime Planetary Hours",
+    "nighttimeHours": "Nighttime Planetary Hours",
+    "currentHour": "Current Planetary Hour",
+    "dayRuler": "Day Ruler",
+    "sunrise": "Sunrise",
+    "sunset": "Sunset",
+    "goodFor": "Good for",
+    "avoid": "Avoid",
+    "planet": "Planet",
+    "time": "Time",
+    "duration": "Duration",
+    "now": "Now",
+    "daytime": "Daytime",
+    "nighttime": "Nighttime",
+    "openCalculator": "Open Full Calculator",
+    "calculationError": "Calculation Error",
+    "calculationErrorMessage": "Unable to calculate planetary hours for {city} at this time. Please try again later.",
+    "backToAllCities": "Back to all cities"
+  },
+  "cityPage": {
+    "title": "Planetary Hours in {city} Today",
+    "description": "Find today's planetary hours for {city}, {country}.",
+    "timezone": "Timezone",
+    "faq": "Frequently Asked Questions",
+    "otherCities": "Planetary Hours in Other Cities",
+    "customLocation": "Want to calculate planetary hours for a custom location?"
+  },
+  "cityIndex": {
+    "title": "Planetary Hours by City",
+    "description": "Select a city to view today's planetary hours calculated with precise local coordinates and timezone.",
+    "dontSeeCity": "Don't see your city? Use the full calculator for any location worldwide."
+  }
+}

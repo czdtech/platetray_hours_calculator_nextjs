@@ -98,6 +98,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.9,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/planetary-hours`,
+          es: `${baseUrl}/es/planetary-hours`,
+          pt: `${baseUrl}/pt/planetary-hours`,
+        },
+      },
     },
   ];
 
@@ -106,8 +113,86 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
     changeFrequency: "daily" as const,
     priority: 0.8,
+    alternates: {
+      languages: {
+        en: `${baseUrl}/planetary-hours/${city.slug}`,
+        es: `${baseUrl}/es/planetary-hours/${city.slug}`,
+        pt: `${baseUrl}/pt/planetary-hours/${city.slug}`,
+      },
+    },
+  }));
+
+  // Spanish city pages
+  const esCityIndexEntry: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/es/planetary-hours`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/planetary-hours`,
+          es: `${baseUrl}/es/planetary-hours`,
+          pt: `${baseUrl}/pt/planetary-hours`,
+        },
+      },
+    },
+  ];
+
+  const esCityPageEntries: MetadataRoute.Sitemap = cities.map((city) => ({
+    url: `${baseUrl}/es/planetary-hours/${city.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "daily" as const,
+    priority: 0.7,
+    alternates: {
+      languages: {
+        en: `${baseUrl}/planetary-hours/${city.slug}`,
+        es: `${baseUrl}/es/planetary-hours/${city.slug}`,
+        pt: `${baseUrl}/pt/planetary-hours/${city.slug}`,
+      },
+    },
+  }));
+
+  // Portuguese city pages
+  const ptCityIndexEntry: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/pt/planetary-hours`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+      alternates: {
+        languages: {
+          en: `${baseUrl}/planetary-hours`,
+          es: `${baseUrl}/es/planetary-hours`,
+          pt: `${baseUrl}/pt/planetary-hours`,
+        },
+      },
+    },
+  ];
+
+  const ptCityPageEntries: MetadataRoute.Sitemap = cities.map((city) => ({
+    url: `${baseUrl}/pt/planetary-hours/${city.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "daily" as const,
+    priority: 0.7,
+    alternates: {
+      languages: {
+        en: `${baseUrl}/planetary-hours/${city.slug}`,
+        es: `${baseUrl}/es/planetary-hours/${city.slug}`,
+        pt: `${baseUrl}/pt/planetary-hours/${city.slug}`,
+      },
+    },
   }));
 
   // 合并所有页面
-  return [...staticPages, ...cityIndexEntry, ...cityPageEntries, ...blogPostEntries];
+  return [
+    ...staticPages,
+    ...cityIndexEntry,
+    ...cityPageEntries,
+    ...esCityIndexEntry,
+    ...esCityPageEntries,
+    ...ptCityIndexEntry,
+    ...ptCityPageEntries,
+    ...blogPostEntries,
+  ];
 }

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/Theme/ThemeToggle";
-// import { HashLink } from 'react-router-hash-link'; // HashLink might need a Next.js alternative or different handling
+import { LanguageSwitcher } from "@/components/Layout/LanguageSwitcher";
 
 interface HeaderProps {
   activePage: "calculator" | "about" | "blog" | "cities";
@@ -101,11 +101,13 @@ export function Header({ activePage }: HeaderProps) {
           >
             About
           </Link>
+          <LanguageSwitcher />
           <ThemeToggle />
         </nav>
 
         {/* Mobile: Theme toggle + hamburger */}
         <div className="md:hidden flex items-center gap-2">
+          <LanguageSwitcher />
           <ThemeToggle />
           <button
             onClick={() => setMenuOpen(!isMenuOpen)}

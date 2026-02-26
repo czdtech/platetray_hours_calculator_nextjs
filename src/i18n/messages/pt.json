@@ -1,0 +1,53 @@
+{
+  "common": {
+    "home": "Início",
+    "blog": "Blog",
+    "about": "Sobre",
+    "cities": "Cidades",
+    "calculator": "Calculadora",
+    "skipToContent": "Pular para o conteúdo",
+    "backToTop": "Voltar ao topo"
+  },
+  "planets": {
+    "Sun": "Sol",
+    "Moon": "Lua",
+    "Mercury": "Mercúrio",
+    "Venus": "Vênus",
+    "Mars": "Marte",
+    "Jupiter": "Júpiter",
+    "Saturn": "Saturno"
+  },
+  "calculator": {
+    "daytimeHours": "Horas Planetárias Diurnas",
+    "nighttimeHours": "Horas Planetárias Noturnas",
+    "currentHour": "Hora Planetária Atual",
+    "dayRuler": "Regente do Dia",
+    "sunrise": "Nascer do sol",
+    "sunset": "Pôr do sol",
+    "goodFor": "Bom para",
+    "avoid": "Evitar",
+    "planet": "Planeta",
+    "time": "Hora",
+    "duration": "Duração",
+    "now": "Agora",
+    "daytime": "Diurna",
+    "nighttime": "Noturna",
+    "openCalculator": "Abrir Calculadora Completa",
+    "calculationError": "Erro de Cálculo",
+    "calculationErrorMessage": "Não é possível calcular as horas planetárias para {city} neste momento. Por favor, tente novamente mais tarde.",
+    "backToAllCities": "Voltar para todas as cidades"
+  },
+  "cityPage": {
+    "title": "Horas Planetárias em {city} Hoje",
+    "description": "Encontre as horas planetárias de hoje para {city}, {country}.",
+    "timezone": "Fuso horário",
+    "faq": "Perguntas Frequentes",
+    "otherCities": "Horas Planetárias em Outras Cidades",
+    "customLocation": "Quer calcular as horas planetárias para uma localização personalizada?"
+  },
+  "cityIndex": {
+    "title": "Horas Planetárias por Cidade",
+    "description": "Selecione uma cidade para ver as horas planetárias de hoje calculadas com coordenadas locais precisas e fuso horário.",
+    "dontSeeCity": "Não encontrou sua cidade? Use a calculadora completa para qualquer localização do mundo."
+  }
+}

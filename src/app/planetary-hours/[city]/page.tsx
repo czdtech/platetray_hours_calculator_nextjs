@@ -7,6 +7,7 @@ import { Breadcrumb } from "@/components/SEO/Breadcrumb";
 import { JsonLd } from "@/components/SEO/JsonLd";
 import { getBreadcrumbSchema } from "@/utils/seo/jsonld";
 import { siteConfig } from "@/config/seo";
+import { getHreflangTags } from "@/utils/seo/hreflang";
 import { planetaryHoursCalculator } from "@/services/PlanetaryHoursCalculator";
 import { getCityBySlug, getAllCitySlugs, getNearbyCities } from "@/data/cities";
 import { CityInfo } from "@/components/CityCalculator/CityInfo";
@@ -33,6 +34,7 @@ export async function generateMetadata({ params }: CityPageProps): Promise<Metad
   const today = formatInTimeZone(new Date(), city.timezone, "MMMM d, yyyy");
   const title = `Planetary Hours in ${city.name} Today – ${today}`;
   const description = `Calculate today's planetary hours for ${city.name}, ${city.country}. See sunrise, sunset, day ruler, and all 24 planetary hours in ${city.timezone}. Free and accurate.`;
+  const hreflang = getHreflangTags(`/planetary-hours/${city.slug}`);
 
   return {
     title,
@@ -47,6 +49,7 @@ export async function generateMetadata({ params }: CityPageProps): Promise<Metad
     ],
     alternates: {
       canonical: `${siteConfig.url}/planetary-hours/${city.slug}`,
+      languages: hreflang,
     },
     openGraph: {
       title,
