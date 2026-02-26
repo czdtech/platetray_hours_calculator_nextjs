@@ -23,43 +23,43 @@
 
 #### B-INFRA-1：博客分类/标签系统
 
-- [ ] **B-INFRA-1a**：在 `src/types/blog.ts` 的 `BlogPost` interface 中新增 `category?: string` 和 `tags?: string[]` 字段
-- [ ] **B-INFRA-1b**：定义分类枚举常量文件 `src/constants/blogCategories.ts`，包含以下分类：
+- [x] **B-INFRA-1a**：在 `src/types/blog.ts` 的 `BlogPost` interface 中新增 `category?: string` 和 `tags?: string[]` 字段
+- [x] **B-INFRA-1b**：定义分类枚举常量文件 `src/constants/blogCategories.ts`，包含以下分类：
   - `planet-hours`（行星时专题）
   - `planet-days`（行星日专题）
   - `practical-use`（应用场景）
   - `education`（教育基础）
   - `news`（新闻/事件）
-- [ ] **B-INFRA-1c**：在 `src/data/blogPosts.ts` 中为现有 9 篇文章添加 category 和 tags 字段
-- [ ] **B-INFRA-1d**：在 `src/app/blog/page.tsx` 中添加分类筛选 UI（Tab 栏或 Tag 云）
+- [x] **B-INFRA-1c**：在 `src/data/blogPosts.ts` 中为现有 9 篇文章添加 category 和 tags 字段
+- [x] **B-INFRA-1d**：在 `src/app/blog/page.tsx` 中添加分类筛选 UI（Tab 栏或 Tag 云）
 - [ ] **B-INFRA-1e**：可选——创建分类路由 `src/app/blog/category/[category]/page.tsx`，用于分类 landing page
 
 #### B-INFRA-2：博客文章新增流程优化
 
-- [ ] **B-INFRA-2a**：在 `src/content/blog/` 的 frontmatter 中支持可选字段 `keywords: string[]`，用于 `<meta name="keywords">`
-- [ ] **B-INFRA-2b**：修改 `src/app/blog/[slug]/page.tsx` 的 `generateMetadata()` 函数，从 frontmatter 读取 keywords 并注入到 metadata.keywords 中
-- [ ] **B-INFRA-2c**：在 `src/app/blog/[slug]/page.tsx` 中添加对新文章的 FAQ Schema 支持——如果 frontmatter 中包含 `faqs` 字段（数组），则在页面中注入 `FAQPageSchema`
+- [x] **B-INFRA-2a**：在 `src/content/blog/` 的 frontmatter 中支持可选字段 `keywords: string[]`，用于 `<meta name="keywords">`
+- [x] **B-INFRA-2b**：修改 `src/app/blog/[slug]/page.tsx` 的 `generateMetadata()` 函数，从 frontmatter 读取 keywords 并注入到 metadata.keywords 中
+- [x] **B-INFRA-2c**：在 `src/app/blog/[slug]/page.tsx` 中添加对新文章的 FAQ Schema 支持——如果 frontmatter 中包含 `faqs` 字段（数组），则在页面中注入 `FAQPageSchema`
   - frontmatter 格式设计：`faqs: [{q: "...", a: "..."}]`
   - 或者：在 markdown 正文中用特定格式标记 FAQ，由解析器提取
   - 推荐方案：在 frontmatter 中添加 `faqs` 字段，在 `getMarkdownContent()` 中解析并返回
-- [ ] **B-INFRA-2d**：修改 `src/utils/markdown.ts` 的 `MarkdownContent` interface，新增 `keywords?: string[]` 和 `faqs?: {question: string, answer: string}[]`
-- [ ] **B-INFRA-2e**：修改 `getMarkdownContent()` 函数，从 frontmatter 解析 keywords 和 faqs 字段
+- [x] **B-INFRA-2d**：修改 `src/utils/markdown.ts` 的 `MarkdownContent` interface，新增 `keywords?: string[]` 和 `faqs?: {question: string, answer: string}[]`
+- [x] **B-INFRA-2e**：修改 `getMarkdownContent()` 函数，从 frontmatter 解析 keywords 和 faqs 字段
 
 #### B-INFRA-3：内链 CTA 组件
 
-- [ ] **B-INFRA-3a**：创建 `src/components/Blog/CalculatorCTA.tsx` 组件——博客文章中嵌入的计算器引导卡片
+- [x] **B-INFRA-3a**：创建 `src/components/Blog/CalculatorCTA.tsx` 组件——博客文章中嵌入的计算器引导卡片
   - Props: `planet?: string`（如 "Venus"）、`text?: string`
   - UI：圆角卡片，渐变背景，"Find your next [Planet] hour →" 按钮链接到首页
-- [ ] **B-INFRA-3b**：创建 `src/components/Blog/RelatedPlanetHours.tsx` 组件——文章底部展示相关的行星时专题链接
+- [x] **B-INFRA-3b**：创建 `src/components/Blog/RelatedPlanetHours.tsx` 组件——文章底部展示相关的行星时专题链接
   - Props: `planets: string[]`（如 ["Venus", "Moon"]）
   - 自动链接到对应行星时专题博客页
-- [ ] **B-INFRA-3c**：创建 `src/components/Blog/TableOfContents.tsx` 组件——长文章的目录导航
+- [x] **B-INFRA-3c**：创建 `src/components/Blog/TableOfContents.tsx` 组件——长文章的目录导航
   - 从 markdown HTML 中提取 h2/h3 生成锚点目录
   - 固定在侧边栏（桌面端）或折叠在顶部（移动端）
 
 #### B-INFRA-4：Sitemap 扩展准备
 
-- [ ] **B-INFRA-4a**：确认 `src/app/sitemap.ts` 在新增博客文章后能自动包含新页面（已通过 `blogPosts` 数组实现，但需确认动态 params 也被包含）
+- [x] **B-INFRA-4a**：确认 `src/app/sitemap.ts` 在新增博客文章后能自动包含新页面（已通过 `blogPosts` 数组实现，但需确认动态 params 也被包含）
 - [ ] **B-INFRA-4b**：在 `src/data/staticPageDates.json` 中预留 `planetaryHoursGuide` 等新页面的日期条目
 
 ---
@@ -70,77 +70,77 @@
 
 #### B1-Venus：Venus Hour 专题
 
-- [ ] **B1-Venus-1**：撰写 `src/content/blog/venus-hour-guide.md`（~3000 词）
+- [x] **B1-Venus-1**：撰写 `src/content/blog/venus-hour-guide.md`（~3000 词）
   - frontmatter: title / excerpt / date / author / keywords / faqs
   - keywords: `["venus hour", "venus hour meaning", "venus hour today", "venus hour on friday", "venus hour astrology"]`
   - faqs: 至少 3 个 FAQ（What is Venus hour good for? / Is Venus Hora a good time for love? / When is Venus hour today?）
   - 内容结构：H1 → 定义段落（回答 PAA）→ Venus Hour 含义 → 最佳活动清单 → 避免事项 → Venus Hour on Friday 专题 → 如何查找今天的 Venus Hour → 计算器 CTA → FAQ
   - 内链要求：链接到首页计算器、what-are-planetary-hours、using-planetary-hours、planetary-hours-faq
-- [ ] **B1-Venus-2**：准备封面图 `public/images/blog/venus-hour-guide.jpg`（或 .webp）
+- [ ] **B1-Venus-2**：准备封面图 `public/images/blog/venus-hour-guide.jpg`（或 .webp）——当前使用占位图
   - 图片 Alt: "Venus Hour Astrology Guide - Love, Beauty and Perfect Timing"
-- [ ] **B1-Venus-3**：在 `src/data/blogPosts.ts` 中注册新文章
+- [x] **B1-Venus-3**：在 `src/data/blogPosts.ts` 中注册新文章
   - 添加 import 语句：`import venusHourImg from "../../public/images/blog/venus-hour-guide.jpg";`
   - 在 `blogPosts` 数组中添加条目（注意按日期倒序放在正确位置）
-- [ ] **B1-Venus-4**：运行 `npm run generate:blog-metadata` 更新 blogDates.json 和 blogRead.json
-- [ ] **B1-Venus-5**：运行 `npm run build` 验证静态生成正常，页面可访问 `/blog/venus-hour-guide`
-- [ ] **B1-Venus-6**：检查页面 SEO 元素完整性——title / description / canonical / OG / Twitter / Article Schema / Breadcrumb Schema / FAQ Schema
+- [x] **B1-Venus-4**：运行 `npm run generate:blog-metadata` 更新 blogDates.json 和 blogRead.json
+- [x] **B1-Venus-5**：运行 `npm run build` 验证静态生成正常，页面可访问 `/blog/venus-hour-guide`
+- [x] **B1-Venus-6**：检查页面 SEO 元素完整性——title / description / canonical / OG / Twitter / Article Schema / Breadcrumb Schema / FAQ Schema
 
 #### B1-Jupiter：Jupiter Hour 专题
 
-- [ ] **B1-Jupiter-1**：撰写 `src/content/blog/jupiter-hour-guide.md`（~3000 词）
+- [x] **B1-Jupiter-1**：撰写 `src/content/blog/jupiter-hour-guide.md`（~3000 词）
   - keywords: `["jupiter hour", "jupiter hour today", "jupiter hour meaning", "jupiter hour on thursday", "jupiter hour astrology"]`
   - faqs: What is Jupiter hour good for? / What is the best day for Jupiter hour? / How long is a Jupiter hour?
   - 内容要点：Greater Benefic 概念、财务/法律/扩展活动、Thursday 增强效果
   - 内链：首页 + 其他已完成的行星时专题
-- [ ] **B1-Jupiter-2**：准备封面图 `public/images/blog/jupiter-hour-guide.jpg`
-- [ ] **B1-Jupiter-3**：在 `src/data/blogPosts.ts` 中注册
-- [ ] **B1-Jupiter-4**：运行 `npm run generate:blog-metadata`
-- [ ] **B1-Jupiter-5**：构建验证
+- [ ] **B1-Jupiter-2**：准备封面图 `public/images/blog/jupiter-hour-guide.jpg`——当前使用占位图
+- [x] **B1-Jupiter-3**：在 `src/data/blogPosts.ts` 中注册
+- [x] **B1-Jupiter-4**：运行 `npm run generate:blog-metadata`
+- [x] **B1-Jupiter-5**：构建验证
 
 #### B1-Saturn：Saturn Hour 专题
 
-- [ ] **B1-Saturn-1**：撰写 `src/content/blog/saturn-hour-guide.md`（~3000 词）
+- [x] **B1-Saturn-1**：撰写 `src/content/blog/saturn-hour-guide.md`（~3000 词）
   - keywords: `["saturn hour", "saturn hour meaning", "saturn hour today", "saturn hour activities", "saturn hours on saturday"]`
   - faqs: What is the hour of Saturn good for? / What is Saturn time? / What activities are best during Saturn hour?
   - 内容要点：纪律/责任/长期规划、Saturday 增强、"慢时间" 概念
-- [ ] **B1-Saturn-2**：准备封面图
-- [ ] **B1-Saturn-3**：在 `src/data/blogPosts.ts` 中注册
-- [ ] **B1-Saturn-4**：运行 `npm run generate:blog-metadata`
-- [ ] **B1-Saturn-5**：构建验证
+- [ ] **B1-Saturn-2**：准备封面图——当前使用占位图
+- [x] **B1-Saturn-3**：在 `src/data/blogPosts.ts` 中注册
+- [x] **B1-Saturn-4**：运行 `npm run generate:blog-metadata`
+- [x] **B1-Saturn-5**：构建验证
 
 #### B1-Mercury：Mercury Hour 专题
 
-- [ ] **B1-Mercury-1**：撰写 `src/content/blog/mercury-hour-guide.md`（~2500 词）
+- [x] **B1-Mercury-1**：撰写 `src/content/blog/mercury-hour-guide.md`（~2500 词）
   - keywords: `["mercury hour astrology", "mercury hour meaning", "what is mercury hour", "mercury planetary hour"]`
   - faqs: What is Mercury hora good for? / What is Mercury time in astrology?
   - 内容要点：沟通/学习/写作/贸易、Wednesday 关联
-- [ ] **B1-Mercury-2**：准备封面图
-- [ ] **B1-Mercury-3**：注册 + 元数据生成 + 构建验证
+- [ ] **B1-Mercury-2**：准备封面图——当前使用占位图
+- [x] **B1-Mercury-3**：注册 + 元数据生成 + 构建验证
 
 #### B1-Mars：Mars Hour 专题
 
-- [ ] **B1-Mars-1**：撰写 `src/content/blog/mars-hour-guide.md`（~2500 词）
+- [x] **B1-Mars-1**：撰写 `src/content/blog/mars-hour-guide.md`（~2500 词）
   - keywords: `["mars planetary hour meaning", "mars hour astrology"]`
   - faqs: What is Mars hour good for? / Is Mars hour good for competition?
   - 内容要点：能量/勇气/行动/竞争、Tuesday 关联
-- [ ] **B1-Mars-2**：准备封面图
-- [ ] **B1-Mars-3**：注册 + 元数据生成 + 构建验证
+- [ ] **B1-Mars-2**：准备封面图——当前使用占位图
+- [x] **B1-Mars-3**：注册 + 元数据生成 + 构建验证
 
 #### B1-Sun：Sun Hour 专题
 
-- [ ] **B1-Sun-1**：撰写 `src/content/blog/sun-hour-guide.md`（~2500 词）
+- [x] **B1-Sun-1**：撰写 `src/content/blog/sun-hour-guide.md`（~2500 词）
   - keywords: `["sun planetary hour meaning", "sun hour astrology"]`
   - 内容要点：领导力/活力/成功/权威、Sunday 关联
-- [ ] **B1-Sun-2**：准备封面图
-- [ ] **B1-Sun-3**：注册 + 元数据生成 + 构建验证
+- [ ] **B1-Sun-2**：准备封面图——当前使用占位图
+- [x] **B1-Sun-3**：注册 + 元数据生成 + 构建验证
 
 #### B1-Moon：Moon Hour 专题
 
-- [ ] **B1-Moon-1**：撰写 `src/content/blog/moon-hour-guide.md`（~2500 词）
+- [x] **B1-Moon-1**：撰写 `src/content/blog/moon-hour-guide.md`（~2500 词）
   - keywords: `["moon planetary hour meaning", "planetary hours moon meaning"]`
   - 内容要点：情感/直觉/家庭事务/公共事务、Monday 关联
-- [ ] **B1-Moon-2**：准备封面图
-- [ ] **B1-Moon-3**：注册 + 元数据生成 + 构建验证
+- [ ] **B1-Moon-2**：准备封面图——当前使用占位图
+- [x] **B1-Moon-3**：注册 + 元数据生成 + 构建验证
 
 #### B1-交叉链接
 
