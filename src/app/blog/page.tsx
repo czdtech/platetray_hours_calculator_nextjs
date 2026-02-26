@@ -8,6 +8,7 @@ import { JsonLd } from "@/components/SEO/JsonLd";
 import { getBreadcrumbSchema } from "@/utils/seo/jsonld";
 import { Section } from "@/components/semantic/Section";
 import { Header } from "@/components/Layout/Header";
+import { BlogCategoryFilter } from "@/components/Blog/BlogCategoryFilter";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
@@ -106,54 +107,8 @@ export default function BlogPage() {
               </div>
             )}
 
-            {/* 其他文章 - 网格布局 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogPosts.slice(1).map((post) => (
-                <article
-                  key={post.slug}
-                  className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 group hover:shadow-md transition-shadow"
-                >
-                  <Link href={`/blog/${post.slug}`} className="block">
-                    <div className="h-48 overflow-hidden relative">
-                      <Image
-                        src={post.imageUrl as string | StaticImageData}
-                        alt={post.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        placeholder="blur"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                  </Link>
-                  <div className="p-6">
-                    <div className="text-xs text-gray-500 mb-2">
-                      {formatDistanceToNow(new Date(post.date), {
-                        addSuffix: true,
-                      })}
-                      {post.readingTime !== undefined &&
-                        ` • ${post.readingTime} min read`}
-                    </div>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                      <Link
-                        href={`/blog/${post.slug}`}
-                        className="hover:text-indigo-600 transition-colors"
-                      >
-                        {post.title}
-                      </Link>
-                    </h2>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                      {post.excerpt}
-                    </p>
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      className="text-indigo-600 font-medium text-sm hover:underline"
-                    >
-                      Read more →
-                    </Link>
-                  </div>
-                </article>
-              ))}
-            </div>
+            {/* 其他文章 - 带分类筛选的网格布局 */}
+            <BlogCategoryFilter posts={blogPosts.slice(1)} />
           </div>
         </Section>
       </div>

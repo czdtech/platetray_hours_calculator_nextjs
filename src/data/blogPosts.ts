@@ -27,6 +27,8 @@ export const blogPosts: BlogPost[] = [
     imageUrl: faqImg as StaticImageData,
     date: blogDates["planetary-hours-faq"],
     readingTime: blogRead["planetary-hours-faq"],
+    category: "education",
+    tags: ["faq", "beginner", "planetary hours"],
   },
   {
     slug: "mobile-planetary-hours-guide",
@@ -36,6 +38,8 @@ export const blogPosts: BlogPost[] = [
     imageUrl: mobileImg as StaticImageData,
     date: blogDates["mobile-planetary-hours-guide"],
     readingTime: blogRead["mobile-planetary-hours-guide"],
+    category: "practical-use",
+    tags: ["mobile", "pwa", "guide"],
   },
   {
     slug: "planetary-hours-history-culture",
@@ -45,6 +49,8 @@ export const blogPosts: BlogPost[] = [
     imageUrl: historyImg as StaticImageData,
     date: blogDates["planetary-hours-history-culture"],
     readingTime: blogRead["planetary-hours-history-culture"],
+    category: "education",
+    tags: ["history", "culture", "babylon"],
   },
   {
     slug: "planetary-hours-business-success",
@@ -54,6 +60,8 @@ export const blogPosts: BlogPost[] = [
     imageUrl: businessImg as StaticImageData,
     date: blogDates["planetary-hours-business-success"],
     readingTime: blogRead["planetary-hours-business-success"],
+    category: "practical-use",
+    tags: ["business", "productivity", "timing"],
   },
   {
     slug: "introduction",
@@ -63,6 +71,8 @@ export const blogPosts: BlogPost[] = [
     imageUrl: introImg as StaticImageData,
     date: blogDates["introduction"],
     readingTime: blogRead["introduction"],
+    category: "education",
+    tags: ["introduction", "calculator", "guide"],
   },
   {
     slug: "what-are-planetary-hours",
@@ -72,6 +82,8 @@ export const blogPosts: BlogPost[] = [
     imageUrl: whatIsImg as StaticImageData,
     date: blogDates["what-are-planetary-hours"],
     readingTime: blogRead["what-are-planetary-hours"],
+    category: "education",
+    tags: ["beginner", "explained", "planetary hours"],
   },
   {
     slug: "using-planetary-hours",
@@ -81,6 +93,8 @@ export const blogPosts: BlogPost[] = [
     imageUrl: usingImg as StaticImageData,
     date: blogDates["using-planetary-hours"],
     readingTime: blogRead["using-planetary-hours"],
+    category: "practical-use",
+    tags: ["how-to", "daily planning", "guide"],
   },
   {
     slug: "algorithm-behind-calculator",
@@ -90,6 +104,8 @@ export const blogPosts: BlogPost[] = [
     imageUrl: algoImg as StaticImageData,
     date: blogDates["algorithm-behind-calculator"],
     readingTime: blogRead["algorithm-behind-calculator"],
+    category: "education",
+    tags: ["algorithm", "technical", "suncalc"],
   },
   {
     slug: "2025-astronomical-events-planetary-hours",
@@ -99,5 +115,7 @@ export const blogPosts: BlogPost[] = [
     imageUrl: astronomicalImg as StaticImageData,
     date: blogDates["2025-astronomical-events-planetary-hours"],
     readingTime: blogRead["2025-astronomical-events-planetary-hours"],
+    category: "news",
+    tags: ["2025", "planetary alignment", "astronomy"],
   },
 ];

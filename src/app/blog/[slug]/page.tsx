@@ -11,7 +11,9 @@ import { ArticleShare } from "@/components/Blog/ArticleShare";
 import { RelatedArticles } from "@/components/Blog/RelatedArticles";
 import { BlogBackToTop } from "@/components/Blog/BlogBackToTop";
 import { JsonLd } from "@/components/SEO/JsonLd";
-import { getArticleSchema, getBreadcrumbSchema } from "@/utils/seo/jsonld";
+import { getArticleSchema, getBreadcrumbSchema, getFAQPageSchema } from "@/utils/seo/jsonld";
+import { FAQSection } from "@/components/FAQ/FAQSection";
+import { TableOfContents } from "@/components/Blog/TableOfContents";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
@@ -58,7 +60,7 @@ export async function generateMetadata({
     ? `${SITE_URL}${imageUrl}`
     : imageUrl;
 
-  return {
+  const metadata: Metadata = {
     title,
     description,
     alternates: {
@@ -85,6 +87,12 @@ export async function generateMetadata({
       images: [fullImageUrl],
     },
   };
+
+  if (markdownContent?.keywords && markdownContent.keywords.length > 0) {
+    metadata.keywords = markdownContent.keywords;
+  }
+
+  return metadata;
 }
 
 // Blog Post Page Component
@@ -116,6 +124,8 @@ export default async function BlogPostPage({
 
   const articleUrl = `${SITE_URL}/blog/${slug}`;
 
+  const faqs = markdownContent?.faqs;
+
   // JSON-LD Schemas
   const articleSchema = getArticleSchema({
     title,
@@ -132,6 +142,10 @@ export default async function BlogPostPage({
     { name: title, url: articleUrl },
   ]);
 
+  const faqSchema = faqs && faqs.length > 0
+    ? getFAQPageSchema(faqs)
+    : null;
+
   // 定义面包屑项
   const breadcrumbItems = [
     { name: "Home", url: "/" },
@@ -144,7 +158,7 @@ export default async function BlogPostPage({
       hero={<ArticleHero title={title} imageUrl={rawImage} />}
       breadcrumbItems={breadcrumbItems}
     >
-      <JsonLd data={[articleSchema, breadcrumbSchema]} />
+      <JsonLd data={faqSchema ? [articleSchema, breadcrumbSchema, faqSchema] : [articleSchema, breadcrumbSchema]} />
 
       {/* 文章元数据 - 移至内容前 */}
       <ArticleMeta
@@ -154,7 +168,10 @@ export default async function BlogPostPage({
         className="mb-8"
       />
 
-      {/* 文章内容 - 修改样式类 */}
+      {/* 目录导航 */}
+      <TableOfContents />
+
+      {/* 文章内容 */}
       <div className="prose dark:prose-invert max-w-none">
         {markdownContent ? (
           <div
@@ -174,6 +191,13 @@ export default async function BlogPostPage({
           </>
         )}
       </div>
+
+      {/* FAQ 区域 */}
+      {faqs && faqs.length > 0 && (
+        <div className="mt-12">
+          <FAQSection faqs={faqs} />
+        </div>
+      )}
 
       {/* 添加分隔线 */}
       <div className="my-10 border-t border-gray-200 dark:border-gray-700"></div>

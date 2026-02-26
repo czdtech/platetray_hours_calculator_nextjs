@@ -7,6 +7,11 @@ import html from "remark-html";
 import { createLogger } from '@/utils/unified-logger';
 const contentDirectory = path.join(process.cwd(), "src/content");
 
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
 export interface MarkdownContent {
   slug: string;
   title: string;
@@ -14,6 +19,8 @@ export interface MarkdownContent {
   date: string;
   author: string;
   contentHtml: string;
+  keywords?: string[];
+  faqs?: FAQItem[];
 }
 
 export async function getMarkdownContent(
@@ -39,6 +46,13 @@ export async function getMarkdownContent(
     const processedContent = await remark().use(html).process(content);
     const contentHtml = processedContent.toString();
 
+    const faqs: FAQItem[] | undefined = Array.isArray(data.faqs)
+      ? data.faqs.map((f: { q?: string; question?: string; a?: string; answer?: string }) => ({
+          question: f.q || f.question || "",
+          answer: f.a || f.answer || "",
+        })).filter((f: FAQItem) => f.question && f.answer)
+      : undefined;
+
     return {
       slug,
       title: data.title || "",
@@ -46,6 +60,8 @@ export async function getMarkdownContent(
       date: data.date || "",
       author: data.author || "Planetary Hours Team",
       contentHtml,
+      keywords: Array.isArray(data.keywords) ? data.keywords : undefined,
+      faqs: faqs && faqs.length > 0 ? faqs : undefined,
     };
   } catch (error) {
       const err = error instanceof Error ? error : new Error(`Unknown error reading markdown file for slug ${slug}`);
