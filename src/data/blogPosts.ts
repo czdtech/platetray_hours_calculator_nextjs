@@ -20,6 +20,17 @@ import astronomicalImg from "../../public/images/blog/2025-planetary-alignment.j
  */
 export const blogPosts: BlogPost[] = [
   {
+    slug: "planetary-hours-and-their-meanings",
+    title: "Planetary Hours and Their Meanings: Complete Reference Guide",
+    excerpt:
+      "A comprehensive guide to all seven planetary hours and their meanings. Learn what each planetary hour represents, its ruling planet's energy, and the best activities for every hour.",
+    imageUrl: whatIsImg as StaticImageData,
+    date: blogDates["planetary-hours-and-their-meanings"],
+    readingTime: blogRead["planetary-hours-and-their-meanings"],
+    category: "education",
+    tags: ["meanings", "guide", "reference", "planetary hours"],
+  },
+  {
     slug: "planetary-hours-for-love",
     title: "Planetary Hours for Love & Relationships: Complete Timing Guide",
     excerpt:
@@ -331,7 +342,7 @@ export const blogPosts: BlogPost[] = [
     slug: "what-are-planetary-hours",
     title: "What Are Planetary Hours? A Beginner's Guide",
     excerpt:
-      "Understand the ancient timing system that fuels our calculator and discover its historical roots.",
+      "What are planetary hours? Understand this ancient timing system explained in simple terms — the Chaldean Order, the 7 classical planets, and how planetary hours work.",
     imageUrl: whatIsImg as StaticImageData,
     date: blogDates["what-are-planetary-hours"],
     readingTime: blogRead["what-are-planetary-hours"],
@@ -342,7 +353,7 @@ export const blogPosts: BlogPost[] = [
     slug: "using-planetary-hours",
     title: "How to Use Planetary Hours for Daily Planning",
     excerpt:
-      "Practical strategies to align your schedule with the cosmic clock for productivity and harmony.",
+      "Learn how to use planetary hours for daily planning. Apply each planet's energy to work, relationships, and well-being with strategic timing approaches.",
     imageUrl: usingImg as StaticImageData,
     date: blogDates["using-planetary-hours"],
     readingTime: blogRead["using-planetary-hours"],
@@ -353,7 +364,7 @@ export const blogPosts: BlogPost[] = [
     slug: "algorithm-behind-calculator",
     title: "The Algorithm Behind Our Planetary Hours Calculator",
     excerpt:
-      "A technical deep-dive into the TypeScript code and astronomical data that power instant results.",
+      "How are planetary hours calculated? A technical deep-dive into the astronomical algorithm, TypeScript code, and solar data that power instant, accurate results.",
     imageUrl: algoImg as StaticImageData,
     date: blogDates["algorithm-behind-calculator"],
     readingTime: blogRead["algorithm-behind-calculator"],
