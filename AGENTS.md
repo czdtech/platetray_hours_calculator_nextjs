@@ -20,3 +20,4 @@ This is a single Next.js 15 application (Planetary Hours Calculator) — no mono
 - No `.env` file is committed. The app works without any environment variables for core functionality (planetary hours calculation uses `suncalc` locally). Optional: `GOOGLE_MAPS_API_KEY` enables location search autocomplete; `KV_REST_API_URL` + `KV_REST_API_TOKEN` enable Vercel KV caching.
 - The `prebuild` script (`npm run generate:blog-metadata`) must run before `npm run build`; this happens automatically via the `prebuild` npm lifecycle hook.
 - Node.js 18+ required. The environment comes with Node 22 which works fine.
+- When adding new blog articles, you must: (1) create the `.md` file in `src/content/blog/`, (2) add an entry to `src/data/blogPosts.ts` (required for `generateStaticParams` since `dynamicParams = false`), and (3) run `npm run generate:blog-metadata` to update `blogDates.json` and `blogRead.json`. The prebuild hook handles step 3 automatically during `npm run build`.
