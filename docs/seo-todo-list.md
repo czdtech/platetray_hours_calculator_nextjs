@@ -308,7 +308,7 @@
 
 #### A-INFRA-1：城市数据层
 
-- [ ] **A-INFRA-1a**：创建 `src/data/cities.ts`——城市数据定义文件
+- [x] **A-INFRA-1a**：创建 `src/data/cities.ts`——城市数据定义文件
   - 定义 `City` interface：
     ```
     interface City {
@@ -324,10 +324,10 @@
       description?: string;   // 城市简介（1-2 句）
     }
     ```
-- [ ] **A-INFRA-1b**：填充首批 20 个 P0/P1 城市数据（NYC、LA、London、Manila、Johannesburg、Lagos、Athens、Dubai、Sydney、Mumbai、New Delhi、Chicago、Houston、Toronto、Paris、Berlin、Tokyo、Mexico City、São Paulo、Cairo）
+- [x] **A-INFRA-1b**：填充首批 20 个 P0/P1 城市数据（NYC、LA、London、Manila、Johannesburg、Lagos、Athens、Dubai、Sydney、Mumbai、New Delhi、Chicago、Houston、Toronto、Paris、Berlin、Tokyo、Mexico City、São Paulo、Cairo）
   - 每个城市需要精确的经纬度、IANA 时区名、1-2 句独特描述
-- [ ] **A-INFRA-1c**：创建 `src/data/cities-extended.ts`——预留 100+ 城市扩展数据（A3 阶段填充）
-- [ ] **A-INFRA-1d**：创建 `src/utils/cityHelpers.ts`——城市数据辅助函数
+- [x] **A-INFRA-1c**：创建 `src/data/cities-extended.ts`——预留 100+ 城市扩展数据（A3 阶段填充）
+- [x] **A-INFRA-1d**：创建 `src/utils/cityHelpers.ts`——城市数据辅助函数
   - `getCityBySlug(slug: string): City | undefined`
   - `getAllCitySlugs(): string[]`
   - `getCitiesByRegion(region: string): City[]`
@@ -335,29 +335,29 @@
 
 #### A-INFRA-2：城市页面路由
 
-- [ ] **A-INFRA-2a**：创建目录 `src/app/planetary-hours/[city]/`
-- [ ] **A-INFRA-2b**：创建 `src/app/planetary-hours/[city]/page.tsx`
+- [x] **A-INFRA-2a**：创建目录 `src/app/planetary-hours/[city]/`
+- [x] **A-INFRA-2b**：创建 `src/app/planetary-hours/[city]/page.tsx`
   - `generateStaticParams()` — 从 cities 数据生成所有 slug
   - `generateMetadata()` — 动态生成 title/description/canonical/OG
     - title 格式: `Planetary Hours in [City] Today | [Date] | Free Calculator`
     - description 格式: `Find today's planetary hours for [City], [Country]. Sunrise at [time], sunset at [time]. See the current ruling planet and all 24 planetary hours.`
     - canonical: `https://planetaryhours.org/planetary-hours/[city-slug]`
   - 页面组件：Server Component，使用 `PlanetaryHoursCalculator` 服务计算当天数据
-- [ ] **A-INFRA-2c**：设置 `dynamicParams = false`（仅允许预定义的城市 slug）
-- [ ] **A-INFRA-2d**：设置 `revalidate` 策略——由于行星时按天变化，可设置 `revalidate = 3600`（1 小时）或使用 ISR
+- [x] **A-INFRA-2c**：设置 `dynamicParams = false`（仅允许预定义的城市 slug）
+- [x] **A-INFRA-2d**：设置 `revalidate` 策略——由于行星时按天变化，可设置 `revalidate = 3600`（1 小时）或使用 ISR
 
 #### A-INFRA-3：城市页面 UI 组件
 
-- [ ] **A-INFRA-3a**：创建 `src/components/CityCalculator/CityInfo.tsx`——城市信息卡片
+- [x] **A-INFRA-3a**：创建 `src/components/CityCalculator/CityInfo.tsx`——城市信息卡片
   - 显示：城市名、国家、时区、经纬度、今日日出/日落时间
-- [ ] **A-INFRA-3b**：创建 `src/components/CityCalculator/CityHoursList.tsx`——城市行星时列表
+- [x] **A-INFRA-3b**：创建 `src/components/CityCalculator/CityHoursList.tsx`——城市行星时列表
   - 复用现有 `HoursList` 组件的逻辑，但简化为服务端渲染版
   - 分为 Daytime Hours 和 Nighttime Hours 两栏
-- [ ] **A-INFRA-3c**：创建 `src/components/CityCalculator/CurrentCityHour.tsx`——当前行星时高亮
+- [x] **A-INFRA-3c**：创建 `src/components/CityCalculator/CurrentCityHour.tsx`——当前行星时高亮
   - 显示当前是哪个行星时、开始结束时间、goodFor/avoid 属性
-- [ ] **A-INFRA-3d**：创建 `src/components/CityCalculator/RelatedCities.tsx`——相关城市推荐
+- [x] **A-INFRA-3d**：创建 `src/components/CityCalculator/RelatedCities.tsx`——相关城市推荐
   - 显示同区域 3-5 个城市，链接到各自的城市页面
-- [ ] **A-INFRA-3e**：创建 `src/components/CityCalculator/CityFAQ.tsx`——城市专属 FAQ
+- [x] **A-INFRA-3e**：创建 `src/components/CityCalculator/CityFAQ.tsx`——城市专属 FAQ
   - 生成 3-5 个动态 FAQ（FAQ Schema）
   - Q1: When is sunrise in [City] today? → A: Sunrise in [City] today is at [time].
   - Q2: What timezone is [City] in? → A: [City] is in the [timezone] timezone.
@@ -366,22 +366,22 @@
 
 #### A-INFRA-4：城市页面 SEO 基础设施
 
-- [ ] **A-INFRA-4a**：在 `src/utils/seo/jsonld.ts` 中创建 `getCityPageSchema()` 函数
+- [x] **A-INFRA-4a**：在 `src/utils/seo/jsonld.ts` 中创建 `getCityPageSchema()` 函数
   - 返回包含 WebPage + BreadcrumbList 的 Schema
   - 面包屑：Home > Planetary Hours > [City]
-- [ ] **A-INFRA-4b**：扩展 `src/types/schema.ts`，如需要添加 `WebPageSchema` 类型
-- [ ] **A-INFRA-4c**：在 `src/app/sitemap.ts` 中添加城市页面
+- [x] **A-INFRA-4b**：扩展 `src/types/schema.ts`，如需要添加 `WebPageSchema` 类型
+- [x] **A-INFRA-4c**：在 `src/app/sitemap.ts` 中添加城市页面
   - 从 cities 数据中读取所有 slug
   - 设置 `changeFrequency: "daily"`、`priority: 0.8`
   - lastModified 使用当天日期（因为内容每天变化）
 
 #### A-INFRA-5：导航集成
 
-- [ ] **A-INFRA-5a**：修改 `src/components/Layout/Header.tsx` 的 `HeaderProps` interface
+- [x] **A-INFRA-5a**：修改 `src/components/Layout/Header.tsx` 的 `HeaderProps` interface
   - 将 `activePage` 类型扩展为 `"calculator" | "about" | "blog" | "cities"`
   - 或者添加可选的 `showCitiesLink?: boolean`
-- [ ] **A-INFRA-5b**：在 Header 导航中添加 "Cities" 或 "Locations" 链接
-- [ ] **A-INFRA-5c**：创建城市索引页 `src/app/planetary-hours/page.tsx`
+- [x] **A-INFRA-5b**：在 Header 导航中添加 "Cities" 或 "Locations" 链接
+- [x] **A-INFRA-5c**：创建城市索引页 `src/app/planetary-hours/page.tsx`
   - 展示所有可用城市的分区域列表
   - 可选：添加搜索/筛选功能
   - metadata: "Planetary Hours by City | Free Calculator for [N]+ Cities Worldwide"
@@ -390,20 +390,20 @@
 
 ### A1：首批 20 城市上线（第 9-10 周）
 
-- [ ] **A1-1**：完成 A-INFRA 全部基础设施任务
-- [ ] **A1-2**：填充 20 个城市的完整数据到 `src/data/cities.ts`
-- [ ] **A1-3**：为每个城市撰写 1-2 句独特描述（不能是模板套用）
+- [x] **A1-1**：完成 A-INFRA 全部基础设施任务
+- [x] **A1-2**：填充 20 个城市的完整数据到 `src/data/cities.ts`
+- [x] **A1-3**：为每个城市撰写 1-2 句独特描述（不能是模板套用）
   - 示例：New York — "The city that never sleeps experiences dramatic seasonal variations in planetary hour lengths, from 50-minute winter hours to 75-minute summer hours."
   - 示例：Manila — "Located near the equator, Manila enjoys relatively consistent planetary hour lengths throughout the year, with daytime hours staying close to 60 minutes."
-- [ ] **A1-4**：运行 `npm run build` 验证 20 个城市页面全部正常生成
-- [ ] **A1-5**：抽查 5 个城市页面的 HTML 源码
+- [x] **A1-4**：运行 `npm run build` 验证 20 个城市页面全部正常生成
+- [x] **A1-5**：抽查 5 个城市页面的 HTML 源码
   - 确认 meta title/description 正确
   - 确认 canonical URL 正确
   - 确认 BreadcrumbList Schema 正确
   - 确认 FAQ Schema 正确（含动态计算的日出日落时间）
   - 确认 OG Image 正确
-- [ ] **A1-6**：访问 `/sitemap.xml` 确认 20 个城市页面全部出现
-- [ ] **A1-7**：检查城市页面的内链
+- [x] **A1-6**：访问 `/sitemap.xml` 确认 20 个城市页面全部出现
+- [x] **A1-7**：检查城市页面的内链
   - 到首页计算器的 CTA
   - 到相关行星时专题（B1 内容）的链接
   - 到相邻城市的链接
@@ -412,31 +412,31 @@
 
 ### A2：模板优化（第 11 周）
 
-- [ ] **A2-1**：根据 A1 测试反馈优化城市页面模板
-- [ ] **A2-2**：城市索引页 `/planetary-hours` 上线
-- [ ] **A2-3**：首页添加城市选择入口——在现有 4 个快捷城市按钮下方添加 "View all [N] cities →" 链接
-- [ ] **A2-4**：在博客文章底部添加 "Find planetary hours in your city" 模块，链接到城市索引页
-- [ ] **A2-5**：在 `next.config.ts` 的 `redirects()` 中添加城市页面的尾斜杠重定向
+- [x] **A2-1**：根据 A1 测试反馈优化城市页面模板
+- [x] **A2-2**：城市索引页 `/planetary-hours` 上线
+- [x] **A2-3**：首页添加城市选择入口——在现有 4 个快捷城市按钮下方添加 "View all [N] cities →" 链接
+- [x] **A2-4**：在博客文章底部添加 "Find planetary hours in your city" 模块，链接到城市索引页
+- [x] **A2-5**：在 `next.config.ts` 的 `redirects()` 中添加城市页面的尾斜杠重定向
 
 ---
 
 ### A3：扩展至 100+ 城市（第 11-13 周）
 
-- [ ] **A3-1**：填充 `src/data/cities-extended.ts` 中的 80+ 城市数据
+- [x] **A3-1**：填充 `src/data/cities-extended.ts` 中的 80+ 城市数据
   - 北美 30 城、欧洲 25 城、亚洲 20 城、南美 10 城、非洲 10 城、大洋洲 5 城
-- [ ] **A3-2**：合并 `cities.ts` 和 `cities-extended.ts` 的导出（或改为单一文件）
-- [ ] **A3-3**：为每个新城市撰写 1-2 句独特描述
-- [ ] **A3-4**：运行 `npm run build` 验证 100+ 页面正常生成（注意构建时间是否合理）
-- [ ] **A3-5**：如果构建时间过长，考虑将城市页面改为 `dynamicParams = true` + 按需 ISR
+- [x] **A3-2**：合并 `cities.ts` 和 `cities-extended.ts` 的导出（或改为单一文件）
+- [x] **A3-3**：为每个新城市撰写 1-2 句独特描述
+- [x] **A3-4**：运行 `npm run build` 验证 100+ 页面正常生成（注意构建时间是否合理）
+- [x] **A3-5**：如果构建时间过长，考虑将城市页面改为 `dynamicParams = true` + 按需 ISR
 
 ---
 
 ### A4：内链网络优化（第 14 周）
 
-- [ ] **A4-1**：在 `src/app/sitemap.ts` 中将城市页面拆分为独立 sitemap 分组（如果总 URL 超过 500）
-- [ ] **A4-2**：城市页面底部添加 "Nearby Cities" 推荐模块
-- [ ] **A4-3**：博客文章中自然引用城市页面（如："Check the Venus Hour in your city: [New York](/planetary-hours/new-york) | [London](/planetary-hours/london) | [Tokyo](/planetary-hours/tokyo)"）
-- [ ] **A4-4**：城市页面到 Phase B 行星时专题的交叉链接
+- [x] **A4-1**：在 `src/app/sitemap.ts` 中将城市页面拆分为独立 sitemap 分组（如果总 URL 超过 500）
+- [x] **A4-2**：城市页面底部添加 "Nearby Cities" 推荐模块
+- [x] **A4-3**：博客文章中自然引用城市页面（如："Check the Venus Hour in your city: [New York](/planetary-hours/new-york) | [London](/planetary-hours/london) | [Tokyo](/planetary-hours/tokyo)"）
+- [x] **A4-4**：城市页面到 Phase B 行星时专题的交叉链接
   - 在城市页面的 "Today's Day Ruler" 部分链接到对应的行星日专题
   - 在 "Current Planetary Hour" 部分链接到对应的行星时专题
 
@@ -444,11 +444,11 @@
 
 ### A-FINAL：Phase A 收尾检查
 
-- [ ] **A-FINAL-1**：运行 `npm run lint` + `npm run typecheck`
-- [ ] **A-FINAL-2**：运行 `npm run build` 验证全部城市页面正常
-- [ ] **A-FINAL-3**：检查 `/sitemap.xml` 包含所有城市页面
+- [x] **A-FINAL-1**：运行 `npm run lint` + `npm run typecheck`
+- [x] **A-FINAL-2**：运行 `npm run build` 验证全部城市页面正常
+- [x] **A-FINAL-3**：检查 `/sitemap.xml` 包含所有城市页面
 - [ ] **A-FINAL-4**：在 Google Search Console 提交更新后的 sitemap
-- [ ] **A-FINAL-5**：统计总页面数，预期 ~150+（36 博客 + 100 城市 + 城市索引 + 原有页面）
+- [x] **A-FINAL-5**：统计总页面数，预期 ~150+（36 博客 + 100 城市 + 城市索引 + 原有页面）
 
 ---
 
