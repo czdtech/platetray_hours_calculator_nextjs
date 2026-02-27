@@ -8,14 +8,15 @@ interface FAQItem {
 
 interface FAQSectionProps {
   faqs: FAQItem[];
+  includeSchema?: boolean;
 }
 
-export function FAQSection({ faqs }: FAQSectionProps) {
-  const schema = getFAQPageSchema(faqs);
+export function FAQSection({ faqs, includeSchema = true }: FAQSectionProps) {
+  const schema = includeSchema ? getFAQPageSchema(faqs) : null;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-      <JsonLd data={schema} />
+      {schema && <JsonLd data={schema} />}
       <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">
         Frequently Asked Questions
       </h2>

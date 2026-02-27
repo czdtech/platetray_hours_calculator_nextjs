@@ -193,7 +193,7 @@ export default async function SpanishBlogPostPage({
 
       {faqs && faqs.length > 0 && (
         <div className="mt-12">
-          <FAQSection faqs={faqs} />
+          <FAQSection faqs={faqs} includeSchema={false} />
         </div>
       )}
 
