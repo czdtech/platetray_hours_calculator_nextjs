@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { formatInTimeZone } from "date-fns-tz";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { Header } from "@/components/Layout/Header";
 import { Breadcrumb } from "@/components/SEO/Breadcrumb";
 import { JsonLd } from "@/components/SEO/JsonLd";
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: CityPageProps): Promise<Metad
   const city = getCityBySlug(slug);
   if (!city) return {};
 
-  const today = formatInTimeZone(new Date(), city.timezone, "d 'de' MMMM, yyyy");
+  const today = formatInTimeZone(new Date(), city.timezone, "d 'de' MMMM, yyyy", { locale: ptBR });
   const title = `${t(messages.cityPage.title, { city: city.name })} – ${today}`;
   const description = t(messages.cityPage.description, { city: city.name, country: city.country });
   const hreflang = getHreflangTags(`/planetary-hours/${city.slug}`);
@@ -151,7 +152,7 @@ export default async function PortugueseCityPage({ params }: CityPageProps) {
 
   const sunriseFormatted = formatInTimeZone(result.sunrise, city.timezone, "h:mm a");
   const sunsetFormatted = formatInTimeZone(result.sunset, city.timezone, "h:mm a");
-  const dateFormatted = formatInTimeZone(new Date(), city.timezone, "EEEE, MMMM d, yyyy");
+  const dateFormatted = formatInTimeZone(new Date(), city.timezone, "EEEE, MMMM d, yyyy", { locale: ptBR });
 
   const dayRulerColor = PLANET_COLOR_CLASSES[result.dayRuler as keyof typeof PLANET_COLOR_CLASSES] || "text-gray-600";
   const dayRulerSymbol = PLANET_SYMBOLS[result.dayRuler as keyof typeof PLANET_SYMBOLS] || "";
@@ -358,7 +359,7 @@ export default async function PortugueseCityPage({ params }: CityPageProps) {
             {messages.cityPage.customLocation}
           </p>
           <Link
-            href="/"
+            href="/pt"
             className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
           >
             {messages.calculator.openCalculator}

@@ -7,6 +7,7 @@ import staticPageDates from "@/data/staticPageDates.json";
 import blogActualDates from "@/data/blogDates.json";
 import { cities } from "@/data/cities";
 import { createLogger } from '@/utils/unified-logger';
+import { TRANSLATED_SLUGS } from '@/i18n/routePolicy';
 
 const logger = createLogger('Sitemap');
 
@@ -66,11 +67,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  const translatedSlugs = new Set(blogPostsEs.map((p) => p.slug));
+  const translatedSlugs = TRANSLATED_SLUGS;
 
   const blogPostEntries: MetadataRoute.Sitemap = blogPosts.map((post) => {
     const postDateString = blogActualDates[post.slug as keyof typeof blogActualDates] || post.date;
     const postDate = new Date(postDateString);
+    const hasEs = translatedSlugs.es.has(post.slug);
+    const hasPt = translatedSlugs.pt.has(post.slug);
+    const hasTranslation = hasEs || hasPt;
+
+    const alternatesBlock = hasTranslation
+      ? {
+          alternates: {
+            languages: {
+              en: `${baseUrl}/blog/${post.slug}`,
+              ...(hasEs ? { es: `${baseUrl}/es/blog/${post.slug}` } : {}),
+              ...(hasPt ? { pt: `${baseUrl}/pt/blog/${post.slug}` } : {}),
+            },
+          },
+        }
+      : {};
 
     if (isNaN(postDate.getTime())) {
       logger.warn(`Invalid date for blog post slug "${post.slug}": ${postDateString}. Falling back to site launch date.`);
@@ -79,17 +95,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: siteLaunchDate,
         changeFrequency: "monthly" as const,
         priority: 0.7,
-        ...(translatedSlugs.has(post.slug)
-          ? {
-              alternates: {
-                languages: {
-                  en: `${baseUrl}/blog/${post.slug}`,
-                  es: `${baseUrl}/es/blog/${post.slug}`,
-                  pt: `${baseUrl}/pt/blog/${post.slug}`,
-                },
-              },
-            }
-          : {}),
+        ...alternatesBlock,
       };
     }
 
@@ -98,17 +104,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: postDate,
       changeFrequency: "monthly" as const,
       priority: 0.7,
-      ...(translatedSlugs.has(post.slug)
-        ? {
-            alternates: {
-              languages: {
-                en: `${baseUrl}/blog/${post.slug}`,
-                es: `${baseUrl}/es/blog/${post.slug}`,
-                pt: `${baseUrl}/pt/blog/${post.slug}`,
-              },
-            },
-          }
-        : {}),
+      ...alternatesBlock,
     };
   });
 

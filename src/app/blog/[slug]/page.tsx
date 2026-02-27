@@ -12,6 +12,7 @@ import { RelatedArticles } from "@/components/Blog/RelatedArticles";
 import { BlogBackToTop } from "@/components/Blog/BlogBackToTop";
 import { JsonLd } from "@/components/SEO/JsonLd";
 import { getArticleSchema, getBreadcrumbSchema, getFAQPageSchema } from "@/utils/seo/jsonld";
+import { getArticleAlternates } from "@/utils/seo/articleAlternates";
 import { FAQSection } from "@/components/FAQ/FAQSection";
 import { TableOfContents } from "@/components/Blog/TableOfContents";
 
@@ -90,6 +91,14 @@ export async function generateMetadata({
 
   if (markdownContent?.keywords && markdownContent.keywords.length > 0) {
     metadata.keywords = markdownContent.keywords;
+  }
+
+  const articleAlternates = getArticleAlternates(slug);
+  if (articleAlternates) {
+    metadata.alternates = {
+      ...metadata.alternates,
+      languages: articleAlternates.languages,
+    };
   }
 
   return metadata;
