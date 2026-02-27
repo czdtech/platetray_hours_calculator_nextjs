@@ -49,7 +49,7 @@ export default function PortugueseLayout({
             ></div>
             {children}
           </main>
-          <Footer />
+          <Footer locale="pt" />
           <AnalyticsWrapper />
           <AdSense />
           <ResourcePreloader />

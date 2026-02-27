@@ -154,6 +154,7 @@ export default async function PortugueseBlogPostPage({
     <ArticleLayout
       hero={<ArticleHero title={title} imageUrl={rawImage} />}
       breadcrumbItems={breadcrumbItems}
+      locale="pt"
     >
       <JsonLd
         data={
@@ -202,7 +203,7 @@ export default async function PortugueseBlogPostPage({
       <ArticleShare title={title} url={articleUrl} />
 
       <div className="mt-12">
-        <RelatedArticles articles={blogPostsPt} currentSlug={slug} />
+        <RelatedArticles articles={blogPostsPt} currentSlug={slug} basePath="/pt/blog" />
       </div>
 
       <BlogBackToTop title={title} url={articleUrl} />

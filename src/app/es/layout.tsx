@@ -49,7 +49,7 @@ export default function SpanishLayout({
             ></div>
             {children}
           </main>
-          <Footer />
+          <Footer locale="es" />
           <AnalyticsWrapper />
           <AdSense />
           <ResourcePreloader />

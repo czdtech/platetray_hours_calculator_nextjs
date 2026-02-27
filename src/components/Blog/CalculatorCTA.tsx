@@ -3,9 +3,10 @@ import Link from "next/link";
 interface CalculatorCTAProps {
   planet?: string;
   text?: string;
+  calculatorPath?: string;
 }
 
-export function CalculatorCTA({ planet, text }: CalculatorCTAProps) {
+export function CalculatorCTA({ planet, text, calculatorPath = "/" }: CalculatorCTAProps) {
   const label = text
     ? text
     : planet
@@ -18,7 +19,7 @@ export function CalculatorCTA({ planet, text }: CalculatorCTAProps) {
         {label}
       </p>
       <Link
-        href="/"
+        href={calculatorPath}
         className="inline-block px-6 py-2.5 rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors"
       >
         Open Calculator →

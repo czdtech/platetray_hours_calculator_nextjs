@@ -55,7 +55,7 @@ export default function SpanishCityIndex() {
 
   return (
     <>
-      <Header activePage="cities" />
+      <Header activePage="cities" locale="es" />
       <JsonLd data={breadcrumbSchema} />
 
       <div className="container mx-auto px-4 py-6 space-y-8">

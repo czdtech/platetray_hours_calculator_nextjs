@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 export default function SpanishHomePage() {
   return (
     <>
-      <Header activePage="calculator" />
+      <Header activePage="calculator" locale="es" />
       <div className="container mx-auto px-4 py-8">
         <Section className="py-12 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-500 to-indigo-400 bg-clip-text text-transparent">

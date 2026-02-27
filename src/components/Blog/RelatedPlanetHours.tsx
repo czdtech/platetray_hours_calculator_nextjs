@@ -22,9 +22,10 @@ const PLANET_EMOJI: Record<string, string> = {
 
 interface RelatedPlanetHoursProps {
   planets: string[];
+  basePath?: string;
 }
 
-export function RelatedPlanetHours({ planets }: RelatedPlanetHoursProps) {
+export function RelatedPlanetHours({ planets, basePath = "/blog" }: RelatedPlanetHoursProps) {
   const validPlanets = planets.filter((p) => PLANET_SLUGS[p]);
 
   if (validPlanets.length === 0) return null;
@@ -38,7 +39,7 @@ export function RelatedPlanetHours({ planets }: RelatedPlanetHoursProps) {
         {validPlanets.map((planet) => (
           <Link
             key={planet}
-            href={`/blog/${PLANET_SLUGS[planet]}`}
+            href={`${basePath}/${PLANET_SLUGS[planet]}`}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-sm font-medium"
           >
             <span>{PLANET_EMOJI[planet]}</span>

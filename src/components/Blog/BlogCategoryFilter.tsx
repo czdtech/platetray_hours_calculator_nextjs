@@ -9,9 +9,11 @@ import { BLOG_CATEGORIES } from "@/constants/blogCategories";
 
 interface BlogCategoryFilterProps {
   posts: BlogPost[];
+  basePath?: string;
+  allLabel?: string;
 }
 
-export function BlogCategoryFilter({ posts }: BlogCategoryFilterProps) {
+export function BlogCategoryFilter({ posts, basePath = "/blog", allLabel = "All" }: BlogCategoryFilterProps) {
   const [activeCategory, setActiveCategory] = useState<BlogCategory | "all">("all");
 
   const usedCategories = Array.from(
@@ -34,7 +36,7 @@ export function BlogCategoryFilter({ posts }: BlogCategoryFilterProps) {
                 : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
             }`}
           >
-            All
+            {allLabel}
           </button>
           {usedCategories.map((cat) => (
             <button
@@ -58,7 +60,7 @@ export function BlogCategoryFilter({ posts }: BlogCategoryFilterProps) {
             key={post.slug}
             className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 group hover:shadow-md transition-shadow"
           >
-            <Link href={`/blog/${post.slug}`} className="block">
+            <Link href={`${basePath}/${post.slug}`} className="block">
               <div className="h-48 overflow-hidden relative">
                 <Image
                   src={post.imageUrl as string | StaticImageData}
@@ -77,7 +79,7 @@ export function BlogCategoryFilter({ posts }: BlogCategoryFilterProps) {
               </div>
               <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
                 <Link
-                  href={`/blog/${post.slug}`}
+                  href={`${basePath}/${post.slug}`}
                   className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
                   {post.title}
@@ -87,7 +89,7 @@ export function BlogCategoryFilter({ posts }: BlogCategoryFilterProps) {
                 {post.excerpt}
               </p>
               <Link
-                href={`/blog/${post.slug}`}
+                href={`${basePath}/${post.slug}`}
                 className="text-indigo-600 dark:text-indigo-400 font-medium text-sm hover:underline"
               >
                 Read more →

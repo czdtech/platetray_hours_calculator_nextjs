@@ -9,11 +9,13 @@ interface ArticleEntry {
 interface RelatedArticlesProps {
   articles: ArticleEntry[];
   currentSlug: string;
+  basePath?: string;
 }
 
 export function RelatedArticles({
   articles,
   currentSlug,
+  basePath = "/blog",
 }: RelatedArticlesProps) {
   const filteredArticles = articles
     .filter((article) => article.slug !== currentSlug)
@@ -33,7 +35,7 @@ export function RelatedArticles({
             className="group bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300"
           >
             <Link
-              href={`/blog/${article.slug}`}
+              href={`${basePath}/${article.slug}`}
               className="block hover:no-underline"
             >
               <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-3">

@@ -33,7 +33,7 @@ export default function PortugueseAboutPage() {
 
   return (
     <>
-      <Header activePage="about" />
+      <Header activePage="about" locale="pt" />
       <div className="container mx-auto px-4 py-8 space-y-8">
         <div className="mb-4">
           <Breadcrumb items={breadcrumbItems} />

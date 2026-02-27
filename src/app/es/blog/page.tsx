@@ -47,7 +47,7 @@ export default function SpanishBlogPage() {
         ])}
       />
 
-      <Header activePage="blog" />
+      <Header activePage="blog" locale="es" />
       <div className="container mx-auto px-4 py-8 space-y-8">
         <Section className="py-4">
           <div className="max-w-5xl mx-auto">
@@ -106,7 +106,7 @@ export default function SpanishBlogPage() {
               </div>
             )}
 
-            <BlogCategoryFilter posts={blogPostsEs.slice(1)} />
+            <BlogCategoryFilter posts={blogPostsEs.slice(1)} basePath="/es/blog" />
           </div>
         </Section>
       </div>

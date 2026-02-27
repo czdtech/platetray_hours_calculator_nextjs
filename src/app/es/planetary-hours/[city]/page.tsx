@@ -111,7 +111,7 @@ export default async function SpanishCityPage({ params }: CityPageProps) {
   if (!result) {
     return (
       <>
-        <Header activePage="cities" />
+        <Header activePage="cities" locale="es" />
         <div className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {messages.calculator.calculationError}
@@ -163,7 +163,7 @@ export default async function SpanishCityPage({ params }: CityPageProps) {
 
   return (
     <>
-      <Header activePage="cities" />
+      <Header activePage="cities" locale="es" />
       <JsonLd data={breadcrumbSchema} />
 
       <div className="container mx-auto px-4 py-6 space-y-6">

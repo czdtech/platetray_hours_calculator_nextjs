@@ -1,10 +1,12 @@
 import { Header } from "@/components/Layout/Header";
 import { Breadcrumb } from "@/components/SEO/Breadcrumb";
+import type { Locale } from "@/i18n/config";
 
 interface ArticleLayoutProps {
   hero?: React.ReactNode;
   children: React.ReactNode;
   breadcrumbItems?: Array<{ name: string; url: string }>;
+  locale?: Locale;
 }
 
 /**
@@ -15,10 +17,11 @@ export function ArticleLayout({
   hero,
   children,
   breadcrumbItems,
+  locale = "en",
 }: ArticleLayoutProps) {
   return (
     <>
-      <Header activePage="blog" />
+      <Header activePage="blog" locale={locale} />
       <article className="bg-white dark:bg-gray-900">
         {hero}
 

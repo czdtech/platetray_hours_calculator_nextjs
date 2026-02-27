@@ -5,24 +5,25 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/Theme/ThemeToggle";
 import { LanguageSwitcher } from "@/components/Layout/LanguageSwitcher";
+import type { Locale } from "@/i18n/config";
+import { toLocalizedPath } from "@/i18n/routePolicy";
 
 interface HeaderProps {
   activePage: "calculator" | "about" | "blog" | "cities";
+  locale?: Locale;
 }
 
-export function Header({ activePage }: HeaderProps) {
+export function Header({ activePage, locale = "en" }: HeaderProps) {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
   const handleFAQClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    // 安全检查：确保在客户端环境
     if (typeof window === 'undefined') return;
-    
-    // 如果当前不在首页，先导航到首页
-    if (window.location.pathname !== "/") {
-      router.push("/");
-      // 需要等到页面加载完毕后才能滚动
+
+    const homePath = toLocalizedPath('/', locale);
+    if (window.location.pathname !== homePath) {
+      router.push(toLocalizedPath('/', locale));
       setTimeout(() => {
         const faqElement = document.getElementById("faq");
         if (faqElement) {
@@ -30,7 +31,6 @@ export function Header({ activePage }: HeaderProps) {
         }
       }, 500);
     } else {
-      // 如果已经在首页，直接滚动
       const faqElement = document.getElementById("faq");
       if (faqElement) {
         faqElement.scrollIntoView({ behavior: "smooth" });
@@ -42,9 +42,8 @@ export function Header({ activePage }: HeaderProps) {
   return (
     <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        {/* Logo / Brand name 可点击返回首页，不使用 H1 避免重复主标题 */}
         <Link
-          href="/"
+          href={toLocalizedPath('/', locale)}
           aria-label="Planetary Hours home"
           className="text-xl font-bold text-gray-800 dark:text-gray-100"
         >
@@ -53,7 +52,7 @@ export function Header({ activePage }: HeaderProps) {
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center space-x-6">
           <Link
-            href="/"
+            href={toLocalizedPath('/', locale)}
             className={`text-sm ${
               activePage === "calculator"
                 ? "text-purple-600 dark:text-purple-400 font-medium border-b-2 border-purple-600 dark:border-purple-400 pb-1"
@@ -64,7 +63,7 @@ export function Header({ activePage }: HeaderProps) {
           </Link>
           {activePage === "calculator" && (
             <Link
-              href="/#faq"
+              href={`${toLocalizedPath('/', locale)}#faq`}
               onClick={handleFAQClick}
               className="text-sm text-gray-600 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 transition-colors duration-200"
             >
@@ -72,7 +71,7 @@ export function Header({ activePage }: HeaderProps) {
             </Link>
           )}
           <Link
-            href="/planetary-hours"
+            href={toLocalizedPath('/planetary-hours', locale)}
             className={`text-sm ${
               activePage === "cities"
                 ? "text-purple-600 dark:text-purple-400 font-medium border-b-2 border-purple-600 dark:border-purple-400 pb-1"
@@ -82,7 +81,7 @@ export function Header({ activePage }: HeaderProps) {
             Cities
           </Link>
           <Link
-            href="/blog"
+            href={toLocalizedPath('/blog', locale)}
             className={`text-sm ${
               activePage === "blog"
                 ? "text-purple-600 dark:text-purple-400 font-medium border-b-2 border-purple-600 dark:border-purple-400 pb-1"
@@ -92,7 +91,7 @@ export function Header({ activePage }: HeaderProps) {
             Blog
           </Link>
           <Link
-            href="/about"
+            href={toLocalizedPath('/about', locale)}
             className={`text-sm ${
               activePage === "about"
                 ? "text-purple-600 dark:text-purple-400 font-medium border-b-2 border-purple-600 dark:border-purple-400 pb-1"
@@ -145,7 +144,7 @@ export function Header({ activePage }: HeaderProps) {
       {isMenuOpen && (
         <nav className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 pb-4 shadow-sm">
           <Link
-            href="/"
+            href={toLocalizedPath('/', locale)}
             className="block py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400"
             onClick={() => setMenuOpen(false)}
           >
@@ -153,7 +152,7 @@ export function Header({ activePage }: HeaderProps) {
           </Link>
           {activePage === "calculator" && (
             <Link
-              href="/#faq"
+              href={`${toLocalizedPath('/', locale)}#faq`}
               className="block py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400"
               onClick={handleFAQClick}
             >
@@ -161,21 +160,21 @@ export function Header({ activePage }: HeaderProps) {
             </Link>
           )}
           <Link
-            href="/planetary-hours"
+            href={toLocalizedPath('/planetary-hours', locale)}
             className="block py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400"
             onClick={() => setMenuOpen(false)}
           >
             Cities
           </Link>
           <Link
-            href="/blog"
+            href={toLocalizedPath('/blog', locale)}
             className="block py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400"
             onClick={() => setMenuOpen(false)}
           >
             Blog
           </Link>
           <Link
-            href="/about"
+            href={toLocalizedPath('/about', locale)}
             className="block py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400"
             onClick={() => setMenuOpen(false)}
           >
