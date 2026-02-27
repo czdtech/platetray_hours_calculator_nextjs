@@ -2,32 +2,9 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { locales, localeNames, defaultLocale } from '@/i18n/config';
+import { locales, localeNames } from '@/i18n/config';
 import type { Locale } from '@/i18n/config';
-
-function getCurrentLocale(pathname: string): Locale {
-  for (const locale of locales) {
-    if (locale !== defaultLocale && (pathname === `/${locale}` || pathname.startsWith(`/${locale}/`))) {
-      return locale;
-    }
-  }
-  return defaultLocale;
-}
-
-function getPathWithoutLocale(pathname: string): string {
-  for (const locale of locales) {
-    if (locale !== defaultLocale) {
-      if (pathname === `/${locale}`) return '/';
-      if (pathname.startsWith(`/${locale}/`)) return pathname.slice(`/${locale}`.length);
-    }
-  }
-  return pathname;
-}
-
-function getLocalizedPath(basePath: string, locale: Locale): string {
-  if (locale === defaultLocale) return basePath;
-  return `/${locale}${basePath === '/' ? '' : basePath}`;
-}
+import { resolveLocaleSwitchPath, getCurrentLocale } from '@/i18n/routePolicy';
 
 export function LanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,7 +13,6 @@ export function LanguageSwitcher() {
   const router = useRouter();
 
   const currentLocale = getCurrentLocale(pathname);
-  const basePath = getPathWithoutLocale(pathname);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -50,7 +26,7 @@ export function LanguageSwitcher() {
 
   const handleLocaleChange = (locale: Locale) => {
     setIsOpen(false);
-    const newPath = getLocalizedPath(basePath, locale);
+    const newPath = resolveLocaleSwitchPath(pathname, locale);
     router.push(newPath);
   };
 
