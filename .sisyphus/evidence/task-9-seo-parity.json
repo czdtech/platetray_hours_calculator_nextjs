@@ -1,0 +1,272 @@
+{
+  "timestamp": "2026-02-27T08:37:44.043Z",
+  "checks": [
+    {
+      "check": "ES markdown exists: venus-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "ES markdown exists: jupiter-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "ES markdown exists: saturn-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "ES markdown exists: mercury-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "ES markdown exists: mars-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "ES markdown exists: sun-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "ES markdown exists: moon-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "ES markdown exists: planetary-hours-and-their-meanings",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "ES markdown exists: planetary-hours-for-love",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "ES markdown exists: planetary-hours-for-magic",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "ES markdown exists: planetary-hours-for-manifestation",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "ES markdown exists: planetary-hours-for-money",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "ES markdown exists: best-planetary-hour-for-marriage",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "PT markdown exists: venus-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "PT markdown exists: jupiter-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "PT markdown exists: saturn-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "PT markdown exists: mercury-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "PT markdown exists: mars-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "PT markdown exists: sun-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "PT markdown exists: moon-hour-guide",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "PT markdown exists: planetary-hours-and-their-meanings",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "PT markdown exists: planetary-hours-for-love",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "PT markdown exists: planetary-hours-for-magic",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "PT markdown exists: planetary-hours-for-manifestation",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "PT markdown exists: planetary-hours-for-money",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "PT markdown exists: best-planetary-hour-for-marriage",
+      "status": "pass",
+      "details": "File found"
+    },
+    {
+      "check": "ES slug registered: best-planetary-hour-for-marriage",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "ES slug registered: jupiter-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "ES slug registered: mars-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "ES slug registered: mercury-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "ES slug registered: moon-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "ES slug registered: planetary-hours-and-their-meanings",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "ES slug registered: planetary-hours-for-love",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "ES slug registered: planetary-hours-for-magic",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "ES slug registered: planetary-hours-for-manifestation",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "ES slug registered: planetary-hours-for-money",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "ES slug registered: saturn-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "ES slug registered: sun-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "ES slug registered: venus-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "PT slug registered: best-planetary-hour-for-marriage",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "PT slug registered: jupiter-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "PT slug registered: mars-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "PT slug registered: mercury-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "PT slug registered: moon-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "PT slug registered: planetary-hours-and-their-meanings",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "PT slug registered: planetary-hours-for-love",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "PT slug registered: planetary-hours-for-magic",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "PT slug registered: planetary-hours-for-manifestation",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "PT slug registered: planetary-hours-for-money",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "PT slug registered: saturn-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "PT slug registered: sun-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "PT slug registered: venus-hour-guide",
+      "status": "pass",
+      "details": "Registered in TRANSLATED_SLUGS"
+    },
+    {
+      "check": "ES/PT slug parity",
+      "status": "pass",
+      "details": "ES and PT have identical translated slug sets"
+    }
+  ],
+  "blockers": 0,
+  "total": 53
+}
