@@ -1,5 +1,3 @@
-import fs from "fs";
-import path from "path";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { StaticImageData } from "next/image";
@@ -29,9 +27,7 @@ const messages = getMessagesSync(locale);
 export const dynamicParams = false;
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const contentDir = path.join(process.cwd(), "src/content/blog/pt");
-  const files = fs.readdirSync(contentDir).filter((f) => f.endsWith(".md"));
-  return files.map((f) => ({ slug: f.replace(/\.md$/, "") }));
+  return blogPostsPt.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({

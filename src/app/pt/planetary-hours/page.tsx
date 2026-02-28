@@ -105,7 +105,7 @@ export default function PortugueseCityIndex() {
             {messages.cityIndex.dontSeeCity}
           </p>
           <Link
-            href="/"
+            href="/pt"
             className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
           >
             {messages.calculator.openCalculator}

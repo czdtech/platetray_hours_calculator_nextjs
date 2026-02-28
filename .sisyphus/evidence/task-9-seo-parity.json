@@ -1,272 +1,1087 @@
 {
-  "timestamp": "2026-02-27T08:37:44.043Z",
+  "timestamp": "2026-02-28T05:19:52.308Z",
+  "baseUrl": "http://localhost:3100/",
+  "sampledUrls": [
+    "http://localhost:3100/",
+    "http://localhost:3100/es",
+    "http://localhost:3100/pt",
+    "http://localhost:3100/about",
+    "http://localhost:3100/blog",
+    "http://localhost:3100/blog/venus-hour-guide",
+    "http://localhost:3100/blog/2025-astronomical-events-planetary-hours",
+    "http://localhost:3100/es/blog/venus-hour-guide",
+    "http://localhost:3100/pt/blog/venus-hour-guide",
+    "http://localhost:3100/planetary-hours",
+    "http://localhost:3100/planetary-hours/lagos",
+    "http://localhost:3100/es/planetary-hours",
+    "http://localhost:3100/es/planetary-hours/lagos",
+    "http://localhost:3100/pt/planetary-hours",
+    "http://localhost:3100/pt/planetary-hours/lagos"
+  ],
   "checks": [
     {
       "check": "ES markdown exists: venus-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "ES markdown exists: jupiter-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "ES markdown exists: saturn-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "ES markdown exists: mercury-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "ES markdown exists: mars-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "ES markdown exists: sun-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "ES markdown exists: moon-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "ES markdown exists: planetary-hours-and-their-meanings",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "ES markdown exists: planetary-hours-for-love",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "ES markdown exists: planetary-hours-for-magic",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "ES markdown exists: planetary-hours-for-manifestation",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "ES markdown exists: planetary-hours-for-money",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "ES markdown exists: best-planetary-hour-for-marriage",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "PT markdown exists: venus-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "PT markdown exists: jupiter-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "PT markdown exists: saturn-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "PT markdown exists: mercury-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "PT markdown exists: mars-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "PT markdown exists: sun-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "PT markdown exists: moon-hour-guide",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "PT markdown exists: planetary-hours-and-their-meanings",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "PT markdown exists: planetary-hours-for-love",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "PT markdown exists: planetary-hours-for-magic",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "PT markdown exists: planetary-hours-for-manifestation",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "PT markdown exists: planetary-hours-for-money",
       "status": "pass",
-      "details": "File found"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "PT markdown exists: best-planetary-hour-for-marriage",
       "status": "pass",
-      "details": "File found"
-    },
-    {
-      "check": "ES slug registered: best-planetary-hour-for-marriage",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "ES slug registered: jupiter-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "ES slug registered: mars-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "ES slug registered: mercury-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "ES slug registered: moon-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "ES slug registered: planetary-hours-and-their-meanings",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "ES slug registered: planetary-hours-for-love",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "ES slug registered: planetary-hours-for-magic",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "ES slug registered: planetary-hours-for-manifestation",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "ES slug registered: planetary-hours-for-money",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "ES slug registered: saturn-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "ES slug registered: sun-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "ES slug registered: venus-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "PT slug registered: best-planetary-hour-for-marriage",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "PT slug registered: jupiter-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "PT slug registered: mars-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "PT slug registered: mercury-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "PT slug registered: moon-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "PT slug registered: planetary-hours-and-their-meanings",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "PT slug registered: planetary-hours-for-love",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "PT slug registered: planetary-hours-for-magic",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "PT slug registered: planetary-hours-for-manifestation",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "PT slug registered: planetary-hours-for-money",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "PT slug registered: saturn-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "PT slug registered: sun-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
-    },
-    {
-      "check": "PT slug registered: venus-hour-guide",
-      "status": "pass",
-      "details": "Registered in TRANSLATED_SLUGS"
+      "details": "File found",
+      "category": "content"
     },
     {
       "check": "ES/PT slug parity",
       "status": "pass",
-      "details": "ES and PT have identical translated slug sets"
+      "details": "ES and PT translated slug sets are identical",
+      "category": "content"
+    },
+    {
+      "check": "Sitemap fetch status",
+      "status": "pass",
+      "details": "status=200",
+      "category": "sitemap"
+    },
+    {
+      "check": "Sitemap URL entries parsed",
+      "status": "pass",
+      "details": "entries=376",
+      "category": "sitemap"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/, expected=https://planetaryhours.org/",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/es",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/es",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/pt",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/pt",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/es",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/es",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/es",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/es, expected=https://planetaryhours.org/es",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/es",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/es",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/es",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/es",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/es",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/pt",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/pt",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/pt",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/pt, expected=https://planetaryhours.org/pt",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/pt",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/pt",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/pt",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/pt",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/pt",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/about",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/about",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/about",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/about",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/about, expected=https://planetaryhours.org/about",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/about",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/about",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/about",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/about",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/about",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/about",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/es/about",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/es/about",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/pt/about",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/pt/about",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/about",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/blog",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/blog",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/blog",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/blog",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/blog, expected=https://planetaryhours.org/blog",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/blog",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/blog",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/blog",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/blog",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/blog",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/blog",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/es/blog",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/es/blog",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/pt/blog",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/pt/blog",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/blog",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/blog/venus-hour-guide",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/blog/venus-hour-guide, expected=https://planetaryhours.org/blog/venus-hour-guide",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/es/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/es/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/pt/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/pt/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/blog/2025-astronomical-events-planetary-hours",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/blog/2025-astronomical-events-planetary-hours",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/blog/2025-astronomical-events-planetary-hours",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/blog/2025-astronomical-events-planetary-hours",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/blog/2025-astronomical-events-planetary-hours, expected=https://planetaryhours.org/blog/2025-astronomical-events-planetary-hours",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/blog/2025-astronomical-events-planetary-hours",
+      "status": "pass",
+      "details": "Alternates match (); expectedKeys=[]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/blog/2025-astronomical-events-planetary-hours",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/blog/2025-astronomical-events-planetary-hours",
+      "status": "pass",
+      "details": "Alternates match ()",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/blog/2025-astronomical-events-planetary-hours",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/blog/2025-astronomical-events-planetary-hours",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/es/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/es/blog/venus-hour-guide",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/es/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/es/blog/venus-hour-guide, expected=https://planetaryhours.org/es/blog/venus-hour-guide",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/es/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/es/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/es/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/es/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/es/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/pt/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/pt/blog/venus-hour-guide",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/pt/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/pt/blog/venus-hour-guide, expected=https://planetaryhours.org/pt/blog/venus-hour-guide",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/pt/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/pt/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/pt/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/pt/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/pt/blog/venus-hour-guide",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/planetary-hours",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/planetary-hours",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/planetary-hours",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/planetary-hours",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/planetary-hours, expected=https://planetaryhours.org/planetary-hours",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/planetary-hours",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/planetary-hours",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/planetary-hours",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/planetary-hours",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/planetary-hours",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/planetary-hours",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/es/planetary-hours",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/es/planetary-hours",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/pt/planetary-hours",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/pt/planetary-hours",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/planetary-hours",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/planetary-hours/lagos",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/planetary-hours/lagos",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/planetary-hours/lagos",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/planetary-hours/lagos",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/planetary-hours/lagos, expected=https://planetaryhours.org/planetary-hours/lagos",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/planetary-hours/lagos",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/planetary-hours/lagos",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/planetary-hours/lagos",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/planetary-hours/lagos",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/planetary-hours/lagos",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/planetary-hours/lagos",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/es/planetary-hours/lagos",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/es/planetary-hours/lagos",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "HTTP status: http://localhost:3100/pt/planetary-hours/lagos",
+      "status": "pass",
+      "details": "status=200",
+      "category": "http"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/pt/planetary-hours/lagos",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "Hreflang reciprocity cluster: https://planetaryhours.org/planetary-hours/lagos",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "reciprocity"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/es/planetary-hours",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/es/planetary-hours",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/es/planetary-hours",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/es/planetary-hours, expected=https://planetaryhours.org/es/planetary-hours",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/es/planetary-hours",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/es/planetary-hours",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/es/planetary-hours",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/es/planetary-hours",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/es/planetary-hours",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/es/planetary-hours/lagos",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/es/planetary-hours/lagos",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/es/planetary-hours/lagos",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/es/planetary-hours/lagos, expected=https://planetaryhours.org/es/planetary-hours/lagos",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/es/planetary-hours/lagos",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/es/planetary-hours/lagos",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/es/planetary-hours/lagos",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/es/planetary-hours/lagos",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/es/planetary-hours/lagos",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/pt/planetary-hours",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/pt/planetary-hours",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/pt/planetary-hours",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/pt/planetary-hours, expected=https://planetaryhours.org/pt/planetary-hours",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/pt/planetary-hours",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/pt/planetary-hours",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/pt/planetary-hours",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/pt/planetary-hours",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/pt/planetary-hours",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
+    },
+    {
+      "check": "Canonical present: http://localhost:3100/pt/planetary-hours/lagos",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/pt/planetary-hours/lagos",
+      "category": "head"
+    },
+    {
+      "check": "Canonical matches expected SEO URL: http://localhost:3100/pt/planetary-hours/lagos",
+      "status": "pass",
+      "details": "canonical=https://planetaryhours.org/pt/planetary-hours/lagos, expected=https://planetaryhours.org/pt/planetary-hours/lagos",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates match expected: http://localhost:3100/pt/planetary-hours/lagos",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default); expectedKeys=[\"en\",\"es\",\"pt\",\"x-default\"]",
+      "category": "head"
+    },
+    {
+      "check": "Head alternates absolute URLs: http://localhost:3100/pt/planetary-hours/lagos",
+      "status": "pass",
+      "details": "All alternate URLs are absolute",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap/head alternates parity: http://localhost:3100/pt/planetary-hours/lagos",
+      "status": "pass",
+      "details": "Alternates match (en, es, pt, x-default)",
+      "category": "sitemap"
+    },
+    {
+      "check": "Head x-default presence: http://localhost:3100/pt/planetary-hours/lagos",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "head"
+    },
+    {
+      "check": "Sitemap x-default presence: http://localhost:3100/pt/planetary-hours/lagos",
+      "status": "pass",
+      "details": "x-default present or not required",
+      "category": "sitemap"
     }
   ],
   "blockers": 0,
-  "total": 53
+  "total": 177
 }

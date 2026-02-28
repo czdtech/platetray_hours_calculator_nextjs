@@ -9,14 +9,20 @@ import { getBreadcrumbSchema } from "@/utils/seo/jsonld";
 import { Section } from "@/components/semantic/Section";
 import { Header } from "@/components/Layout/Header";
 import { BlogCategoryFilter } from "@/components/Blog/BlogCategoryFilter";
+import { getHreflangTags } from "@/utils/seo/hreflang";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
+const hreflang = getHreflangTags("/blog");
 
 export const metadata: Metadata = {
   title: "Blog",
   description:
     "Read the latest updates, guides and announcements about the Planetary Hours Calculator.",
+  alternates: {
+    canonical: `${SITE_URL}/blog`,
+    languages: hreflang,
+  },
   openGraph: {
     title: "Blog | Planetary Hours Calculator",
     description:

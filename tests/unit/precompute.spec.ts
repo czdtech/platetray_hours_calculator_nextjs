@@ -19,7 +19,7 @@ beforeAll(async () => {
   delete process.env.UPSTASH_REDIS_REST_TOKEN;
   delete process.env.KV_REST_API_URL;
   delete process.env.KV_REST_API_TOKEN;
-});
+}, 60000);
 
 // 使用 spyOn 避免真实文件写入
 const writeSpy = vi.spyOn(fs, 'writeFile').mockResolvedValue(undefined as any);

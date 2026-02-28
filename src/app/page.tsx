@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { getSoftwareApplicationSchema } from "@/utils/seo/jsonld";
+import { getHreflangTags } from "@/utils/seo/hreflang";
 import CalculatorServer from "./CalculatorServer";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
+const hreflang = getHreflangTags("/");
 
 // 页面完全动态渲染，配合 CalculatorServer 的实时 TTL 策略
 export const revalidate = 0;
@@ -66,6 +68,7 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: SITE_URL,
+    languages: hreflang,
   },
   verification: {
     google: "your-google-verification-code",

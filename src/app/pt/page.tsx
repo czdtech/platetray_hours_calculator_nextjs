@@ -41,7 +41,7 @@ export default function PortugueseHomePage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <Link
-              href="/"
+              href="/pt"
               className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-medium px-8 py-4 rounded-lg transition-colors text-lg shadow-md hover:shadow-lg"
             >
               {messages.calculator.openCalculator}

@@ -1,21 +1,6 @@
 import { blogPosts } from "./blogPosts";
 import type { BlogPost } from "@/types/blog";
-
-const translatedSlugs = new Set([
-  "venus-hour-guide",
-  "jupiter-hour-guide",
-  "saturn-hour-guide",
-  "mercury-hour-guide",
-  "mars-hour-guide",
-  "sun-hour-guide",
-  "moon-hour-guide",
-  "planetary-hours-and-their-meanings",
-  "planetary-hours-for-love",
-  "planetary-hours-for-magic",
-  "planetary-hours-for-manifestation",
-  "planetary-hours-for-money",
-  "best-planetary-hour-for-marriage",
-]);
+import { TRANSLATED_SLUGS } from "@/i18n/translatedSlugs";
 
 const portugueseOverrides: Record<string, { title: string; excerpt: string }> = {
   "venus-hour-guide": {
@@ -73,7 +58,7 @@ const portugueseOverrides: Record<string, { title: string; excerpt: string }> = 
 };
 
 export const blogPostsPt: BlogPost[] = blogPosts
-  .filter((post) => translatedSlugs.has(post.slug))
+  .filter((post) => TRANSLATED_SLUGS.pt.has(post.slug))
   .map((post) => {
     const override = portugueseOverrides[post.slug];
     if (override) {

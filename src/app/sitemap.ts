@@ -33,6 +33,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = siteConfig.url;
   const siteLaunchDate = new Date(staticPageDates.home); // Use home date as a general fallback or site launch
 
+  const getLocaleUrl = (locale: 'en' | 'es' | 'pt', pathname: string): string => {
+    if (pathname === '/') {
+      return locale === 'en' ? baseUrl : `${baseUrl}/${locale}`;
+    }
+    return locale === 'en' ? `${baseUrl}${pathname}` : `${baseUrl}/${locale}${pathname}`;
+  };
+
+  const buildAlternates = (
+    pathname: string,
+    localesToInclude: Array<'en' | 'es' | 'pt'> = ['en', 'es', 'pt'],
+  ) => {
+    const languages: Record<string, string> = {
+      'x-default': getLocaleUrl('en', pathname),
+    };
+
+    for (const locale of localesToInclude) {
+      languages[locale] = getLocaleUrl(locale, pathname);
+    }
+
+    return { languages };
+  };
+
   // 静态页面配置
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -40,18 +62,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(staticPageDates.home),
       changeFrequency: "daily" as const,
       priority: 1.0,
+      alternates: buildAlternates('/'),
     },
     {
       url: `${baseUrl}/about`,
       lastModified: new Date(staticPageDates.about),
       changeFrequency: "monthly" as const,
       priority: 0.8,
+      alternates: buildAlternates('/about'),
     },
     {
       url: `${baseUrl}/blog`, // 博客列表页
       lastModified: getLatestBlogPostDate(), // 使用最新博客文章的日期
       changeFrequency: "weekly" as const,
       priority: 0.9,
+      alternates: buildAlternates('/blog'),
     },
     {
       url: `${baseUrl}/privacy`,
@@ -76,15 +101,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const hasPt = translatedSlugs.pt.has(post.slug);
     const hasTranslation = hasEs || hasPt;
 
+    const localesToInclude: Array<'en' | 'es' | 'pt'> = ['en'];
+    if (hasEs) localesToInclude.push('es');
+    if (hasPt) localesToInclude.push('pt');
+
     const alternatesBlock = hasTranslation
       ? {
-          alternates: {
-            languages: {
-              en: `${baseUrl}/blog/${post.slug}`,
-              ...(hasEs ? { es: `${baseUrl}/es/blog/${post.slug}` } : {}),
-              ...(hasPt ? { pt: `${baseUrl}/pt/blog/${post.slug}` } : {}),
-            },
-          },
+          alternates: buildAlternates(`/blog/${post.slug}`, localesToInclude),
         }
       : {};
 
@@ -117,13 +140,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: lastMod,
       changeFrequency: "monthly" as const,
       priority: 0.6,
-      alternates: {
-        languages: {
-          en: `${baseUrl}/blog/${post.slug}`,
-          es: `${baseUrl}/es/blog/${post.slug}`,
-          pt: `${baseUrl}/pt/blog/${post.slug}`,
-        },
-      },
+      alternates: buildAlternates(`/blog/${post.slug}`),
     };
   });
 
@@ -136,13 +153,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: lastMod,
       changeFrequency: "monthly" as const,
       priority: 0.6,
-      alternates: {
-        languages: {
-          en: `${baseUrl}/blog/${post.slug}`,
-          es: `${baseUrl}/es/blog/${post.slug}`,
-          pt: `${baseUrl}/pt/blog/${post.slug}`,
-        },
-      },
+      alternates: buildAlternates(`/blog/${post.slug}`),
     };
   });
 
@@ -153,13 +164,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.9,
-      alternates: {
-        languages: {
-          en: `${baseUrl}/planetary-hours`,
-          es: `${baseUrl}/es/planetary-hours`,
-          pt: `${baseUrl}/pt/planetary-hours`,
-        },
-      },
+      alternates: buildAlternates('/planetary-hours'),
     },
   ];
 
@@ -168,13 +173,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
     changeFrequency: "daily" as const,
     priority: 0.8,
-    alternates: {
-      languages: {
-        en: `${baseUrl}/planetary-hours/${city.slug}`,
-        es: `${baseUrl}/es/planetary-hours/${city.slug}`,
-        pt: `${baseUrl}/pt/planetary-hours/${city.slug}`,
-      },
-    },
+    alternates: buildAlternates(`/planetary-hours/${city.slug}`),
   }));
 
   // Spanish city pages
@@ -184,13 +183,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.8,
-      alternates: {
-        languages: {
-          en: `${baseUrl}/planetary-hours`,
-          es: `${baseUrl}/es/planetary-hours`,
-          pt: `${baseUrl}/pt/planetary-hours`,
-        },
-      },
+      alternates: buildAlternates('/planetary-hours'),
     },
   ];
 
@@ -199,13 +192,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
     changeFrequency: "daily" as const,
     priority: 0.7,
-    alternates: {
-      languages: {
-        en: `${baseUrl}/planetary-hours/${city.slug}`,
-        es: `${baseUrl}/es/planetary-hours/${city.slug}`,
-        pt: `${baseUrl}/pt/planetary-hours/${city.slug}`,
-      },
-    },
+    alternates: buildAlternates(`/planetary-hours/${city.slug}`),
   }));
 
   // Portuguese city pages
@@ -215,13 +202,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.8,
-      alternates: {
-        languages: {
-          en: `${baseUrl}/planetary-hours`,
-          es: `${baseUrl}/es/planetary-hours`,
-          pt: `${baseUrl}/pt/planetary-hours`,
-        },
-      },
+      alternates: buildAlternates('/planetary-hours'),
     },
   ];
 
@@ -230,13 +211,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
     changeFrequency: "daily" as const,
     priority: 0.7,
-    alternates: {
-      languages: {
-        en: `${baseUrl}/planetary-hours/${city.slug}`,
-        es: `${baseUrl}/es/planetary-hours/${city.slug}`,
-        pt: `${baseUrl}/pt/planetary-hours/${city.slug}`,
-      },
-    },
+    alternates: buildAlternates(`/planetary-hours/${city.slug}`),
   }));
 
   // Spanish & Portuguese static pages
@@ -246,39 +221,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(staticPageDates.home),
       changeFrequency: "daily" as const,
       priority: 0.9,
-      alternates: {
-        languages: {
-          en: baseUrl,
-          es: `${baseUrl}/es`,
-          pt: `${baseUrl}/pt`,
-        },
-      },
+      alternates: buildAlternates('/'),
     },
     {
       url: `${baseUrl}/es/about`,
       lastModified: new Date(staticPageDates.about),
       changeFrequency: "monthly" as const,
       priority: 0.7,
-      alternates: {
-        languages: {
-          en: `${baseUrl}/about`,
-          es: `${baseUrl}/es/about`,
-          pt: `${baseUrl}/pt/about`,
-        },
-      },
+      alternates: buildAlternates('/about'),
     },
     {
       url: `${baseUrl}/es/blog`,
       lastModified: getLatestBlogPostDate(),
       changeFrequency: "weekly" as const,
       priority: 0.8,
-      alternates: {
-        languages: {
-          en: `${baseUrl}/blog`,
-          es: `${baseUrl}/es/blog`,
-          pt: `${baseUrl}/pt/blog`,
-        },
-      },
+      alternates: buildAlternates('/blog'),
     },
   ];
 
@@ -288,39 +245,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(staticPageDates.home),
       changeFrequency: "daily" as const,
       priority: 0.9,
-      alternates: {
-        languages: {
-          en: baseUrl,
-          es: `${baseUrl}/es`,
-          pt: `${baseUrl}/pt`,
-        },
-      },
+      alternates: buildAlternates('/'),
     },
     {
       url: `${baseUrl}/pt/about`,
       lastModified: new Date(staticPageDates.about),
       changeFrequency: "monthly" as const,
       priority: 0.7,
-      alternates: {
-        languages: {
-          en: `${baseUrl}/about`,
-          es: `${baseUrl}/es/about`,
-          pt: `${baseUrl}/pt/about`,
-        },
-      },
+      alternates: buildAlternates('/about'),
     },
     {
       url: `${baseUrl}/pt/blog`,
       lastModified: getLatestBlogPostDate(),
       changeFrequency: "weekly" as const,
       priority: 0.8,
-      alternates: {
-        languages: {
-          en: `${baseUrl}/blog`,
-          es: `${baseUrl}/es/blog`,
-          pt: `${baseUrl}/pt/blog`,
-        },
-      },
+      alternates: buildAlternates('/blog'),
     },
   ];
 

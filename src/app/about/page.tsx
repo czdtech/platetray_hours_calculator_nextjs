@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Header } from "@/components/Layout/Header";
 import { Breadcrumb } from "@/components/SEO/Breadcrumb";
 import { Article } from "@/components/semantic/Article";
+import { getHreflangTags } from "@/utils/seo/hreflang";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
+const hreflang = getHreflangTags("/about");
 
 export const metadata: Metadata = {
   title: "About",
@@ -12,6 +14,7 @@ export const metadata: Metadata = {
     "Learn about the mission, methodology and team behind the Planetary Hours Calculator.",
   alternates: {
     canonical: `${SITE_URL}/about`,
+    languages: hreflang,
   },
   openGraph: {
     title: "About | Planetary Hours Calculator",
