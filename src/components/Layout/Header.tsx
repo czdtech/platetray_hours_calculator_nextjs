@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ThemeToggle } from "@/components/Theme/ThemeToggle";
 import { LanguageSwitcher } from "@/components/Layout/LanguageSwitcher";
 import type { Locale } from "@/i18n/config";
+import { getMessagesSync } from "@/i18n/getMessages";
 import { toLocalizedPath } from "@/i18n/routePolicy";
 
 interface HeaderProps {
@@ -16,6 +17,7 @@ interface HeaderProps {
 export function Header({ activePage, locale = "en" }: HeaderProps) {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
+  const messages = getMessagesSync(locale);
 
   const handleFAQClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -44,10 +46,10 @@ export function Header({ activePage, locale = "en" }: HeaderProps) {
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link
           href={toLocalizedPath('/', locale)}
-          aria-label="Planetary Hours home"
+          aria-label={messages.common.homeAriaLabel}
           className="text-xl font-bold text-gray-800 dark:text-gray-100"
         >
-          Planetary Hours
+          {messages.common.siteName}
         </Link>
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center space-x-6">
@@ -59,7 +61,7 @@ export function Header({ activePage, locale = "en" }: HeaderProps) {
                 : "text-gray-600 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 transition-colors duration-200"
             }`}
           >
-            Calculator
+            {messages.common.calculator}
           </Link>
           {activePage === "calculator" && (
             <Link
@@ -67,7 +69,7 @@ export function Header({ activePage, locale = "en" }: HeaderProps) {
               onClick={handleFAQClick}
               className="text-sm text-gray-600 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 transition-colors duration-200"
             >
-              FAQ
+              {messages.common.faq}
             </Link>
           )}
           <Link
@@ -78,7 +80,7 @@ export function Header({ activePage, locale = "en" }: HeaderProps) {
                 : "text-gray-600 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 transition-colors duration-200"
             }`}
           >
-            Cities
+            {messages.common.cities}
           </Link>
           <Link
             href={toLocalizedPath('/blog', locale)}
@@ -88,7 +90,7 @@ export function Header({ activePage, locale = "en" }: HeaderProps) {
                 : "text-gray-600 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 transition-colors duration-200"
             }`}
           >
-            Blog
+            {messages.common.blog}
           </Link>
           <Link
             href={toLocalizedPath('/about', locale)}
@@ -98,20 +100,20 @@ export function Header({ activePage, locale = "en" }: HeaderProps) {
                 : "text-gray-600 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 transition-colors duration-200"
             }`}
           >
-            About
+            {messages.common.about}
           </Link>
-          <LanguageSwitcher />
+          <LanguageSwitcher locale={locale} />
           <ThemeToggle />
         </nav>
 
         {/* Mobile: Theme toggle + hamburger */}
         <div className="md:hidden flex items-center gap-2">
-          <LanguageSwitcher />
+          <LanguageSwitcher locale={locale} />
           <ThemeToggle />
           <button
             onClick={() => setMenuOpen(!isMenuOpen)}
             className="text-gray-600 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 focus:outline-none"
-            aria-label="Toggle navigation"
+            aria-label={messages.common.toggleNavigation}
             aria-expanded={isMenuOpen}
           >
             <svg
@@ -148,7 +150,7 @@ export function Header({ activePage, locale = "en" }: HeaderProps) {
             className="block py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400"
             onClick={() => setMenuOpen(false)}
           >
-            Calculator
+            {messages.common.calculator}
           </Link>
           {activePage === "calculator" && (
             <Link
@@ -156,7 +158,7 @@ export function Header({ activePage, locale = "en" }: HeaderProps) {
               className="block py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400"
               onClick={handleFAQClick}
             >
-              FAQ
+              {messages.common.faq}
             </Link>
           )}
           <Link
@@ -164,21 +166,21 @@ export function Header({ activePage, locale = "en" }: HeaderProps) {
             className="block py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400"
             onClick={() => setMenuOpen(false)}
           >
-            Cities
+            {messages.common.cities}
           </Link>
           <Link
             href={toLocalizedPath('/blog', locale)}
             className="block py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400"
             onClick={() => setMenuOpen(false)}
           >
-            Blog
+            {messages.common.blog}
           </Link>
           <Link
             href={toLocalizedPath('/about', locale)}
             className="block py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400"
             onClick={() => setMenuOpen(false)}
           >
-            About
+            {messages.common.about}
           </Link>
         </nav>
       )}

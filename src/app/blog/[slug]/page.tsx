@@ -15,9 +15,12 @@ import { getArticleSchema, getBreadcrumbSchema, getFAQPageSchema } from "@/utils
 import { getArticleAlternates } from "@/utils/seo/articleAlternates";
 import { FAQSection } from "@/components/FAQ/FAQSection";
 import { TableOfContents } from "@/components/Blog/TableOfContents";
+import { getMessagesSync } from "@/i18n/getMessages";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
+const locale = "en";
+const messages = getMessagesSync(locale);
 
 // 禁用动态参数，只允许静态生成的参数
 export const dynamicParams = false;
@@ -124,8 +127,7 @@ export default async function BlogPostPage({
   const title = markdownContent?.title || post?.title || "";
   const excerpt = markdownContent?.excerpt || post?.excerpt || "";
   const date = markdownContent?.date || post?.date || "";
-  const author =
-    markdownContent?.author || post?.author || "Planetary Hours Team";
+  const author = markdownContent?.author || post?.author || messages.blog.author;
   const readingTime = post?.readingTime || 5;
   const rawImage = post?.imageUrl || "/images/blog-default.jpg";
   const imageUrl =
@@ -146,8 +148,8 @@ export default async function BlogPostPage({
   });
 
   const breadcrumbSchema = getBreadcrumbSchema([
-    { name: "Home", url: SITE_URL },
-    { name: "Blog", url: `${SITE_URL}/blog` },
+    { name: messages.common.home, url: SITE_URL },
+    { name: messages.common.blog, url: `${SITE_URL}/blog` },
     { name: title, url: articleUrl },
   ]);
 
@@ -157,8 +159,8 @@ export default async function BlogPostPage({
 
   // 定义面包屑项
   const breadcrumbItems = [
-    { name: "Home", url: "/" },
-    { name: "Blog", url: "/blog" },
+    { name: messages.common.home, url: "/" },
+    { name: messages.common.blog, url: "/blog" },
     { name: title, url: `/blog/${slug}` },
   ];
 
@@ -166,6 +168,7 @@ export default async function BlogPostPage({
     <ArticleLayout
       hero={<ArticleHero title={title} imageUrl={rawImage} />}
       breadcrumbItems={breadcrumbItems}
+      locale={locale}
     >
       <JsonLd data={faqSchema ? [articleSchema, breadcrumbSchema, faqSchema] : [articleSchema, breadcrumbSchema]} />
 
@@ -175,10 +178,12 @@ export default async function BlogPostPage({
         author={author}
         readingTime={readingTime}
         className="mb-8"
+        locale={locale}
+        messages={messages}
       />
 
       {/* 目录导航 */}
-      <TableOfContents />
+      <TableOfContents locale={locale} messages={messages} />
 
       {/* 文章内容 */}
       <div className="prose dark:prose-invert max-w-none">
@@ -204,7 +209,7 @@ export default async function BlogPostPage({
       {/* FAQ 区域 */}
       {faqs && faqs.length > 0 && (
         <div className="mt-12">
-          <FAQSection faqs={faqs} includeSchema={false} />
+          <FAQSection faqs={faqs} includeSchema={false} locale={locale} messages={messages} />
         </div>
       )}
 
@@ -212,15 +217,15 @@ export default async function BlogPostPage({
       <div className="my-10 border-t border-gray-200 dark:border-gray-700"></div>
 
       {/* 分享功能 */}
-      <ArticleShare title={title} url={articleUrl} />
+      <ArticleShare title={title} url={articleUrl} locale={locale} messages={messages} />
 
       {/* 相关文章 */}
       <div className="mt-12">
-        <RelatedArticles articles={blogPosts} currentSlug={slug} />
+        <RelatedArticles articles={blogPosts} currentSlug={slug} locale={locale} messages={messages} />
       </div>
-      
+
       {/* 博客专用返回顶部按钮 */}
-      <BlogBackToTop title={title} url={articleUrl} />
+      <BlogBackToTop title={title} url={articleUrl} locale={locale} messages={messages} />
     </ArticleLayout>
   );
 }

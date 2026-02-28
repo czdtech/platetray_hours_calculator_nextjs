@@ -11,7 +11,7 @@ describe('Blog link building for locales', () => {
   });
 
   it('resolveLocaleSwitchPath falls back for untranslated slug', () => {
-    expect(resolveLocaleSwitchPath('/blog/what-are-planetary-hours', 'es')).toBe('/es/blog');
+    expect(resolveLocaleSwitchPath('/blog/some-en-only-post', 'es')).toBe('/es/blog');
   });
 
   it('resolveLocaleSwitchPath keeps translated slug', () => {
@@ -22,8 +22,8 @@ describe('Blog link building for locales', () => {
     expect(resolveLocaleSwitchPath('/planetary-hours/tokyo', 'pt')).toBe('/pt/planetary-hours/tokyo');
   });
 
-  it('blog category falls back to locale blog index', () => {
-    expect(resolveLocaleSwitchPath('/blog/category/planet-hours', 'es')).toBe('/es/blog');
+  it('blog category maps to localized category route', () => {
+    expect(resolveLocaleSwitchPath('/blog/category/planet-hours', 'es')).toBe('/es/blog/category/planet-hours');
   });
 
   it('does not jump to EN from ES context', () => {

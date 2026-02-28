@@ -3,6 +3,7 @@ import { siteConfig } from "@/config/seo";
 import { blogPosts } from "@/data/blogPosts";
 import { blogPostsEs } from "@/data/blogPosts-es";
 import { blogPostsPt } from "@/data/blogPosts-pt";
+import { ALL_CATEGORIES } from "@/constants/blogCategories";
 import staticPageDates from "@/data/staticPageDates.json";
 import blogActualDates from "@/data/blogDates.json";
 import { cities } from "@/data/cities";
@@ -157,6 +158,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
+  const blogCategoryEntries: MetadataRoute.Sitemap = ALL_CATEGORIES.map((category) => ({
+    url: `${baseUrl}/blog/category/${category}`,
+    lastModified: getLatestBlogPostDate(),
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+    alternates: buildAlternates(`/blog/category/${category}`),
+  }));
+
+  const esBlogCategoryEntries: MetadataRoute.Sitemap = ALL_CATEGORIES.map((category) => ({
+    url: `${baseUrl}/es/blog/category/${category}`,
+    lastModified: getLatestBlogPostDate(),
+    changeFrequency: "weekly" as const,
+    priority: 0.5,
+    alternates: buildAlternates(`/blog/category/${category}`),
+  }));
+
+  const ptBlogCategoryEntries: MetadataRoute.Sitemap = ALL_CATEGORIES.map((category) => ({
+    url: `${baseUrl}/pt/blog/category/${category}`,
+    lastModified: getLatestBlogPostDate(),
+    changeFrequency: "weekly" as const,
+    priority: 0.5,
+    alternates: buildAlternates(`/blog/category/${category}`),
+  }));
+
   // City pages
   const cityIndexEntry: MetadataRoute.Sitemap = [
     {
@@ -276,5 +301,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...blogPostEntries,
     ...esBlogPostEntries,
     ...ptBlogPostEntries,
+    ...blogCategoryEntries,
+    ...esBlogCategoryEntries,
+    ...ptBlogCategoryEntries,
   ];
 }

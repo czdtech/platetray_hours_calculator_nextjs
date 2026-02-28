@@ -12,9 +12,11 @@ import { BlogCategoryFilter } from "@/components/Blog/BlogCategoryFilter";
 import { getMessagesSync } from "@/i18n/getMessages";
 import { siteConfig } from "@/config/seo";
 import { getHreflangTags } from "@/utils/seo/hreflang";
+import { getDateFnsLocale } from "@/utils/dateLocale";
 
 const locale = "pt";
 const messages = getMessagesSync(locale);
+const dateLocale = getDateFnsLocale(locale);
 const hreflang = getHreflangTags("/blog");
 
 export const metadata: Metadata = {
@@ -78,6 +80,7 @@ export default function PortugueseBlogPage() {
                         <div className="text-sm text-indigo-600 mb-2">
                           {formatDistanceToNow(new Date(blogPostsPt[0].date), {
                             addSuffix: true,
+                            locale: dateLocale,
                           })}
                         </div>
                         <Link
@@ -106,7 +109,12 @@ export default function PortugueseBlogPage() {
               </div>
             )}
 
-            <BlogCategoryFilter posts={blogPostsPt.slice(1)} basePath="/pt/blog" />
+            <BlogCategoryFilter
+              posts={blogPostsPt.slice(1)}
+              basePath="/pt/blog"
+              locale={locale}
+              messages={messages}
+            />
           </div>
         </Section>
       </div>

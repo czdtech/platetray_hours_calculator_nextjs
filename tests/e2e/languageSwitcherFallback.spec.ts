@@ -13,10 +13,10 @@ test.describe('language switcher blog fallback', () => {
     await expect(page).toHaveURL(/\/es\/blog\/venus-hour-guide$/);
   });
 
-  test('language switch falls back for untranslated blog slug', async ({ page }) => {
-    await page.goto('/blog/what-are-planetary-hours');
+  test('language switch keeps EN-only pages unprefixed', async ({ page }) => {
+    await page.goto('/privacy');
     await switchLanguage(page, /Português/i);
-    await expect(page).toHaveURL(/\/pt\/blog$/);
+    await expect(page).toHaveURL(/\/privacy$/);
   });
 
   test('language switch back to EN keeps translated blog slug path', async ({ page }) => {

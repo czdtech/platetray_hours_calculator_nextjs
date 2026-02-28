@@ -15,8 +15,11 @@ import { CityHoursList } from "@/components/CityCalculator/CityHoursList";
 import { CityFAQ } from "@/components/CityCalculator/CityFAQ";
 import { RelatedCities } from "@/components/CityCalculator/RelatedCities";
 import { PLANET_COLOR_CLASSES, PLANET_SYMBOLS } from "@/constants/planetColors";
+import { getMessagesSync, t } from "@/i18n/getMessages";
 
 export const revalidate = 3600;
+const locale = "en";
+const messages = getMessagesSync(locale);
 
 export async function generateStaticParams() {
   return getAllCitySlugs().map((slug) => ({ city: slug }));
@@ -32,8 +35,11 @@ export async function generateMetadata({ params }: CityPageProps): Promise<Metad
   if (!city) return {};
 
   const today = formatInTimeZone(new Date(), city.timezone, "MMMM d, yyyy");
-  const title = `Planetary Hours in ${city.name} Today – ${today}`;
-  const description = `Calculate today's planetary hours for ${city.name}, ${city.country}. See sunrise, sunset, day ruler, and all 24 planetary hours in ${city.timezone}. Free and accurate.`;
+  const title = `${t(messages.cityPage.title, { city: city.name })} – ${today}`;
+  const description = `${t(messages.cityPage.description, {
+    city: city.name,
+    country: city.country,
+  })} See sunrise, sunset, day ruler, and all 24 planetary hours in ${city.timezone}. Free and accurate.`;
   const hreflang = getHreflangTags(`/planetary-hours/${city.slug}`);
 
   return {
@@ -82,16 +88,16 @@ export default async function CityPage({ params }: CityPageProps) {
   if (!result) {
     return (
       <>
-        <Header activePage="cities" />
+        <Header activePage="cities" locale={locale} />
         <div className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            Calculation Error
+            {messages.calculator.calculationError}
           </h1>
           <p className="text-gray-600 dark:text-gray-300 mt-4">
-            Unable to calculate planetary hours for {city.name} at this time. Please try again later.
+            {t(messages.calculator.calculationErrorMessage, { city: city.name })}
           </p>
           <Link href="/planetary-hours" className="inline-block mt-6 text-purple-600 hover:text-purple-700 font-medium">
-            ← Back to all cities
+            ← {messages.calculator.backToAllCities}
           </Link>
         </div>
       </>
@@ -99,8 +105,8 @@ export default async function CityPage({ params }: CityPageProps) {
   }
 
   const breadcrumbItems = [
-    { name: "Home", url: "/" },
-    { name: "Cities", url: "/planetary-hours" },
+    { name: messages.common.home, url: "/" },
+    { name: messages.common.cities, url: "/planetary-hours" },
     { name: city.name, url: `/planetary-hours/${city.slug}` },
   ];
   const breadcrumbSchema = getBreadcrumbSchema(
@@ -121,7 +127,7 @@ export default async function CityPage({ params }: CityPageProps) {
 
   return (
     <>
-      <Header activePage="cities" />
+      <Header activePage="cities" locale={locale} />
       <JsonLd data={breadcrumbSchema} />
 
       <div className="container mx-auto px-4 py-6 space-y-6">
@@ -139,7 +145,7 @@ export default async function CityPage({ params }: CityPageProps) {
 
         {currentHour && (
           <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl shadow-sm border border-purple-200 dark:border-purple-800 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Current Planetary Hour</h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{messages.calculator.currentHour}</h2>
             <div className="flex items-center gap-3">
               <span className={`text-3xl font-bold ${currentHourColor}`}>
                 {currentHourSymbol} {currentHour.ruler}
@@ -149,16 +155,16 @@ export default async function CityPage({ params }: CityPageProps) {
                 {formatInTimeZone(currentHour.startTime, city.timezone, "h:mm a")} – {formatInTimeZone(currentHour.endTime, city.timezone, "h:mm a")}
               </span>
               <span className="text-xs bg-purple-100 dark:bg-purple-800 text-purple-700 dark:text-purple-200 px-2 py-1 rounded-full">
-                {currentHour.type === "day" ? "Daytime" : "Nighttime"}
+                {currentHour.type === "day" ? messages.calculator.daytime : messages.calculator.nighttime}
               </span>
             </div>
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
               <div>
-                <span className="font-medium text-green-700 dark:text-green-400">Good for:</span>{" "}
+                <span className="font-medium text-green-700 dark:text-green-400">{messages.calculator.goodFor}:</span>{" "}
                 <span className="text-gray-600 dark:text-gray-300">{currentHour.goodFor}</span>
               </div>
               <div>
-                <span className="font-medium text-red-700 dark:text-red-400">Avoid:</span>{" "}
+                <span className="font-medium text-red-700 dark:text-red-400">{messages.calculator.avoid}:</span>{" "}
                 <span className="text-gray-600 dark:text-gray-300">{currentHour.avoid}</span>
               </div>
             </div>
@@ -170,7 +176,6 @@ export default async function CityPage({ params }: CityPageProps) {
         <CityFAQ
           city={city}
           sunrise={result.sunrise}
-          sunset={result.sunset}
           dayRuler={result.dayRuler}
           timezone={city.timezone}
           daytimeHourDuration={daytimeHourDuration}
@@ -180,13 +185,13 @@ export default async function CityPage({ params }: CityPageProps) {
 
         <div className="text-center py-8">
           <p className="text-gray-600 dark:text-gray-300 mb-4">
-            Want to calculate planetary hours for a custom location?
+            {messages.cityPage.customLocation}
           </p>
           <Link
             href="/"
             className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
           >
-            Open Full Calculator
+            {messages.calculator.openCalculator}
           </Link>
         </div>
       </div>

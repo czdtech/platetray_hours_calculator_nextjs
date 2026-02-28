@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { ChevronUp, Share2 } from 'lucide-react';
+import type { Locale } from '@/i18n/config';
+import { getMessagesSync, type Messages } from '@/i18n/getMessages';
 
 interface BlogBackToTopProps {
   /** 文章标题，用于分享 */
@@ -10,15 +12,20 @@ interface BlogBackToTopProps {
   url?: string;
   /** 显示按钮的滚动阈值（像素） */
   threshold?: number;
+  locale?: Locale;
+  messages?: Messages;
 }
 
 export function BlogBackToTop({ 
   title = '',
   url = '',
-  threshold = 300 
+  threshold = 300,
+  locale = 'en',
+  messages,
 }: BlogBackToTopProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const resolvedMessages = messages ?? getMessagesSync(locale);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -90,8 +97,8 @@ export function BlogBackToTop({
                      hover:bg-gray-50 dark:hover:bg-gray-700
                      transition-colors duration-200
                      focus:outline-none focus:ring-2 focus:ring-purple-500"
-          aria-label="返回顶部"
-          title="返回顶部"
+          aria-label={resolvedMessages.common.backToTop}
+          title={resolvedMessages.common.backToTop}
         >
           <ChevronUp className="w-5 h-5 text-purple-600" />
         </button>
@@ -104,8 +111,8 @@ export function BlogBackToTop({
           className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3
                      shadow-lg hover:shadow-xl transition-all duration-200
                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          aria-label="分享文章"
-          title="分享文章"
+          aria-label={resolvedMessages.common.shareArticle}
+          title={resolvedMessages.common.shareArticle}
         >
           <Share2 className="w-5 h-5" />
         </button>

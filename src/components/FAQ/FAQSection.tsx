@@ -1,5 +1,7 @@
 import { JsonLd } from "@/components/SEO/JsonLd";
 import { getFAQPageSchema } from "@/utils/seo/jsonld";
+import type { Locale } from "@/i18n/config";
+import { getMessagesSync, type Messages } from "@/i18n/getMessages";
 
 interface FAQItem {
   question: string;
@@ -9,16 +11,27 @@ interface FAQItem {
 interface FAQSectionProps {
   faqs: FAQItem[];
   includeSchema?: boolean;
+  locale?: Locale;
+  messages?: Messages;
+  title?: string;
 }
 
-export function FAQSection({ faqs, includeSchema = true }: FAQSectionProps) {
+export function FAQSection({
+  faqs,
+  includeSchema = true,
+  locale = "en",
+  messages,
+  title,
+}: FAQSectionProps) {
+  const resolvedMessages = messages ?? getMessagesSync(locale);
+  const heading = title ?? resolvedMessages.blog.faq;
   const schema = includeSchema ? getFAQPageSchema(faqs) : null;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
       {schema && <JsonLd data={schema} />}
       <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">
-        Frequently Asked Questions
+        {heading}
       </h2>
 
       <div className="space-y-6">
@@ -36,7 +49,7 @@ export function FAQSection({ faqs, includeSchema = true }: FAQSectionProps) {
               }`}
             >
               <h3 className="text-lg font-medium text-purple-700 dark:text-purple-400 mb-2">
-                Q: {faq.question}
+                {faq.question}
               </h3>
               <p className="text-gray-600 dark:text-gray-300">{faq.answer}</p>
             </div>

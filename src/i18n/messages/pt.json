@@ -1,12 +1,22 @@
 {
   "common": {
+    "siteName": "Planetary Hours",
     "home": "Início",
     "blog": "Blog",
     "about": "Sobre",
     "cities": "Cidades",
     "calculator": "Calculadora",
+    "faq": "Perguntas Frequentes",
     "skipToContent": "Pular para o conteúdo",
-    "backToTop": "Voltar ao topo"
+    "backToTop": "Voltar ao topo",
+    "selectLanguage": "Selecionar idioma",
+    "homeAriaLabel": "Página inicial do Planetary Hours",
+    "toggleNavigation": "Alternar navegação",
+    "footerNavigation": "Navegação do rodapé",
+    "privacyPolicy": "Política de Privacidade",
+    "termsOfService": "Termos de Serviço",
+    "breadcrumb": "Trilha de navegação",
+    "shareArticle": "Compartilhar artigo"
   },
   "planets": {
     "Sun": "Sol",
@@ -33,6 +43,8 @@
     "daytime": "Diurna",
     "nighttime": "Noturna",
     "openCalculator": "Abrir Calculadora Completa",
+    "findNextPlanetHour": "Encontre sua próxima hora de {planet}",
+    "calculatePlanetaryHours": "Calcule suas horas planetárias",
     "calculationError": "Erro de Cálculo",
     "calculationErrorMessage": "Não é possível calcular as horas planetárias para {city} neste momento. Por favor, tente novamente mais tarde.",
     "backToAllCities": "Voltar para todas as cidades"
@@ -40,15 +52,32 @@
   "cityPage": {
     "title": "Horas Planetárias em {city} Hoje",
     "description": "Encontre as horas planetárias de hoje para {city}, {country}.",
+    "descriptionTemplate": "Em {city}, {country}, as horas planetárias são calculadas usando coordenadas locais ({lat}, {lon}) e o fuso horário {timezone}, garantindo horários precisos com base no nascer e pôr do sol.",
     "timezone": "Fuso horário",
     "faq": "Perguntas Frequentes",
     "otherCities": "Horas Planetárias em Outras Cidades",
-    "customLocation": "Quer calcular as horas planetárias para uma localização personalizada?"
+    "customLocation": "Quer calcular as horas planetárias para uma localização personalizada?",
+    "faqTemplates": {
+      "todayQuestion": "Quais são as horas planetárias em {city} hoje?",
+      "todayAnswer": "Hoje, as horas planetárias em {city} começam ao nascer do sol ({sunrise}) e são regidas por {dayRuler}. Cada hora planetária diurna dura aproximadamente {dayMinutes} minutos, enquanto cada hora noturna dura aproximadamente {nightMinutes} minutos.",
+      "rulerQuestion": "Qual planeta rege hoje em {city}?",
+      "rulerAnswer": "O regente do dia em {city} hoje é {dayRuler}. O regente do dia é o planeta que governa a primeira hora planetária após o nascer do sol. Na ordem caldeia, cada dia da semana é regido por um planeta específico: Sol (domingo), Lua (segunda), Marte (terça), Mercúrio (quarta), Júpiter (quinta), Vênus (sexta) e Saturno (sábado).",
+      "calculationQuestion": "Como são calculadas as horas planetárias para {city}?",
+      "calculationAnswer": "As horas planetárias para {city} são calculadas usando as coordenadas precisas da cidade ({lat}, {lon}) e seu fuso horário ({timezone}). O tempo entre o nascer e o pôr do sol é dividido em 12 horas planetárias diurnas iguais, e o tempo entre o pôr do sol e o próximo nascer do sol é dividido em 12 horas noturnas iguais. A cada hora é atribuído um planeta seguindo a ordem caldeia."
+    }
   },
   "cityIndex": {
     "title": "Horas Planetárias por Cidade",
     "description": "Selecione uma cidade para ver as horas planetárias de hoje calculadas com coordenadas locais precisas e fuso horário.",
-    "dontSeeCity": "Não encontrou sua cidade? Use a calculadora completa para qualquer localização do mundo."
+    "dontSeeCity": "Não encontrou sua cidade? Use a calculadora completa para qualquer localização do mundo.",
+    "regions": {
+      "africa": "África",
+      "asia": "Ásia",
+      "europe": "Europa",
+      "northAmerica": "América do Norte",
+      "southAmerica": "América do Sul",
+      "oceania": "Oceania"
+    }
   },
   "blog": {
     "title": "Blog de Horas Planetárias",
@@ -56,22 +85,56 @@
     "readMore": "Leia mais →",
     "readFullArticle": "Ler artigo completo →",
     "minRead": "min de leitura",
+    "author": "Equipe Planetary Hours",
     "relatedArticles": "Artigos Relacionados",
     "shareArticle": "Compartilhar este artigo:",
+    "shareOn": "Compartilhar no {platform}",
+    "copyLink": "Copiar link",
+    "linkCopied": "Link copiado!",
+    "copyError": "Não foi possível copiar o link. Copie a URL manualmente da barra de endereços.",
     "tableOfContents": "Índice",
     "faq": "Perguntas Frequentes",
+    "translationFallbackNotice": "Este artigo ainda não está traduzido para o idioma selecionado. O conteúdo em inglês é exibido abaixo.",
     "all": "Todos",
-    "categoryFilterLabel": "Filtrar por categoria"
+    "categoryFilterLabel": "Filtrar por categoria",
+    "noArticlesInCategory": "Ainda não há artigos nesta categoria.",
+    "categoryDescriptions": {
+      "planet-hours": "Guias detalhados sobre cada uma das sete horas planetárias",
+      "planet-days": "Entenda os regentes planetários de cada dia da semana",
+      "practical-use": "Como aplicar horas planetárias em atividades do dia a dia",
+      "education": "Conhecimento fundamental sobre horas planetárias e astrologia",
+      "news": "Eventos astronômicos e atualizações relacionadas às horas planetárias"
+    }
   },
   "about": {
     "title": "Sobre Horas Planetárias",
     "description": "Saiba mais sobre a missão, metodologia e a equipe por trás da Calculadora de Horas Planetárias.",
     "whatArePH": "O que são Horas Planetárias?",
     "whatArePHText": "As horas planetárias são um antigo sistema astrológico que divide o tempo entre o nascer e o pôr do sol, e entre o pôr do sol e o nascer do sol seguinte, em 12 \"horas\" desiguais. Cada hora é regida por um dos sete planetas tradicionais (Sol, Lua, Mercúrio, Vênus, Marte, Júpiter, Saturno).",
+    "chaldeanOrderText": "A sequência de regentes segue a ordem caldeia dos planetas, baseada na sua velocidade aparente a partir da perspectiva da Terra. O planeta que rege a primeira hora do dia (começando ao nascer do sol) é o regente desse dia.",
     "howCanBeUsed": "Como podem ser usadas?",
     "howCanBeUsedText": "Os praticantes acreditam que a natureza do planeta regente influencia a energia e a adequação dessa hora para certas atividades.",
+    "examplesIntro": "Por exemplo:",
+    "planetHourExamples": {
+      "sun": "Hora do Sol: Boa para atividades relacionadas à liderança, vitalidade, sucesso e buscar o favor de autoridades.",
+      "venus": "Hora de Vênus: Favorece o amor, a beleza, a arte, as atividades sociais e o prazer.",
+      "mercury": "Hora de Mercúrio: Adequada para comunicação, aprendizagem, escrita, comércio e viagens.",
+      "moon": "Hora da Lua: Relacionada a assuntos domésticos, emoções, intuição e assuntos públicos.",
+      "saturn": "Hora de Saturno: Associada à disciplina, responsabilidade, projetos de longo prazo, superação de obstáculos e finalizações.",
+      "jupiter": "Hora de Júpiter: Ideal para crescimento, expansão, abundância, busca de sabedoria e assuntos financeiros.",
+      "mars": "Hora de Marte: Conectada à energia, coragem, ação, competição e conflito potencial."
+    },
     "keyFeatures": "Principais Recursos",
-    "limitations": "Limitações e Aviso Legal"
+    "keyFeaturesItems": {
+      "locationInput": "Entrada de localização com autocompletar do Google Places ou geolocalização com um clique.",
+      "timezoneHandling": "Tratamento automático de fuso horário para garantir cálculos precisos de nascer/pôr do sol e horas.",
+      "timeFormats": "Alternância entre formatos de hora de 12 e 24 horas.",
+      "weekNavigation": "Navegação semanal para saltar rapidamente para qualquer dia.",
+      "contextualSuggestions": "Sugestões contextuais sobre quais atividades são boas para ou devem ser evitadas durante cada hora."
+    },
+    "limitations": "Limitações e Aviso Legal",
+    "limitationsText": "As horas planetárias se originam na astrologia tradicional. Os cálculos fornecidos aqui são baseados em métodos históricos amplamente aceitos e dados astronômicos modernos para o nascer e o pôr do sol. São oferecidos apenas para fins informativos e de entretenimento e não devem substituir aconselhamento ou planejamento profissional.",
+    "closingText": "Esta calculadora ajuda você a determinar as horas planetárias para qualquer data e lugar, permitindo que você programe tarefas em harmonia com as energias planetárias predominantes."
   },
   "home": {
     "title": "Calculadora de Horas Planetárias",

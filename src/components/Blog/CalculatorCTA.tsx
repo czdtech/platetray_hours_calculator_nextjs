@@ -1,17 +1,28 @@
 import Link from "next/link";
+import type { Locale } from "@/i18n/config";
+import { getMessagesSync, t, type Messages } from "@/i18n/getMessages";
 
 interface CalculatorCTAProps {
   planet?: string;
   text?: string;
   calculatorPath?: string;
+  locale?: Locale;
+  messages?: Messages;
 }
 
-export function CalculatorCTA({ planet, text, calculatorPath = "/" }: CalculatorCTAProps) {
+export function CalculatorCTA({
+  planet,
+  text,
+  calculatorPath = "/",
+  locale = "en",
+  messages,
+}: CalculatorCTAProps) {
+  const resolvedMessages = messages ?? getMessagesSync(locale);
   const label = text
     ? text
     : planet
-      ? `Find your next ${planet} hour`
-      : "Calculate your planetary hours";
+      ? t(resolvedMessages.calculator.findNextPlanetHour, { planet })
+      : resolvedMessages.calculator.calculatePlanetaryHours;
 
   return (
     <div className="my-8 rounded-xl bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-700 p-6 text-center">
@@ -22,7 +33,7 @@ export function CalculatorCTA({ planet, text, calculatorPath = "/" }: Calculator
         href={calculatorPath}
         className="inline-block px-6 py-2.5 rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700 transition-colors"
       >
-        Open Calculator →
+        {resolvedMessages.calculator.openCalculator}
       </Link>
     </div>
   );

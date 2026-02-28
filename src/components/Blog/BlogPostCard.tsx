@@ -2,6 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import type { StaticImageData } from "next/image";
+import type { Locale } from "@/i18n/config";
+import { getMessagesSync, type Messages } from "@/i18n/getMessages";
+import { getDateFnsLocale } from "@/utils/dateLocale";
 
 interface BlogPostCardProps {
   slug: string;
@@ -12,6 +15,8 @@ interface BlogPostCardProps {
   imageUrl: string | StaticImageData;
   readingTime: string | number;
   basePath?: string;
+  locale?: Locale;
+  messages?: Messages;
 }
 
 export function BlogPostCard({
@@ -23,9 +28,13 @@ export function BlogPostCard({
   imageUrl,
   readingTime,
   basePath = "/blog",
+  locale = "en",
+  messages,
 }: BlogPostCardProps) {
+  const resolvedMessages = messages ?? getMessagesSync(locale);
+  const dateLocale = getDateFnsLocale(locale);
   // 使用相对时间格式
-  const relativeDate = formatDistanceToNow(new Date(date), { addSuffix: true });
+  const relativeDate = formatDistanceToNow(new Date(date), { addSuffix: true, locale: dateLocale });
   return (
     <article className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700 group hover:shadow-md transition-shadow">
       <Link href={`${basePath}/${slug}`} className="block">
@@ -58,7 +67,7 @@ export function BlogPostCard({
           href={`${basePath}/${slug}`}
           className="text-indigo-600 dark:text-indigo-400 font-medium text-sm hover:underline"
         >
-          Read more →
+          {resolvedMessages.blog.readMore}
         </Link>
       </div>
     </article>

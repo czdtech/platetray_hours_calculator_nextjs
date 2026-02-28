@@ -5,16 +5,30 @@ import Link from "next/link";
 import Image, { type StaticImageData } from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import type { BlogPost, BlogCategory } from "@/types/blog";
+import type { Locale } from "@/i18n/config";
+import { getMessagesSync, type Messages } from "@/i18n/getMessages";
 import { BLOG_CATEGORIES } from "@/constants/blogCategories";
+import { getDateFnsLocale } from "@/utils/dateLocale";
 
 interface BlogCategoryFilterProps {
   posts: BlogPost[];
   basePath?: string;
   allLabel?: string;
+  locale?: Locale;
+  messages?: Messages;
 }
 
-export function BlogCategoryFilter({ posts, basePath = "/blog", allLabel = "All" }: BlogCategoryFilterProps) {
+export function BlogCategoryFilter({
+  posts,
+  basePath = "/blog",
+  allLabel,
+  locale = "en",
+  messages,
+}: BlogCategoryFilterProps) {
   const [activeCategory, setActiveCategory] = useState<BlogCategory | "all">("all");
+  const resolvedMessages = messages ?? getMessagesSync(locale);
+  const dateLocale = getDateFnsLocale(locale);
+  const resolvedAllLabel = allLabel ?? resolvedMessages.blog.all;
 
   const usedCategories = Array.from(
     new Set(posts.map((p) => p.category).filter(Boolean))
@@ -36,7 +50,7 @@ export function BlogCategoryFilter({ posts, basePath = "/blog", allLabel = "All"
                 : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
             }`}
           >
-            {allLabel}
+            {resolvedAllLabel}
           </button>
           {usedCategories.map((cat) => (
             <button
@@ -48,7 +62,7 @@ export function BlogCategoryFilter({ posts, basePath = "/blog", allLabel = "All"
                   : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
               }`}
             >
-              {BLOG_CATEGORIES[cat]?.label ?? cat}
+              {resolvedMessages.categories[cat] ?? BLOG_CATEGORIES[cat]?.label ?? cat}
             </button>
           ))}
         </div>
@@ -74,8 +88,9 @@ export function BlogCategoryFilter({ posts, basePath = "/blog", allLabel = "All"
             </Link>
             <div className="p-6">
               <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                {formatDistanceToNow(new Date(post.date), { addSuffix: true })}
-                {post.readingTime !== undefined && ` · ${post.readingTime} min read`}
+                {formatDistanceToNow(new Date(post.date), { addSuffix: true, locale: dateLocale })}
+                {post.readingTime !== undefined &&
+                  ` · ${post.readingTime} ${resolvedMessages.blog.minRead}`}
               </div>
               <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
                 <Link
@@ -92,7 +107,7 @@ export function BlogCategoryFilter({ posts, basePath = "/blog", allLabel = "All"
                 href={`${basePath}/${post.slug}`}
                 className="text-indigo-600 dark:text-indigo-400 font-medium text-sm hover:underline"
               >
-                Read more →
+                {resolvedMessages.blog.readMore}
               </Link>
             </div>
           </article>

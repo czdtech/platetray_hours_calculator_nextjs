@@ -4,15 +4,22 @@ import { useState, useRef, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { locales, localeNames } from '@/i18n/config';
 import type { Locale } from '@/i18n/config';
+import { getMessagesSync } from '@/i18n/getMessages';
 import { resolveLocaleSwitchPath, getCurrentLocale } from '@/i18n/routePolicy';
 
-export function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  locale?: Locale;
+}
+
+export function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
 
-  const currentLocale = getCurrentLocale(pathname);
+  const detectedLocale = getCurrentLocale(pathname);
+  const currentLocale = locale ?? detectedLocale;
+  const messages = getMessagesSync(currentLocale);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -35,7 +42,7 @@ export function LanguageSwitcher() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-1 px-2 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-purple-700 dark:hover:text-purple-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-        aria-label="Select language"
+        aria-label={messages.common.selectLanguage}
         aria-expanded={isOpen}
       >
         <span className="uppercase">{currentLocale}</span>

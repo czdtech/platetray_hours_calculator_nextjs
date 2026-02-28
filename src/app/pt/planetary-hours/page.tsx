@@ -7,6 +7,8 @@ import { getBreadcrumbSchema } from "@/utils/seo/jsonld";
 import { siteConfig } from "@/config/seo";
 import { cities } from "@/data/cities";
 import { getMessagesSync } from "@/i18n/getMessages";
+import { getLocalizedRegionName } from "@/i18n/regions";
+import { getLocalizedCityDescription } from "@/i18n/cityDescription";
 import { getHreflangTags } from "@/utils/seo/hreflang";
 
 const locale = "pt";
@@ -75,7 +77,7 @@ export default function PortugueseCityIndex() {
         {citiesByRegion.map(({ region, cities: regionCities }) => (
           <section key={region}>
             <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
-              {region}
+              {getLocalizedRegionName(region, messages)}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {regionCities.map((city) => (
@@ -92,7 +94,7 @@ export default function PortugueseCityIndex() {
                     {city.timezone}
                   </p>
                   <p className="text-xs text-gray-400 dark:text-gray-500 mt-2 line-clamp-2">
-                    {city.description}
+                    {getLocalizedCityDescription(city, locale, messages)}
                   </p>
                 </Link>
               ))}

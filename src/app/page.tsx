@@ -2,17 +2,20 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { getSoftwareApplicationSchema } from "@/utils/seo/jsonld";
 import { getHreflangTags } from "@/utils/seo/hreflang";
+import { getMessagesSync } from "@/i18n/getMessages";
 import CalculatorServer from "./CalculatorServer";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
+const locale = "en";
+const messages = getMessagesSync(locale);
 const hreflang = getHreflangTags("/");
 
 // 页面完全动态渲染，配合 CalculatorServer 的实时 TTL 策略
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: "Planetary Hours Calculator - Find Your Perfect Timing",
-  description: "Discover the perfect timing with our planetary hours calculator. Calculate astrological planetary hours based on your location and date for optimal life decisions.",
+  title: messages.home.metaTitle,
+  description: messages.home.metaDescription,
   keywords: [
     "planetary hours",
     "astrological timing",
@@ -44,8 +47,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Planetary Hours Calculator - Find Your Perfect Timing",
-    description: "Discover the perfect timing with our planetary hours calculator. Calculate astrological planetary hours based on your location and date for optimal life decisions.",
+    title: messages.home.metaTitle,
+    description: messages.home.metaDescription,
     url: SITE_URL,
     siteName: "Planetary Hours Calculator",
     locale: "en_US",
@@ -61,8 +64,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Planetary Hours Calculator - Find Your Perfect Timing",
-    description: "Discover the perfect timing with our planetary hours calculator. Calculate astrological planetary hours based on your location and date for optimal life decisions.",
+    title: messages.home.metaTitle,
+    description: messages.home.metaDescription,
     images: [`${SITE_URL}/images/og-image.jpg`],
     creator: "@planetaryhours",
   },

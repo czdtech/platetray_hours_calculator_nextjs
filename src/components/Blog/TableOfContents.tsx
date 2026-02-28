@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { Locale } from "@/i18n/config";
+import { getMessagesSync, type Messages } from "@/i18n/getMessages";
 
 interface TOCItem {
   id: string;
@@ -8,9 +10,15 @@ interface TOCItem {
   level: number;
 }
 
-export function TableOfContents() {
+interface TableOfContentsProps {
+  locale?: Locale;
+  messages?: Messages;
+}
+
+export function TableOfContents({ locale = "en", messages }: TableOfContentsProps) {
   const [headings, setHeadings] = useState<TOCItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const resolvedMessages = messages ?? getMessagesSync(locale);
 
   useEffect(() => {
     const article = document.querySelector(".prose");
@@ -48,7 +56,7 @@ export function TableOfContents() {
         className="flex items-center justify-between w-full text-left"
       >
         <span className="font-semibold text-gray-800 dark:text-gray-100">
-          Table of Contents
+          {resolvedMessages.blog.tableOfContents}
         </span>
         <svg
           className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`}

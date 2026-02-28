@@ -1,0 +1,63 @@
+{
+  "generatedAt": "2026-02-28T17:43:21.223Z",
+  "totalEnglishPosts": 33,
+  "englishSlugs": [
+    "2025-astronomical-events-planetary-hours",
+    "algorithm-behind-calculator",
+    "best-planetary-hour-for-interview",
+    "best-planetary-hour-for-marriage",
+    "best-planetary-hour-for-surgery",
+    "friday-venus-day",
+    "introduction",
+    "jupiter-hour-guide",
+    "mars-hour-guide",
+    "mercury-hour-guide",
+    "mobile-planetary-hours-guide",
+    "monday-moon-day",
+    "moon-hour-guide",
+    "planetary-days-of-the-week",
+    "planetary-hours-and-their-meanings",
+    "planetary-hours-business-success",
+    "planetary-hours-chart-pdf",
+    "planetary-hours-faq",
+    "planetary-hours-for-love",
+    "planetary-hours-for-magic",
+    "planetary-hours-for-manifestation",
+    "planetary-hours-for-money",
+    "planetary-hours-history-culture",
+    "saturday-saturn-day",
+    "saturn-hour-guide",
+    "sun-hour-guide",
+    "sunday-sun-day",
+    "thursday-jupiter-day",
+    "tuesday-mars-day",
+    "using-planetary-hours",
+    "venus-hour-guide",
+    "wednesday-mercury-day",
+    "what-are-planetary-hours"
+  ],
+  "localeCoverage": [
+    {
+      "locale": "es",
+      "translatedSlugCount": 33,
+      "markdownCount": 33,
+      "coveragePercent": 100,
+      "missingInTranslatedSlugs": [],
+      "missingMarkdownForTranslatedSlug": [],
+      "markdownWithoutTranslatedSlug": []
+    },
+    {
+      "locale": "pt",
+      "translatedSlugCount": 33,
+      "markdownCount": 33,
+      "coveragePercent": 100,
+      "missingInTranslatedSlugs": [],
+      "missingMarkdownForTranslatedSlug": [],
+      "markdownWithoutTranslatedSlug": []
+    }
+  ],
+  "slugParity": {
+    "esOnly": [],
+    "ptOnly": []
+  }
+}

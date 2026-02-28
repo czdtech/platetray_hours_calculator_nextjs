@@ -1,5 +1,6 @@
 import { Locale, defaultLocale, locales } from './config';
 import { TRANSLATED_SLUGS } from './translatedSlugs';
+import { ALL_CATEGORIES } from '@/constants/blogCategories';
 
 export { TRANSLATED_SLUGS };
 
@@ -59,6 +60,15 @@ export function resolveLocaleSwitchPath(currentPath: string, targetLocale: Local
 
   if (stripped.startsWith('/blog/category/')) {
     if (targetLocale === defaultLocale) return stripped;
+
+    const categoryMatch = stripped.match(/^\/blog\/category\/([a-z0-9-]+)$/);
+    if (categoryMatch) {
+      const category = categoryMatch[1];
+      if (ALL_CATEGORIES.includes(category as (typeof ALL_CATEGORIES)[number])) {
+        return `/${targetLocale}/blog/category/${category}`;
+      }
+    }
+
     return `/${targetLocale}/blog`;
   }
 

@@ -12,6 +12,9 @@ import { planetaryHoursCalculator } from "@/services/PlanetaryHoursCalculator";
 import { getCityBySlug, getAllCitySlugs, getNearbyCities } from "@/data/cities";
 import { PLANET_COLOR_CLASSES, PLANET_SYMBOLS } from "@/constants/planetColors";
 import { getMessagesSync, t } from "@/i18n/getMessages";
+import { getLocalizedCityDescription } from "@/i18n/cityDescription";
+import { buildCityFaqItems } from "@/i18n/cityFaq";
+import { FAQSection } from "@/components/FAQ/FAQSection";
 import { getHreflangTags } from "@/utils/seo/hreflang";
 
 const locale = "es";
@@ -156,11 +159,23 @@ export default async function SpanishCityPage({ params }: CityPageProps) {
 
   const dayRulerColor = PLANET_COLOR_CLASSES[result.dayRuler as keyof typeof PLANET_COLOR_CLASSES] || "text-gray-600";
   const dayRulerSymbol = PLANET_SYMBOLS[result.dayRuler as keyof typeof PLANET_SYMBOLS] || "";
+  const dayRulerLabel = planets[result.dayRuler] || result.dayRuler;
 
   const latDir = city.latitude >= 0 ? "N" : "S";
   const lonDir = city.longitude >= 0 ? "E" : "W";
 
   const nighttimeHourDuration = Math.round(((24 * 60 - daytimeHourDuration * 12) / 12) * 100) / 100;
+
+  const faqItems = buildCityFaqItems(
+    {
+      city,
+      sunriseFormatted,
+      dayRulerLabel,
+      daytimeHourDuration,
+      nighttimeHourDuration,
+    },
+    messages,
+  );
 
   return (
     <>
@@ -196,7 +211,7 @@ export default async function SpanishCityPage({ params }: CityPageProps) {
               </div>
               <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg px-4 py-3 text-center min-w-[100px]">
                 <p className="text-xs text-purple-600 dark:text-purple-400 font-medium uppercase">{messages.calculator.dayRuler}</p>
-                <p className={`text-lg font-semibold ${dayRulerColor}`}>{dayRulerSymbol} {planets[result.dayRuler] || result.dayRuler}</p>
+                <p className={`text-lg font-semibold ${dayRulerColor}`}>{dayRulerSymbol} {dayRulerLabel}</p>
               </div>
             </div>
           </div>
@@ -205,7 +220,9 @@ export default async function SpanishCityPage({ params }: CityPageProps) {
             <p>{messages.cityPage.timezone}: <span className="font-medium">{city.timezone}</span></p>
           </div>
 
-          <p className="mt-3 text-gray-600 dark:text-gray-300 text-sm">{city.description}</p>
+          <p className="mt-3 text-gray-600 dark:text-gray-300 text-sm">
+            {getLocalizedCityDescription(city, locale, messages)}
+          </p>
         </div>
 
         {/* Current Hour */}
@@ -291,46 +308,13 @@ export default async function SpanishCityPage({ params }: CityPageProps) {
         </div>
 
         {/* FAQ */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-            {messages.cityPage.faq}
-          </h2>
-          <div className="space-y-4">
-            <details className="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-              <summary className="flex items-center justify-between cursor-pointer px-4 py-3 bg-gray-50 dark:bg-gray-750 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 pr-4">
-                  ¿Cuáles son las horas planetarias en {city.name} hoy?
-                </h3>
-                <span className="text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0">▼</span>
-              </summary>
-              <div className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                Hoy, las horas planetarias en {city.name} comienzan al amanecer ({sunriseFormatted}) y están regidas por {planets[result.dayRuler] || result.dayRuler}. Cada hora planetaria diurna dura aproximadamente {daytimeHourDuration.toFixed(0)} minutos, mientras que cada hora nocturna dura aproximadamente {nighttimeHourDuration.toFixed(0)} minutos.
-              </div>
-            </details>
-            <details className="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-              <summary className="flex items-center justify-between cursor-pointer px-4 py-3 bg-gray-50 dark:bg-gray-750 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 pr-4">
-                  ¿Qué planeta rige hoy en {city.name}?
-                </h3>
-                <span className="text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0">▼</span>
-              </summary>
-              <div className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                El regente del día en {city.name} hoy es {planets[result.dayRuler] || result.dayRuler}. El regente del día es el planeta que gobierna la primera hora planetaria después del amanecer. En el orden caldeo, cada día de la semana está regido por un planeta específico: Sol (domingo), Luna (lunes), Marte (martes), Mercurio (miércoles), Júpiter (jueves), Venus (viernes) y Saturno (sábado).
-              </div>
-            </details>
-            <details className="group border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-              <summary className="flex items-center justify-between cursor-pointer px-4 py-3 bg-gray-50 dark:bg-gray-750 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 pr-4">
-                  ¿Cómo se calculan las horas planetarias para {city.name}?
-                </h3>
-                <span className="text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0">▼</span>
-              </summary>
-              <div className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                Las horas planetarias para {city.name} se calculan utilizando las coordenadas precisas de la ciudad ({Math.abs(city.latitude).toFixed(4)}°{latDir}, {Math.abs(city.longitude).toFixed(4)}°{lonDir}) y su zona horaria ({city.timezone}). El tiempo entre el amanecer y el atardecer se divide en 12 horas planetarias diurnas iguales, y el tiempo entre el atardecer y el siguiente amanecer se divide en 12 horas nocturnas iguales. A cada hora se le asigna un planeta siguiendo el antiguo orden caldeo.
-              </div>
-            </details>
-          </div>
-        </div>
+        <FAQSection
+          faqs={faqItems}
+          includeSchema
+          locale={locale}
+          messages={messages}
+          title={messages.cityPage.faq}
+        />
 
         {/* Related Cities */}
         {nearbyCities.length > 0 && (

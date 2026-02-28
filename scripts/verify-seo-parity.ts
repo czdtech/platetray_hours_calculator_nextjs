@@ -251,6 +251,10 @@ function buildExpectedAlternates(pathname: string, translatedSlug: string): Reco
     return allLocaleCluster;
   }
 
+  if (basePath.startsWith('/blog/category/')) {
+    return allLocaleCluster;
+  }
+
   return {};
 }
 
@@ -271,10 +275,13 @@ function getSamplePaths(): string[] {
     '/pt',
     '/about',
     '/blog',
+    '/blog/category/planet-hours',
     `/blog/${translatedSlug}`,
     `/blog/${untranslatedSlug}`,
     `/es/blog/${translatedSlug}`,
+    '/es/blog/category/planet-hours',
     `/pt/blog/${translatedSlug}`,
+    '/pt/blog/category/planet-hours',
     '/planetary-hours',
     `/planetary-hours/${citySlug}`,
     '/es/planetary-hours',

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import type { Locale } from "@/i18n/config";
+import { getMessagesSync, type Messages } from "@/i18n/getMessages";
 
 interface ArticleEntry {
   slug: string;
@@ -10,13 +12,18 @@ interface RelatedArticlesProps {
   articles: ArticleEntry[];
   currentSlug: string;
   basePath?: string;
+  locale?: Locale;
+  messages?: Messages;
 }
 
 export function RelatedArticles({
   articles,
   currentSlug,
   basePath = "/blog",
+  locale = "en",
+  messages,
 }: RelatedArticlesProps) {
+  const resolvedMessages = messages ?? getMessagesSync(locale);
   const filteredArticles = articles
     .filter((article) => article.slug !== currentSlug)
     .slice(0, 3);
@@ -26,7 +33,7 @@ export function RelatedArticles({
   return (
     <section>
       <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-8">
-        Related Articles
+        {resolvedMessages.blog.relatedArticles}
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredArticles.map((article) => (
@@ -45,7 +52,7 @@ export function RelatedArticles({
                 {article.excerpt}
               </p>
               <span className="inline-flex items-center text-indigo-600 dark:text-indigo-400 text-sm font-medium group-hover:translate-x-1 transition-transform">
-                Read more
+                {resolvedMessages.blog.readMore}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="ml-1 h-4 w-4"

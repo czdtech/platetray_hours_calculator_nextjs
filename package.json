@@ -18,6 +18,7 @@
     "compress:blog-images": "tsx scripts/compress-blog-images.ts",
     "clean:blog-image-artifacts": "tsx scripts/clean-blog-image-artifacts.ts",
     "generate:blog-metadata": "tsx scripts/generate-blog-metadata.ts",
+    "audit:blog-translations": "tsx scripts/audit-blog-translation-coverage.ts",
     "test": "vitest run",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",

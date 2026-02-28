@@ -7,6 +7,16 @@ import html from "remark-html";
 import { createLogger } from '@/utils/unified-logger';
 const contentDirectory = path.join(process.cwd(), "src/content");
 
+type ContentLocale = "en" | "es" | "pt";
+
+function localizeBlogHrefs(contentHtml: string, locale: ContentLocale): string {
+  if (locale === "en") {
+    return contentHtml;
+  }
+
+  return contentHtml.replace(/href=(["'])\/blog\//g, `href=$1/${locale}/blog/`);
+}
+
 export interface FAQItem {
   question: string;
   answer: string;
@@ -26,6 +36,7 @@ export interface MarkdownContent {
 export async function getMarkdownContent(
   slug: string,
   folder: string = "blog",
+  locale: ContentLocale = "en",
 ): Promise<MarkdownContent | null> {
   const logger = createLogger('Markdown');
 
@@ -44,7 +55,7 @@ export async function getMarkdownContent(
 
     // 使用remark将Markdown转换为HTML
     const processedContent = await remark().use(html).process(content);
-    const contentHtml = processedContent.toString();
+    const contentHtml = localizeBlogHrefs(processedContent.toString(), locale);
 
     const faqs: FAQItem[] | undefined = Array.isArray(data.faqs)
       ? data.faqs.map((f: { q?: string; question?: string; a?: string; answer?: string }) => ({

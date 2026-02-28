@@ -38,8 +38,8 @@ export async function generateMetadata({
   const { slug } = await params;
 
   const markdownContent =
-    (await getMarkdownContent(slug, "blog/es")) ||
-    (await getMarkdownContent(slug, "blog"));
+    (await getMarkdownContent(slug, "blog/es", "es")) ||
+    (await getMarkdownContent(slug, "blog", "es"));
   const post = blogPostsEs.find((p) => p.slug === slug);
 
   if (!markdownContent && !post) {
@@ -102,8 +102,8 @@ export default async function SpanishBlogPostPage({
   const { slug } = await params;
 
   const markdownContent =
-    (await getMarkdownContent(slug, "blog/es")) ||
-    (await getMarkdownContent(slug, "blog"));
+    (await getMarkdownContent(slug, "blog/es", "es")) ||
+    (await getMarkdownContent(slug, "blog", "es"));
   const post = blogPostsEs.find((p) => p.slug === slug);
 
   if (!markdownContent && !post) {
@@ -113,8 +113,7 @@ export default async function SpanishBlogPostPage({
   const title = markdownContent?.title || post?.title || "";
   const excerpt = markdownContent?.excerpt || post?.excerpt || "";
   const date = markdownContent?.date || post?.date || "";
-  const author =
-    markdownContent?.author || post?.author || "Planetary Hours Team";
+  const author = markdownContent?.author || post?.author || messages.blog.author;
   const readingTime = post?.readingTime || 5;
   const rawImage = post?.imageUrl || "/images/blog-default.jpg";
   const imageUrl =
@@ -165,9 +164,11 @@ export default async function SpanishBlogPostPage({
         author={author}
         readingTime={readingTime}
         className="mb-8"
+        locale={locale}
+        messages={messages}
       />
 
-      <TableOfContents />
+      <TableOfContents locale={locale} messages={messages} />
 
       <div className="prose dark:prose-invert max-w-none">
         {markdownContent ? (
@@ -179,10 +180,7 @@ export default async function SpanishBlogPostPage({
             <p>{excerpt}</p>
             <div className="mt-8 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
               <p className="font-bold">Nota:</p>
-              <p>
-                Este artículo aún no tiene traducción al español. Se muestra el
-                contenido en inglés.
-              </p>
+              <p>{messages.blog.translationFallbackNotice}</p>
             </div>
           </>
         )}
@@ -190,19 +188,30 @@ export default async function SpanishBlogPostPage({
 
       {faqs && faqs.length > 0 && (
         <div className="mt-12">
-          <FAQSection faqs={faqs} includeSchema={false} />
+          <FAQSection
+            faqs={faqs}
+            includeSchema={false}
+            locale={locale}
+            messages={messages}
+          />
         </div>
       )}
 
       <div className="my-10 border-t border-gray-200 dark:border-gray-700"></div>
 
-      <ArticleShare title={title} url={articleUrl} />
+      <ArticleShare title={title} url={articleUrl} locale={locale} messages={messages} />
 
       <div className="mt-12">
-        <RelatedArticles articles={blogPostsEs} currentSlug={slug} basePath="/es/blog" />
+        <RelatedArticles
+          articles={blogPostsEs}
+          currentSlug={slug}
+          basePath="/es/blog"
+          locale={locale}
+          messages={messages}
+        />
       </div>
 
-      <BlogBackToTop title={title} url={articleUrl} />
+      <BlogBackToTop title={title} url={articleUrl} locale={locale} messages={messages} />
     </ArticleLayout>
   );
 }

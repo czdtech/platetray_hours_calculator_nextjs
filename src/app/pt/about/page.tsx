@@ -26,6 +26,24 @@ export const metadata: Metadata = {
 };
 
 export default function PortugueseAboutPage() {
+  const planetHourExamples = [
+    messages.about.planetHourExamples.sun,
+    messages.about.planetHourExamples.venus,
+    messages.about.planetHourExamples.mercury,
+    messages.about.planetHourExamples.moon,
+    messages.about.planetHourExamples.saturn,
+    messages.about.planetHourExamples.jupiter,
+    messages.about.planetHourExamples.mars,
+  ];
+
+  const keyFeatureItems = [
+    messages.about.keyFeaturesItems.locationInput,
+    messages.about.keyFeaturesItems.timezoneHandling,
+    messages.about.keyFeaturesItems.timeFormats,
+    messages.about.keyFeaturesItems.weekNavigation,
+    messages.about.keyFeaturesItems.contextualSuggestions,
+  ];
+
   const breadcrumbItems = [
     { name: messages.common.home, url: "/pt" },
     { name: messages.common.about, url: "/pt/about" },
@@ -52,10 +70,7 @@ export default function PortugueseAboutPage() {
               {messages.about.whatArePHText}
             </p>
             <p className="text-gray-600 mb-4">
-              A sequência de regentes segue a ordem caldeia dos planetas, baseada
-              na sua velocidade aparente a partir da perspectiva da Terra. O
-              planeta que rege a primeira hora do dia (começando ao nascer do
-              sol) é o regente desse dia.
+              {messages.about.chaldeanOrderText}
             </p>
           </section>
 
@@ -64,44 +79,12 @@ export default function PortugueseAboutPage() {
               {messages.about.howCanBeUsed}
             </h3>
             <p className="text-gray-600 mb-4">
-              {messages.about.howCanBeUsedText}
+              {messages.about.howCanBeUsedText} {messages.about.examplesIntro}
             </p>
             <ul className="list-disc pl-6 space-y-3 text-gray-600">
-              <li>
-                <strong className="text-gray-700">Hora do Sol:</strong> Boa para
-                atividades relacionadas à liderança, vitalidade, sucesso e
-                buscar o favor de autoridades.
-              </li>
-              <li>
-                <strong className="text-gray-700">Hora de Vênus:</strong>{" "}
-                Favorece o amor, a beleza, a arte, as atividades sociais e o
-                prazer.
-              </li>
-              <li>
-                <strong className="text-gray-700">Hora de Mercúrio:</strong>{" "}
-                Adequada para comunicação, aprendizagem, escrita, comércio e
-                viagens.
-              </li>
-              <li>
-                <strong className="text-gray-700">Hora da Lua:</strong>{" "}
-                Relacionada a assuntos domésticos, emoções, intuição e assuntos
-                públicos.
-              </li>
-              <li>
-                <strong className="text-gray-700">Hora de Saturno:</strong>{" "}
-                Associada à disciplina, responsabilidade, projetos de longo
-                prazo, superação de obstáculos e finalizações.
-              </li>
-              <li>
-                <strong className="text-gray-700">Hora de Júpiter:</strong>{" "}
-                Ideal para crescimento, expansão, abundância, busca de sabedoria
-                e assuntos financeiros.
-              </li>
-              <li>
-                <strong className="text-gray-700">Hora de Marte:</strong>{" "}
-                Conectada à energia, coragem, ação, competição e conflito
-                potencial.
-              </li>
+              {planetHourExamples.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
             </ul>
           </section>
 
@@ -110,23 +93,9 @@ export default function PortugueseAboutPage() {
               {messages.about.keyFeatures}
             </h3>
             <ul className="list-disc pl-6 space-y-3 text-gray-600">
-              <li>
-                Entrada de localização com autocompletar do Google Places ou
-                geolocalização com um clique.
-              </li>
-              <li>
-                Tratamento automático de fuso horário para garantir cálculos
-                precisos de nascer/pôr do sol e horas.
-              </li>
-              <li>Alternância entre formatos de hora de 12 e 24 horas.</li>
-              <li>
-                Navegação semanal para saltar rapidamente para qualquer dia.
-              </li>
-              <li>
-                Sugestões contextuais sobre quais atividades são{" "}
-                <em>boas para</em> ou devem ser <em>evitadas</em> durante cada
-                hora.
-              </li>
+              {keyFeatureItems.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
             </ul>
           </section>
 
@@ -135,19 +104,12 @@ export default function PortugueseAboutPage() {
               {messages.about.limitations}
             </h3>
             <p className="text-gray-600 mb-4">
-              As horas planetárias se originam na astrologia tradicional. Os
-              cálculos fornecidos aqui são baseados em métodos históricos
-              amplamente aceitos e dados astronômicos modernos para o nascer e o
-              pôr do sol. São oferecidos apenas para fins informativos e de
-              entretenimento e não devem substituir aconselhamento ou
-              planejamento profissional.
+              {messages.about.limitationsText}
             </p>
           </section>
 
           <p className="text-gray-600">
-            Esta calculadora ajuda você a determinar as horas planetárias para
-            qualquer data e lugar, permitindo que você programe tarefas em
-            harmonia com as energias planetárias predominantes.
+            {messages.about.closingText}
           </p>
         </Article>
       </div>

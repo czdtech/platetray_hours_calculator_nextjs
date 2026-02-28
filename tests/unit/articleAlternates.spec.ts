@@ -11,7 +11,7 @@ describe('Article alternates', () => {
   });
 
   it('returns undefined for untranslated slug', () => {
-    const result = getArticleAlternates('what-are-planetary-hours');
+    const result = getArticleAlternates('some-en-only-post');
     expect(result).toBeUndefined();
   });
 

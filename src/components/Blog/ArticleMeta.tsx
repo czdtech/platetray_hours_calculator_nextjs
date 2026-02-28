@@ -1,24 +1,34 @@
 import { formatDistanceToNow, format } from "date-fns";
+import type { Locale } from "@/i18n/config";
+import { getMessagesSync, type Messages } from "@/i18n/getMessages";
+import { getDateFnsLocale } from "@/utils/dateLocale";
 
 interface ArticleMetaProps {
   author?: string;
   date: string; // ISO 格式日期
   readingTime?: number; // 单位：分钟
   className?: string; // 新增自定义className
+  locale?: Locale;
+  messages?: Messages;
 }
 
 /**
  * 显示文章元数据：作者、日期、阅读时间
  */
 export function ArticleMeta({
-  author = "Planetary Hours Team",
+  author,
   date,
   readingTime,
   className = "",
+  locale = "en",
+  messages,
 }: ArticleMetaProps) {
+  const resolvedMessages = messages ?? getMessagesSync(locale);
+  const dateLocale = getDateFnsLocale(locale);
   const parsedDate = new Date(date);
-  const formattedDate = format(parsedDate, "MMMM d, yyyy");
-  const timeAgo = formatDistanceToNow(parsedDate, { addSuffix: true });
+  const displayAuthor = author ?? resolvedMessages.blog.author;
+  const formattedDate = format(parsedDate, "MMMM d, yyyy", { locale: dateLocale });
+  const timeAgo = formatDistanceToNow(parsedDate, { addSuffix: true, locale: dateLocale });
 
   return (
     <div
@@ -39,7 +49,7 @@ export function ArticleMeta({
             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
           />
         </svg>
-        <span>{author}</span>
+        <span>{displayAuthor}</span>
       </address>
 
       <div className="flex items-center mr-6 mb-2" title={formattedDate}>
@@ -78,7 +88,7 @@ export function ArticleMeta({
           </svg>
           <span>
             {typeof readingTime === "number"
-              ? `${readingTime} min read`
+              ? `${readingTime} ${resolvedMessages.blog.minRead}`
               : readingTime}
           </span>
         </div>

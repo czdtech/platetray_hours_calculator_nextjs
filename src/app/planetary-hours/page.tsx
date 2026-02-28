@@ -6,14 +6,17 @@ import { JsonLd } from "@/components/SEO/JsonLd";
 import { getBreadcrumbSchema } from "@/utils/seo/jsonld";
 import { siteConfig } from "@/config/seo";
 import { cities } from "@/data/cities";
+import { getMessagesSync } from "@/i18n/getMessages";
+import { getLocalizedRegionName } from "@/i18n/regions";
 import { getHreflangTags } from "@/utils/seo/hreflang";
 
+const locale = "en";
+const messages = getMessagesSync(locale);
 const hreflang = getHreflangTags("/planetary-hours");
 
 export const metadata: Metadata = {
-  title: "Planetary Hours by City | Free Calculator for 20+ Cities",
-  description:
-    "Calculate planetary hours for cities worldwide. View today's planetary hours, sunrise, sunset, and day ruler for New York, London, Tokyo, and 17 more cities.",
+  title: `${messages.cityIndex.title} | ${messages.home.title}`,
+  description: messages.cityIndex.description,
   keywords: [
     "planetary hours by city",
     "city planetary hours",
@@ -25,9 +28,8 @@ export const metadata: Metadata = {
     languages: hreflang,
   },
   openGraph: {
-    title: "Planetary Hours by City | Free Calculator for 20+ Cities",
-    description:
-      "Calculate planetary hours for cities worldwide. View today's planetary hours, sunrise, sunset, and day ruler for 20+ cities.",
+    title: `${messages.cityIndex.title} | ${messages.home.title}`,
+    description: messages.cityIndex.description,
     url: `${siteConfig.url}/planetary-hours`,
     type: "website",
     siteName: siteConfig.name,
@@ -36,8 +38,8 @@ export const metadata: Metadata = {
 
 export default function PlanetaryHoursCityIndex() {
   const breadcrumbItems = [
-    { name: "Home", url: "/" },
-    { name: "Cities", url: "/planetary-hours" },
+    { name: messages.common.home, url: "/" },
+    { name: messages.common.cities, url: "/planetary-hours" },
   ];
   const breadcrumbSchema = getBreadcrumbSchema(
     breadcrumbItems.map((item) => ({ name: item.name, url: `${siteConfig.url}${item.url}` })),
@@ -51,7 +53,7 @@ export default function PlanetaryHoursCityIndex() {
 
   return (
     <>
-      <Header activePage="cities" />
+      <Header activePage="cities" locale={locale} />
       <JsonLd data={breadcrumbSchema} />
 
       <div className="container mx-auto px-4 py-6 space-y-8">
@@ -61,19 +63,17 @@ export default function PlanetaryHoursCityIndex() {
 
         <div className="text-center max-w-2xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">
-            Planetary Hours by City
+            {messages.cityIndex.title}
           </h1>
           <p className="mt-3 text-gray-600 dark:text-gray-300">
-            Select a city to view today&apos;s planetary hours calculated with precise local
-            coordinates and timezone. Each page shows real-time sunrise, sunset, day ruler, and all
-            24 planetary hours.
+            {messages.cityIndex.description}
           </p>
         </div>
 
         {citiesByRegion.map(({ region, cities: regionCities }) => (
           <section key={region}>
             <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
-              {region}
+              {getLocalizedRegionName(region, messages)}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {regionCities.map((city) => (
@@ -100,13 +100,13 @@ export default function PlanetaryHoursCityIndex() {
 
         <div className="text-center py-8">
           <p className="text-gray-600 dark:text-gray-300 mb-4">
-            Don&apos;t see your city? Use the full calculator for any location worldwide.
+            {messages.cityIndex.dontSeeCity}
           </p>
           <Link
             href="/"
             className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
           >
-            Open Full Calculator
+            {messages.calculator.openCalculator}
           </Link>
         </div>
       </div>

@@ -9,24 +9,27 @@ import { getBreadcrumbSchema } from "@/utils/seo/jsonld";
 import { Section } from "@/components/semantic/Section";
 import { Header } from "@/components/Layout/Header";
 import { BlogCategoryFilter } from "@/components/Blog/BlogCategoryFilter";
+import { getMessagesSync } from "@/i18n/getMessages";
+import { getDateFnsLocale } from "@/utils/dateLocale";
 import { getHreflangTags } from "@/utils/seo/hreflang";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
+const locale = "en";
+const messages = getMessagesSync(locale);
+const dateLocale = getDateFnsLocale(locale);
 const hreflang = getHreflangTags("/blog");
 
 export const metadata: Metadata = {
-  title: "Blog",
-  description:
-    "Read the latest updates, guides and announcements about the Planetary Hours Calculator.",
+  title: messages.blog.title,
+  description: messages.blog.description,
   alternates: {
     canonical: `${SITE_URL}/blog`,
     languages: hreflang,
   },
   openGraph: {
-    title: "Blog | Planetary Hours Calculator",
-    description:
-      "Read the latest updates, guides and announcements about the Planetary Hours Calculator.",
+    title: `${messages.blog.title} | ${messages.home.title}`,
+    description: messages.blog.description,
     url: `${SITE_URL}/blog`,
     type: "article",
   },
@@ -38,8 +41,8 @@ export default function BlogPage() {
 
   // 面包屑导航项
   const breadcrumbItems = [
-    { name: "Home", url: "/" },
-    { name: "Blog", url: "/blog" },
+    { name: messages.common.home, url: "/" },
+    { name: messages.common.blog, url: "/blog" },
   ];
 
   return (
@@ -47,12 +50,12 @@ export default function BlogPage() {
       {/* JSON-LD 结构化数据 */}
       <JsonLd
         data={getBreadcrumbSchema([
-          { name: "Home", url: SITE_URL },
-          { name: "Blog", url: `${SITE_URL}/blog` },
+          { name: messages.common.home, url: SITE_URL },
+          { name: messages.common.blog, url: `${SITE_URL}/blog` },
         ])}
       />
 
-      <Header activePage="blog" />
+      <Header activePage="blog" locale={locale} />
       <div className="container mx-auto px-4 py-8 space-y-8">
         <Section className="py-4">
           <div className="max-w-5xl mx-auto">
@@ -62,7 +65,7 @@ export default function BlogPage() {
             </div>
 
             <h1 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-purple-500 to-indigo-400 bg-clip-text text-transparent">
-              Planetary Hours Calculator Blog
+              {messages.blog.title}
             </h1>
 
             {/* 特色文章 - 最新一篇 */}
@@ -85,6 +88,7 @@ export default function BlogPage() {
                         <div className="text-sm text-indigo-600 mb-2">
                           {formatDistanceToNow(new Date(blogPosts[0].date), {
                             addSuffix: true,
+                            locale: dateLocale,
                           })}
                         </div>
                         <Link
@@ -104,7 +108,7 @@ export default function BlogPage() {
                           href={`/blog/${blogPosts[0].slug}`}
                           className="text-indigo-600 hover:underline font-medium"
                         >
-                          Read full article →
+                          {messages.blog.readFullArticle}
                         </Link>
                       </div>
                     </div>
@@ -114,7 +118,7 @@ export default function BlogPage() {
             )}
 
             {/* 其他文章 - 带分类筛选的网格布局 */}
-            <BlogCategoryFilter posts={blogPosts.slice(1)} />
+            <BlogCategoryFilter posts={blogPosts.slice(1)} locale={locale} messages={messages} />
           </div>
         </Section>
       </div>

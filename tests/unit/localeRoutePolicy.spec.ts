@@ -132,12 +132,16 @@ describe('resolveLocaleSwitchPath', () => {
     expect(resolveLocaleSwitchPath('/planetary-hours/new-york', 'pt')).toBe('/pt/planetary-hours/new-york');
   });
 
-  it('falls back blog category to locale blog index', () => {
+  it('maps known blog category to localized category route', () => {
+    expect(resolveLocaleSwitchPath('/blog/category/planet-hours', 'es')).toBe('/es/blog/category/planet-hours');
+  });
+
+  it('falls back unknown blog category to locale blog index', () => {
     expect(resolveLocaleSwitchPath('/blog/category/guides', 'es')).toBe('/es/blog');
   });
 
-  it('keeps blog category as-is for EN', () => {
-    expect(resolveLocaleSwitchPath('/blog/category/guides', 'en')).toBe('/blog/category/guides');
+  it('keeps known blog category as-is for EN', () => {
+    expect(resolveLocaleSwitchPath('/blog/category/planet-hours', 'en')).toBe('/blog/category/planet-hours');
   });
 
   it('keeps privacy as EN-only', () => {
