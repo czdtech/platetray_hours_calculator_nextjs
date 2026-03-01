@@ -22,6 +22,22 @@ import marsHourImg from "../../public/images/blog/mars-hour-guide.jpg";
 import sunHourImg from "../../public/images/blog/sun-hour-guide.jpg";
 import moonHourImg from "../../public/images/blog/moon-hour-guide.jpg";
 import planetaryDaysPillarImg from "../../public/images/blog/planetary-days-pillar.jpg";
+import meaningsImg from "../../public/images/blog/planetary-hours-and-their-meanings.jpg";
+import loveImg from "../../public/images/blog/planetary-hours-for-love.jpg";
+import magicImg from "../../public/images/blog/planetary-hours-for-magic.jpg";
+import manifestationImg from "../../public/images/blog/planetary-hours-for-manifestation.jpg";
+import moneyImg from "../../public/images/blog/planetary-hours-for-money.jpg";
+import marriageImg from "../../public/images/blog/best-planetary-hour-for-marriage.jpg";
+import interviewImg from "../../public/images/blog/best-planetary-hour-for-interview.jpg";
+import surgeryImg from "../../public/images/blog/best-planetary-hour-for-surgery.jpg";
+import chartPdfImg from "../../public/images/blog/planetary-hours-chart-pdf.jpg";
+import sundayImg from "../../public/images/blog/sunday-sun-day.jpg";
+import mondayImg from "../../public/images/blog/monday-moon-day.jpg";
+import tuesdayImg from "../../public/images/blog/tuesday-mars-day.jpg";
+import wednesdayImg from "../../public/images/blog/wednesday-mercury-day.jpg";
+import thursdayImg from "../../public/images/blog/thursday-jupiter-day.jpg";
+import fridayImg from "../../public/images/blog/friday-venus-day.jpg";
+import saturdayImg from "../../public/images/blog/saturday-saturn-day.jpg";
 
 /**
  * 博客文章数据 - 按发布日期倒序排列（最新的在前）
@@ -32,7 +48,7 @@ export const blogPosts: BlogPost[] = [
     title: "Planetary Hours and Their Meanings: Complete Reference Guide",
     excerpt:
       "A comprehensive guide to all seven planetary hours and their meanings. Learn what each planetary hour represents, its ruling planet's energy, and the best activities for every hour.",
-    imageUrl: whatIsImg as StaticImageData,
+    imageUrl: meaningsImg as StaticImageData,
     date: blogDates["planetary-hours-and-their-meanings"],
     readingTime: blogRead["planetary-hours-and-their-meanings"],
     category: "education",
@@ -43,7 +59,7 @@ export const blogPosts: BlogPost[] = [
     title: "Planetary Hours for Love & Relationships: Complete Timing Guide",
     excerpt:
       "Discover the best planetary hours for love, romance, and relationships. Learn why Venus hour is ideal for dates, Moon hour for emotional bonds, and how to time your romantic activities.",
-    imageUrl: usingImg as StaticImageData,
+    imageUrl: loveImg as StaticImageData,
     date: blogDates["planetary-hours-for-love"],
     readingTime: blogRead["planetary-hours-for-love"],
     category: "practical-use",
@@ -54,7 +70,7 @@ export const blogPosts: BlogPost[] = [
     title: "Planetary Hours and Days for Magic: A Practitioner's Guide",
     excerpt:
       "Learn how to align your magical workings with planetary hours and days for enhanced efficacy. A comprehensive guide to planetary correspondences, spell timing, and ritual planning.",
-    imageUrl: historyImg as StaticImageData,
+    imageUrl: magicImg as StaticImageData,
     date: blogDates["planetary-hours-for-magic"],
     readingTime: blogRead["planetary-hours-for-magic"],
     category: "practical-use",
@@ -65,7 +81,7 @@ export const blogPosts: BlogPost[] = [
     title: "Planetary Hours for Manifestation: Align Your Intentions with Cosmic Timing",
     excerpt:
       "Learn how to use planetary hours for manifestation and intention-setting. Discover which planetary hours amplify abundance, love, career success, and spiritual growth.",
-    imageUrl: introImg as StaticImageData,
+    imageUrl: manifestationImg as StaticImageData,
     date: blogDates["planetary-hours-for-manifestation"],
     readingTime: blogRead["planetary-hours-for-manifestation"],
     category: "practical-use",
@@ -76,7 +92,7 @@ export const blogPosts: BlogPost[] = [
     title: "Best Planetary Hours for Money, Business & Financial Success",
     excerpt:
       "Discover the best planetary hours for financial decisions, business deals, and wealth building. Learn why Jupiter hour is the premier time for money matters in astrology.",
-    imageUrl: businessImg as StaticImageData,
+    imageUrl: moneyImg as StaticImageData,
     date: blogDates["planetary-hours-for-money"],
     readingTime: blogRead["planetary-hours-for-money"],
     category: "practical-use",
@@ -87,7 +103,7 @@ export const blogPosts: BlogPost[] = [
     title: "Best Planetary Hour for Marriage & Wedding Timing",
     excerpt:
       "Find the best planetary hours for marriage ceremonies, proposals, and wedding planning. Learn which cosmic timing creates the most auspicious conditions for lasting love.",
-    imageUrl: usingImg as StaticImageData,
+    imageUrl: marriageImg as StaticImageData,
     date: blogDates["best-planetary-hour-for-marriage"],
     readingTime: blogRead["best-planetary-hour-for-marriage"],
     category: "practical-use",
@@ -98,7 +114,7 @@ export const blogPosts: BlogPost[] = [
     title: "Best Planetary Hour for Job Interviews & Career Moves",
     excerpt:
       "Discover the best planetary hours for job interviews, career moves, and professional success. Learn which cosmic timing helps you make the strongest impression.",
-    imageUrl: algoImg as StaticImageData,
+    imageUrl: interviewImg as StaticImageData,
     date: blogDates["best-planetary-hour-for-interview"],
     readingTime: blogRead["best-planetary-hour-for-interview"],
     category: "practical-use",
@@ -109,7 +125,7 @@ export const blogPosts: BlogPost[] = [
     title: "Best Planetary Hour for Surgery & Medical Procedures",
     excerpt:
       "Learn about astrological traditions regarding surgical timing and planetary hours. Understand the historical and cultural perspectives on timing medical procedures.",
-    imageUrl: faqImg as StaticImageData,
+    imageUrl: surgeryImg as StaticImageData,
     date: blogDates["best-planetary-hour-for-surgery"],
     readingTime: blogRead["best-planetary-hour-for-surgery"],
     category: "practical-use",
@@ -120,7 +136,7 @@ export const blogPosts: BlogPost[] = [
     title: "Planetary Hours Chart: Free Printable Reference Guide (PDF)",
     excerpt:
       "Download our free printable planetary hours chart PDF. A complete reference guide showing all seven planetary hours, their meanings, best activities, and the weekly planetary day rulers.",
-    imageUrl: whatIsImg as StaticImageData,
+    imageUrl: chartPdfImg as StaticImageData,
     date: blogDates["planetary-hours-chart-pdf"],
     readingTime: blogRead["planetary-hours-chart-pdf"],
     category: "education",
@@ -142,7 +158,7 @@ export const blogPosts: BlogPost[] = [
     title: "Sunday: Day of the Sun — Meaning, Energy & Best Activities",
     excerpt:
       "Sunday is ruled by the Sun, bringing energy of leadership, vitality, and success. Learn the best activities for the Sun's day and how to harness solar energy.",
-    imageUrl: sunHourImg as StaticImageData,
+    imageUrl: sundayImg as StaticImageData,
     date: blogDates["sunday-sun-day"],
     readingTime: blogRead["sunday-sun-day"],
     category: "planet-days",
@@ -153,7 +169,7 @@ export const blogPosts: BlogPost[] = [
     title: "Monday: Day of the Moon — Meaning, Energy & Best Activities",
     excerpt:
       "Monday is ruled by the Moon, governing emotions, intuition, and domestic life. Discover the best activities for the Moon's day and how to work with lunar energy.",
-    imageUrl: moonHourImg as StaticImageData,
+    imageUrl: mondayImg as StaticImageData,
     date: blogDates["monday-moon-day"],
     readingTime: blogRead["monday-moon-day"],
     category: "planet-days",
@@ -164,7 +180,7 @@ export const blogPosts: BlogPost[] = [
     title: "Tuesday: Day of Mars — Meaning, Energy & Best Activities",
     excerpt:
       "Tuesday is ruled by Mars, the planet of action, courage, and energy. Learn the best activities for Mars day and how to channel warrior energy productively.",
-    imageUrl: marsHourImg as StaticImageData,
+    imageUrl: tuesdayImg as StaticImageData,
     date: blogDates["tuesday-mars-day"],
     readingTime: blogRead["tuesday-mars-day"],
     category: "planet-days",
@@ -175,7 +191,7 @@ export const blogPosts: BlogPost[] = [
     title: "Wednesday: Day of Mercury — Meaning, Energy & Best Activities",
     excerpt:
       "Wednesday is ruled by Mercury, the planet of communication and intellect. Discover the best activities for Mercury's day and how to maximize mental clarity.",
-    imageUrl: mercuryHourImg as StaticImageData,
+    imageUrl: wednesdayImg as StaticImageData,
     date: blogDates["wednesday-mercury-day"],
     readingTime: blogRead["wednesday-mercury-day"],
     category: "planet-days",
@@ -186,7 +202,7 @@ export const blogPosts: BlogPost[] = [
     title: "Thursday: Day of Jupiter — Meaning, Energy & Best Activities",
     excerpt:
       "Thursday is ruled by Jupiter, the Greater Benefic of abundance and growth. Learn the best activities for Jupiter's day and how to attract opportunity and prosperity.",
-    imageUrl: jupiterHourImg as StaticImageData,
+    imageUrl: thursdayImg as StaticImageData,
     date: blogDates["thursday-jupiter-day"],
     readingTime: blogRead["thursday-jupiter-day"],
     category: "planet-days",
@@ -197,7 +213,7 @@ export const blogPosts: BlogPost[] = [
     title: "Friday: Day of Venus — Meaning, Energy & Best Activities",
     excerpt:
       "Friday is ruled by Venus, the planet of love, beauty, and pleasure. Discover the best activities for Venus day and why Friday is the ultimate day for romance and art.",
-    imageUrl: venusHourImg as StaticImageData,
+    imageUrl: fridayImg as StaticImageData,
     date: blogDates["friday-venus-day"],
     readingTime: blogRead["friday-venus-day"],
     category: "planet-days",
@@ -208,7 +224,7 @@ export const blogPosts: BlogPost[] = [
     title: "Saturday: Day of Saturn — Meaning, Energy & Best Activities",
     excerpt:
       "Saturday is ruled by Saturn, the planet of discipline, structure, and long-term achievement. Learn the best activities for Saturn's day and how to use its focused energy.",
-    imageUrl: saturnHourImg as StaticImageData,
+    imageUrl: saturdayImg as StaticImageData,
     date: blogDates["saturday-saturn-day"],
     readingTime: blogRead["saturday-saturn-day"],
     category: "planet-days",
