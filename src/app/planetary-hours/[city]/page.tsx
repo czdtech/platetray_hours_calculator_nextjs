@@ -12,14 +12,15 @@ import { planetaryHoursCalculator } from "@/services/PlanetaryHoursCalculator";
 import { getCityBySlug, getAllCitySlugs, getNearbyCities } from "@/data/cities";
 import { CityInfo } from "@/components/CityCalculator/CityInfo";
 import { CityHoursList } from "@/components/CityCalculator/CityHoursList";
+import { CityCurrentHourCard } from "@/components/CityCalculator/CityCurrentHourCard";
 import { CityFAQ } from "@/components/CityCalculator/CityFAQ";
 import { RelatedCities } from "@/components/CityCalculator/RelatedCities";
-import { PLANET_COLOR_CLASSES, PLANET_SYMBOLS } from "@/constants/planetColors";
 import { getMessagesSync, t } from "@/i18n/getMessages";
 
 export const revalidate = 3600;
 const locale = "en";
 const messages = getMessagesSync(locale);
+const planets = messages.planets as Record<string, string>;
 
 export async function generateStaticParams() {
   return getAllCitySlugs().map((slug) => ({ city: slug }));
@@ -113,17 +114,9 @@ export default async function CityPage({ params }: CityPageProps) {
     breadcrumbItems.map((item) => ({ name: item.name, url: `${siteConfig.url}${item.url}` })),
   );
 
-  const currentHour = planetaryHoursCalculator.getCurrentHour(result, now);
   const dayHours = result.planetaryHours.filter((h) => h.type === "day");
   const daytimeHourDuration = dayHours.length > 0 ? dayHours[0].durationMinutes : 60;
   const nearbyCities = getNearbyCities(city.slug, 5);
-
-  const currentHourColor = currentHour
-    ? PLANET_COLOR_CLASSES[currentHour.ruler as keyof typeof PLANET_COLOR_CLASSES] || "text-gray-600"
-    : "";
-  const currentHourSymbol = currentHour
-    ? PLANET_SYMBOLS[currentHour.ruler as keyof typeof PLANET_SYMBOLS] || ""
-    : "";
 
   return (
     <>
@@ -141,37 +134,37 @@ export default async function CityPage({ params }: CityPageProps) {
           sunset={result.sunset}
           timezone={city.timezone}
           dayRuler={result.dayRuler}
+          locale={locale}
+          messages={messages}
         />
 
-        {currentHour && (
-          <div className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl shadow-sm border border-purple-200 dark:border-purple-800 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{messages.calculator.currentHour}</h2>
-            <div className="flex items-center gap-3">
-              <span className={`text-3xl font-bold ${currentHourColor}`}>
-                {currentHourSymbol} {currentHour.ruler}
-              </span>
-              <span className="text-gray-500 dark:text-gray-400">·</span>
-              <span className="text-gray-600 dark:text-gray-300">
-                {formatInTimeZone(currentHour.startTime, city.timezone, "h:mm a")} – {formatInTimeZone(currentHour.endTime, city.timezone, "h:mm a")}
-              </span>
-              <span className="text-xs bg-purple-100 dark:bg-purple-800 text-purple-700 dark:text-purple-200 px-2 py-1 rounded-full">
-                {currentHour.type === "day" ? messages.calculator.daytime : messages.calculator.nighttime}
-              </span>
-            </div>
-            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-              <div>
-                <span className="font-medium text-green-700 dark:text-green-400">{messages.calculator.goodFor}:</span>{" "}
-                <span className="text-gray-600 dark:text-gray-300">{currentHour.goodFor}</span>
-              </div>
-              <div>
-                <span className="font-medium text-red-700 dark:text-red-400">{messages.calculator.avoid}:</span>{" "}
-                <span className="text-gray-600 dark:text-gray-300">{currentHour.avoid}</span>
-              </div>
-            </div>
-          </div>
-        )}
+        <CityCurrentHourCard
+          hours={result.planetaryHours}
+          timezone={city.timezone}
+          locale={locale}
+          labels={{
+            currentHour: messages.calculator.currentHour,
+            daytime: messages.calculator.daytime,
+            nighttime: messages.calculator.nighttime,
+            goodFor: messages.calculator.goodFor,
+            avoid: messages.calculator.avoid,
+          }}
+          localizedPlanets={planets}
+        />
 
-        <CityHoursList hours={result.planetaryHours} timezone={city.timezone} />
+        <CityHoursList
+          hours={result.planetaryHours}
+          timezone={city.timezone}
+          labels={{
+            daytimeHours: messages.calculator.daytimeHours,
+            nighttimeHours: messages.calculator.nighttimeHours,
+            planet: messages.calculator.planet,
+            time: messages.calculator.time,
+            duration: messages.calculator.duration,
+            now: messages.calculator.now,
+          }}
+          localizedPlanets={planets}
+        />
 
         <CityFAQ
           city={city}
@@ -179,9 +172,16 @@ export default async function CityPage({ params }: CityPageProps) {
           dayRuler={result.dayRuler}
           timezone={city.timezone}
           daytimeHourDuration={daytimeHourDuration}
+          locale={locale}
+          messages={messages}
         />
 
-        <RelatedCities cities={nearbyCities} currentSlug={city.slug} />
+        <RelatedCities
+          cities={nearbyCities}
+          currentSlug={city.slug}
+          locale={locale}
+          messages={messages}
+        />
 
         <div className="text-center py-8">
           <p className="text-gray-600 dark:text-gray-300 mb-4">
