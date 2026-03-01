@@ -207,6 +207,7 @@ export interface SoftwareApplicationSchemaOptions {
   url: string;
   applicationCategory?: string;
   featureList?: string[];
+  inLanguage?: string;
   publisherName?: string;
 }
 
@@ -228,6 +229,7 @@ export function getSoftwareApplicationSchema(
     url,
     applicationCategory = "UtilityApplication",
     featureList,
+    inLanguage,
     publisherName,
   } = options;
 
@@ -250,6 +252,10 @@ export function getSoftwareApplicationSchema(
   // 添加功能列表
   if (featureList && featureList.length > 0) {
     schema.featureList = featureList;
+  }
+
+  if (inLanguage) {
+    schema.inLanguage = inLanguage;
   }
 
   // 添加免费价格信息

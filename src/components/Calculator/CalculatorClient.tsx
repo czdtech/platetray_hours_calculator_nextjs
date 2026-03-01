@@ -4,6 +4,7 @@ import CalculatorPageOptimized from '@/app/CalculatorPageOptimized';
 import { ServerCurrentHourPayload } from '@/utils/planetaryHourHelpers';
 import { PlanetaryHoursCalculationResult } from '@/services/PlanetaryHoursCalculator';
 import { TTLCalculationResult } from '@/utils/cache/dynamicTTL';
+import type { Locale } from '@/i18n/config';
 
 interface Props {
   precomputed?: PlanetaryHoursCalculationResult | null;
@@ -14,6 +15,7 @@ interface Props {
   cacheControl?: string;
   ttlInfo?: TTLCalculationResult;
   error?: string;
+  locale?: Locale;
 }
 
 export default function CalculatorClient({
@@ -24,7 +26,8 @@ export default function CalculatorClient({
   serverTime,
   cacheControl,
   ttlInfo,
-  error
+  error,
+  locale = 'en',
 }: Props) {
   // 优先使用新的参数，保持向后兼容
   const effectiveCalculationResult = calculationResult || precomputed;
@@ -38,6 +41,7 @@ export default function CalculatorClient({
       cacheControl={cacheControl}
       ttlInfo={ttlInfo}
       error={error}
+      locale={locale}
     />
   );
 }

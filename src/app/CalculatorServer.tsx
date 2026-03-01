@@ -7,6 +7,7 @@ import { formatInTimeZone } from 'date-fns-tz'
 import { kv } from '@vercel/kv'
 import fs from 'fs/promises'
 import path from 'path'
+import type { Locale } from '@/i18n/config'
 
 import {
   PlanetaryHoursCalculationResult,
@@ -14,6 +15,10 @@ import {
 } from '@/services/PlanetaryHoursCalculator'
 
 const logger = createLogger('CalculatorServer')
+
+interface CalculatorServerProps {
+  locale?: Locale
+}
 
 // 默认纽约坐标常量
 const DEFAULT_COORDINATES = {
@@ -111,7 +116,7 @@ async function setDynamicCacheHeaders(
  * 该组件将在每次请求时执行，根据当前时间和行星时状态
  * 动态计算最优的缓存时间，确保用户看到准确的当前行星时
  */
-export default async function CalculatorServer() {
+export default async function CalculatorServer({ locale = 'en' }: CalculatorServerProps = {}) {
   // 获取当前服务端时间 - 这是关键的时间基准
   const nowUTC = getCurrentUTCDate()
   const { latitude, longitude, timezone, cityKey } = DEFAULT_COORDINATES
@@ -299,6 +304,7 @@ export default async function CalculatorServer() {
         serverTime={nowUTC.toISOString()}
         cacheControl={cacheControl}
         ttlInfo={payload.ttlInfo}
+        locale={locale}
       />
     )
   } catch (error) {
@@ -315,6 +321,7 @@ export default async function CalculatorServer() {
         initialHourPayload={null}
         serverTime={nowUTC.toISOString()}
         error="服务端数据加载失败，将使用客户端计算"
+        locale={locale}
       />
     )
   }

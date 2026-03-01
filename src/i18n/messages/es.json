@@ -140,7 +140,65 @@
     "title": "Calculadora de Horas Planetarias",
     "subtitle": "Encuentra el momento perfecto para tus actividades basándote en la sabiduría planetaria antigua. Ingresa tu ubicación y fecha para comenzar.",
     "metaTitle": "Calculadora de Horas Planetarias - Encuentra Tu Momento Perfecto",
-    "metaDescription": "Descubre el momento perfecto con nuestra calculadora de horas planetarias. Calcula las horas planetarias astrológicas según tu ubicación y fecha."
+    "metaDescription": "Descubre el momento perfecto con nuestra calculadora de horas planetarias. Calcula las horas planetarias astrológicas según tu ubicación y fecha.",
+    "keywords": [
+      "horas planetarias",
+      "timing astrológico",
+      "calculadora planetaria",
+      "horas de astrología",
+      "calculadora de momentos",
+      "influencias planetarias",
+      "calculadora astrológica",
+      "horas mágicas",
+      "periodos planetarios"
+    ],
+    "featureList": [
+      "Soporte global de ubicaciones con detección automática de zona horaria",
+      "Cálculos astronómicos precisos para amanecer y atardecer",
+      "Visualización en tiempo real de la hora planetaria actual",
+      "Selección interactiva de fecha y ubicación",
+      "Diseño adaptable para móviles",
+      "Uso gratuito sin registro"
+    ],
+    "faqHeading": "Preguntas Frecuentes",
+    "faqItems": [
+      {
+        "question": "¿Cómo se calculan las horas planetarias?",
+        "answer": "Las horas planetarias se calculan dividiendo el tiempo entre el amanecer y el atardecer (horas diurnas) y entre el atardecer y el siguiente amanecer (horas nocturnas) en 12 partes iguales. La duración de estas \"horas\" varía según la estación y la latitud."
+      },
+      {
+        "question": "¿Por qué las horas planetarias no duran exactamente 60 minutos?",
+        "answer": "Porque la duración del día y de la noche cambia durante el año, también cambia la duración de cada hora planetaria. Solo se acercan a 60 minutos cerca de los equinoccios."
+      },
+      {
+        "question": "¿Necesito conocer las horas exactas de amanecer y atardecer para usar la calculadora?",
+        "answer": "No. La calculadora de horas planetarias lo resuelve automáticamente según la ubicación y la fecha que indiques, usando cálculos astronómicos precisos."
+      },
+      {
+        "question": "¿Qué planetas se usan en el sistema de horas planetarias?",
+        "answer": "El sistema tradicional usa siete planetas astrológicos: Sol, Luna, Mercurio, Venus, Marte, Júpiter y Saturno. Urano, Neptuno y Plutón no forman parte de este sistema tradicional."
+      },
+      {
+        "question": "¿Está científicamente demostrado el sistema de horas planetarias?",
+        "answer": "Las horas planetarias pertenecen a la astrología tradicional y no se basan en principios científicos modernos. Se usan como sistema simbólico o espiritual por quienes siguen estas tradiciones."
+      },
+      {
+        "question": "¿Qué tan precisa es la detección de ubicación en esta calculadora?",
+        "answer": "Si permites el acceso a tu ubicación, la calculadora usa la geolocalización del navegador, que suele ser bastante precisa para calcular amanecer y atardecer. También puedes introducir cualquier ubicación manualmente."
+      },
+      {
+        "question": "¿Por qué la duración de las horas planetarias cambia entre verano e invierno?",
+        "answer": "Porque las horas planetarias dividen el tramo entre amanecer y atardecer en 12 partes: en verano cada parte se alarga y en invierno se acorta. Cerca del ecuador permanecen cerca de 60 minutos todo el año."
+      },
+      {
+        "question": "¿Por qué siguen apareciendo horas nocturnas antes del amanecer de hoy?",
+        "answer": "En la tradición, el día planetario comienza al amanecer. Cualquier hora antes del amanecer pertenece al bloque nocturno del día anterior, aunque el reloj marque la madrugada del nuevo día civil."
+      },
+      {
+        "question": "¿Cómo elijo la mejor hora planetaria para mi tarea?",
+        "answer": "Relaciona la actividad con el simbolismo del planeta: Venus para amor o arte, Mercurio para estudio o comunicación, Marte para acción y ejercicio. Usa la guía de la calculadora para decidir rápidamente."
+      }
+    ]
   },
   "categories": {
     "planet-hours": "Horas Planetarias",
