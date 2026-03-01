@@ -1,14 +1,20 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { Locale } from "@/i18n/config";
 import { getMessagesSync } from "@/i18n/getMessages";
-import { toLocalizedPath } from "@/i18n/routePolicy";
+import { getCurrentLocale, toLocalizedPath } from "@/i18n/routePolicy";
 
 interface FooterProps {
   locale?: Locale;
 }
 
-export function Footer({ locale = "en" }: FooterProps) {
-  const messages = getMessagesSync(locale);
+export function Footer({ locale }: FooterProps) {
+  const pathname = usePathname();
+  const detectedLocale = getCurrentLocale(pathname ?? "/");
+  const currentLocale = locale ?? detectedLocale;
+  const messages = getMessagesSync(currentLocale);
   const currentYear = new Date().getFullYear();
 
   return (
@@ -17,7 +23,7 @@ export function Footer({ locale = "en" }: FooterProps) {
         <p className="mb-2 sm:mb-0">© {currentYear} {messages.common.siteName}</p>
         <nav className="flex flex-wrap justify-center gap-x-2 gap-y-1 sm:gap-x-4" aria-label={messages.common.footerNavigation}>
           <Link
-            href={toLocalizedPath('/about', locale)}
+            href={toLocalizedPath('/about', currentLocale)}
             className="text-purple-700 dark:text-purple-400 underline hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
           >
             {messages.common.about}

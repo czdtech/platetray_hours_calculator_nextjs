@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "../globals.css";
 import "react-datepicker/dist/react-datepicker.css";
-import { Footer } from "@/components/Layout/Footer";
 import { AnalyticsWrapper } from "@/components/Analytics/Analytics";
 import { AdSense } from "@/components/Analytics/AdSense";
 import { BackToTop } from "@/components/UI/BackToTop";
@@ -49,7 +48,6 @@ export default function SpanishLayout({
             ></div>
             {children}
           </main>
-          <Footer locale="es" />
           <AnalyticsWrapper />
           <AdSense />
           <ResourcePreloader />
