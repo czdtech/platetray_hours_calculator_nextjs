@@ -17,6 +17,8 @@ import {
 } from "react";
 import { dateService, WeekDay } from "../services/DateService";
 import { timeZoneService } from "../services/TimeZoneService";
+import type { Locale } from "@/i18n/config";
+import { getMessagesSync, t } from "@/i18n/getMessages";
 
 import { createLogger } from '@/utils/unified-logger';
 
@@ -58,6 +60,7 @@ interface DateProviderProps {
   initialDate?: Date;
   initialTimezone?: string;
   serverTime?: string; // 服务器时间基准，用于确保 SSR/CSR 一致性
+  locale?: Locale;
 }
 
 export function DateProvider({
@@ -65,8 +68,10 @@ export function DateProvider({
   initialDate = new Date(),
   initialTimezone = "America/New_York", // 默认时区可以后续调整或从配置读取
   serverTime,
+  locale = "en",
 }: DateProviderProps) {
   const logger = createLogger('DateContext');
+  const messages = useMemo(() => getMessagesSync(locale), [locale]);
 
   // 状态
   const [selectedDate, setSelectedDateState] = useState<Date>(initialDate);
@@ -80,8 +85,8 @@ export function DateProvider({
 
   // 计算一周的日期
   const weekDays = useMemo(() => {
-    return dateService.generateWeekDays(selectedDate, timezone, selectedDate);
-  }, [selectedDate, timezone]);
+    return dateService.generateWeekDays(selectedDate, timezone, selectedDate, locale);
+  }, [selectedDate, timezone, locale]);
 
   // 设置日期（确保是UTC日期）
   const setSelectedDate = (date: Date) => {
@@ -121,7 +126,7 @@ export function DateProvider({
     date: Date,
     format: "short" | "medium" | "long" = "medium",
   ) => {
-    return dateService.formatDate(date, timezone, format);
+    return dateService.formatDate(date, timezone, format, locale);
   };
 
   // 将UTC日期转换为时区日期
@@ -150,9 +155,9 @@ export function DateProvider({
 
   // 格式化日期，如果是今天则添加前缀
   const formatDateWithTodayPrefix = (date: Date, format: "short" | "medium" | "long" = "medium") => {
-    const formattedDate = dateService.formatDate(date, timezone, format);
+    const formattedDate = dateService.formatDate(date, timezone, format, locale);
     if (isToday(date)) {
-      return `planetary hours today, ${formattedDate}`;
+      return t(messages.calculator.todayPrefix, { date: formattedDate });
     }
     return formattedDate;
   };

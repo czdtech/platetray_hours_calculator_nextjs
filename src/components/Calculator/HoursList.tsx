@@ -2,6 +2,7 @@
 
 import { useState, memo, useCallback } from "react";
 import { FormattedPlanetaryHour } from "@/utils/planetaryHourFormatters";
+import type { Locale } from "@/i18n/config";
 import { HourItem } from "./HourItem";
 
 interface HoursListProps {
@@ -9,9 +10,10 @@ interface HoursListProps {
   hours: FormattedPlanetaryHour[];
   titleColor: string;
   showTitle?: boolean; // 控制是否显示标题
+  locale?: Locale;
 }
 
-function HoursListComponent({ title, hours, titleColor, showTitle = true }: HoursListProps) {
+function HoursListComponent({ title, hours, titleColor, showTitle = true, locale = "en" }: HoursListProps) {
   const [openMobileIndex, setOpenMobileIndex] = useState<number | null>(null);
 
   const handleToggleMobile = useCallback((index: number) => {
@@ -36,6 +38,7 @@ function HoursListComponent({ title, hours, titleColor, showTitle = true }: Hour
             index={index}
             isOpen={openMobileIndex === index}
             onToggle={handleToggleMobile}
+            locale={locale}
           />
         ))}
       </div>
@@ -49,6 +52,7 @@ export const HoursList = memo(HoursListComponent, (prevProps, nextProps) => {
     prevProps.title === nextProps.title &&
     prevProps.titleColor === nextProps.titleColor &&
     prevProps.showTitle === nextProps.showTitle &&
+    prevProps.locale === nextProps.locale &&
     prevProps.hours.length === nextProps.hours.length &&
     prevProps.hours.every((hour, index) => {
       const nextHour = nextProps.hours[index];

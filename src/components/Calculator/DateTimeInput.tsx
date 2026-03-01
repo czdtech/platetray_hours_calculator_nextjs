@@ -6,6 +6,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./DateTimeInput.css"; // 导入自定义样式
 import { useDateContext } from "@/contexts/DateContext";
+import type { Locale } from "@/i18n/config";
+import { getMessagesSync, t } from "@/i18n/getMessages";
+import { getDateFnsLocale } from "@/utils/dateLocale";
+import { getIntlLocale } from "@/i18n/intlLocale";
 import { createLogger } from '@/utils/unified-logger';
 import { getCurrentTime } from '@/utils/time';
 
@@ -16,6 +20,7 @@ interface DateTimeInputProps {
   onDateChange: (date: Date) => void;
   selectedDate: Date;
   serverTime?: string; // 用于确保 SSR/CSR 一致性
+  locale?: Locale;
 }
 
 export function DateTimeInput({
@@ -23,7 +28,12 @@ export function DateTimeInput({
   onDateChange,
   selectedDate,
   serverTime,
+  locale = "en",
 }: DateTimeInputProps) {
+  const messages = getMessagesSync(locale);
+  const calculatorMessages = messages.calculator;
+  const dateFnsLocale = getDateFnsLocale(locale);
+  const intlLocale = getIntlLocale(locale);
   const { utcToZonedTime, zonedTimeToUtc } = useDateContext();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -156,13 +166,13 @@ export function DateTimeInput({
         onClick={decreaseMonth}
         disabled={prevMonthButtonDisabled}
         className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110 active:scale-95 transform hover:shadow-sm"
-        aria-label="Previous month"
+        aria-label={calculatorMessages.previousMonth}
       >
         <ChevronLeft size={16} className="text-gray-600 dark:text-gray-300" />
       </button>
 
       <div className="font-semibold text-gray-900 dark:text-gray-100">
-        {date.toLocaleDateString('en-US', {
+        {date.toLocaleDateString(intlLocale, {
           month: 'long',
           year: 'numeric'
         })}
@@ -173,7 +183,7 @@ export function DateTimeInput({
         onClick={increaseMonth}
         disabled={nextMonthButtonDisabled}
         className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-110 active:scale-95 transform hover:shadow-sm"
-        aria-label="Next month"
+        aria-label={calculatorMessages.nextMonth}
       >
         <ChevronRight size={16} className="text-gray-600 dark:text-gray-300" />
       </button>
@@ -184,15 +194,30 @@ export function DateTimeInput({
     <div className="space-y-2">
       <div className="flex items-center justify-between mb-2">
         <label htmlFor={inputId} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Date
+          {calculatorMessages.dateLabel}
         </label>
 
         {/* 快捷选择按钮 - 优化性能和响应式 */}
         <div className="flex gap-1 sm:gap-1.5 flex-shrink-0">
           {[
-            { days: 0, label: 'Today', shortLabel: 'Tod', type: 'today' },
-            { days: -1, label: 'Yesterday', shortLabel: 'Yes', type: 'yesterday' },
-            { days: 1, label: 'Tomorrow', shortLabel: 'Tom', type: 'tomorrow' }
+            {
+              days: 0,
+              label: calculatorMessages.today,
+              shortLabel: calculatorMessages.todayShort,
+              type: 'today',
+            },
+            {
+              days: -1,
+              label: calculatorMessages.yesterday,
+              shortLabel: calculatorMessages.yesterdayShort,
+              type: 'yesterday',
+            },
+            {
+              days: 1,
+              label: calculatorMessages.tomorrow,
+              shortLabel: calculatorMessages.tomorrowShort,
+              type: 'tomorrow',
+            }
           ].map((dateButton) => {
             const isSelected = getSelectedDateType() === dateButton.type;
             const isToday = dateButton.type === 'today';
@@ -208,7 +233,9 @@ export function DateTimeInput({
                     ? 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 border-purple-200 dark:border-purple-700 hover:scale-105 active:scale-95'
                     : 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-600 hover:scale-105 active:scale-95'
                   }`}
-                aria-label={`Select ${dateButton.label.toLowerCase()}`}
+                aria-label={t(calculatorMessages.selectDateShortcut, {
+                  dateLabel: dateButton.label.toLowerCase(),
+                })}
                 aria-pressed={isSelected}
               >
                 {/* 在<640px屏幕显示缩写，>=640px显示完整文本 */}
@@ -234,6 +261,7 @@ export function DateTimeInput({
           popperClassName="z-[100]"
           popperPlacement="bottom-start"
           open={isOpen}
+          locale={dateFnsLocale}
           renderCustomHeader={CustomHeader}
           showPopperArrow={false}
           customInput={
@@ -242,9 +270,9 @@ export function DateTimeInput({
               id={inputId}
               name="date"
               type="text"
-              aria-label="Select date"
+              aria-label={calculatorMessages.selectDate}
               value={defaultDate}
-              placeholder="Select date..."
+              placeholder={calculatorMessages.selectDatePlaceholder}
               readOnly
               onClick={handleInputClick}
               className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 transition-all duration-200 pl-4 pr-10 cursor-pointer shadow-sm hover:shadow-md focus:outline-none hover:scale-[1.02] active:scale-[0.98] transform"

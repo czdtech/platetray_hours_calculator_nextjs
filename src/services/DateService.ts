@@ -6,8 +6,12 @@
  */
 
 import { isValid, addDays, subDays, addWeeks, subWeeks } from "date-fns";
+import { formatInTimeZone as formatInTimeZoneDirect } from "date-fns-tz";
 import { timeZoneService } from "./TimeZoneService";
 import { createLogger } from '@/utils/unified-logger';
+import type { Locale } from "@/i18n/config";
+import { getIntlLocale } from "@/i18n/intlLocale";
+import { getDateFnsLocale } from "@/utils/dateLocale";
 
 const logger = createLogger('DateService');
 
@@ -166,11 +170,12 @@ export class DateService {
     baseDate: Date,
     timezone: string,
     selectedDateForHighlight: Date,
+    locale: Locale = "en",
   ): WeekDay[] {
     // 修复缓存键生成：使用日期字符串而不是时间戳，确保相同日期的不同时间不会产生不同的缓存键
     const baseDateStr = timeZoneService.formatInTimeZone(baseDate, timezone, "yyyy-MM-dd");
     const selectedDateStr = timeZoneService.formatInTimeZone(selectedDateForHighlight, timezone, "yyyy-MM-dd");
-    const cacheKey = `${baseDateStr}-${timezone}-${selectedDateStr}`;
+    const cacheKey = `${baseDateStr}-${timezone}-${selectedDateStr}-${locale}`;
 
     // 检查缓存
     if (this.weekDaysCache.has(cacheKey)) {
@@ -250,6 +255,10 @@ export class DateService {
 
       const dayIndex = currentIterationDayInTimezone.getDay();
       const rulerInfo = DAY_RULERS[dayIndex as keyof typeof DAY_RULERS];
+      const localizedWeekdayName = new Intl.DateTimeFormat(getIntlLocale(locale), {
+        weekday: "long",
+        timeZone: timezone,
+      }).format(currentIterationDayNoonUtc);
 
       // 比较当前迭代日和高亮选择日在目标时区的 YYYY-MM-DD 字符串
       const currentIterationDayInTimezoneStr = timeZoneService.formatInTimeZone(
@@ -263,7 +272,7 @@ export class DateService {
       weekDaysArray.push({
         date: currentIterationDayNoonUtc, // 存储代表目标时区当日中午12点的 UTC 时间戳
         displayDate: displayDate,
-        name: rulerInfo.name,
+        name: localizedWeekdayName,
         planet: rulerInfo.planet,
         symbol: PLANET_SYMBOLS[rulerInfo.planet as keyof typeof PLANET_SYMBOLS],
         active: isActive,
@@ -312,6 +321,7 @@ export class DateService {
     date: Date,
     timezone: string,
     format: "short" | "medium" | "long" = "medium",
+    locale: Locale = "en",
   ): string {
     // 直接计算，不缓存（格式化操作很快，缓存收益微乎其微）
     const formatMap = {
@@ -320,7 +330,9 @@ export class DateService {
       long: "EEEE, MMMM d, yyyy",
     };
 
-    return timeZoneService.formatInTimeZone(date, timezone, formatMap[format]);
+    return formatInTimeZoneDirect(date, timezone, formatMap[format], {
+      locale: getDateFnsLocale(locale),
+    });
   }
 }
 

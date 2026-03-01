@@ -4,6 +4,8 @@ import {
   POPULAR_CITIES,
   type PopularCity,
 } from '@/constants/popularCities'
+import type { Locale } from '@/i18n/config'
+import { getMessagesSync, t } from '@/i18n/getMessages'
 import { createLogger } from '@/utils/unified-logger'
 import { debounce } from 'lodash'
 import { AlertCircle, Loader2, MapPin } from 'lucide-react'
@@ -35,6 +37,7 @@ interface LocationInputProps {
     timezone: string
     displayName: string
   }) => void // New prop for synchronized city selection
+  locale?: Locale
 }
 
 interface Coordinates {
@@ -61,7 +64,11 @@ function EnhancedLocationInputComponent({
   onUseCurrentLocation,
   onTimezoneChange,
   onCitySelect,
+  locale = 'en',
 }: LocationInputProps) {
+  const messages = getMessagesSync(locale)
+  const calculatorMessages = messages.calculator
+  const locationErrors = calculatorMessages.locationErrors
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isFetchingToken, setIsFetchingToken] = useState(false)
@@ -154,11 +161,11 @@ function EnhancedLocationInputComponent({
     } catch (error: unknown) {
       const err = error instanceof Error ? error : new Error('Unknown error')
       logger.error('❌ 获取会话令牌失败:', err)
-      setLocationServiceError('Failed to initialize location service')
+      setLocationServiceError(locationErrors.initializeService)
     } finally {
       setIsFetchingToken(false)
     }
-  }, [])
+  }, [locationErrors])
 
   useEffect(() => {
     logger.debug('🗺️ 位置输入组件挂载')
@@ -286,12 +293,12 @@ function EnhancedLocationInputComponent({
           }, 0)
         } catch (error) {
           logger.error('Error in handlePopularCitySelect', error as Error)
-          setError('Failed to select city')
+          setError(locationErrors.selectCity)
           setProcessingCitySelect(null)
         }
       })
     },
-    [onLocationChange, onUseCurrentLocation, onTimezoneChange, onCitySelect]
+    [onLocationChange, onUseCurrentLocation, onTimezoneChange, onCitySelect, locationErrors]
   )
 
   const geocodeAddress = useCallback(
@@ -351,13 +358,10 @@ function EnhancedLocationInputComponent({
         const err = error instanceof Error ? error : new Error('Unknown error')
         logger.error('❌ 地理编码错误:', err)
         // 出错时设置默认坐标
-        setError(
-          err.message ||
-            'Could not find location. Please try a different search term.'
-        )
+        setError(locationErrors.locationNotFound)
       }
     },
-    [onLocationChange, onUseCurrentLocation]
+    [onLocationChange, onUseCurrentLocation, locationErrors]
   )
 
   const handleSelectPrediction = useCallback(
@@ -440,10 +444,10 @@ function EnhancedLocationInputComponent({
       } catch (err: unknown) {
         const error = err instanceof Error ? err : new Error('Unknown error')
         logger.error('Error fetching place details via proxy:', error)
-        setError(error.message || 'Error fetching place details.')
+        setError(locationErrors.fetchPlaceDetails)
       }
     },
-    [onLocationChange, onUseCurrentLocation, geocodeAddress]
+    [onLocationChange, onUseCurrentLocation, geocodeAddress, locationErrors]
   )
 
   const fetchSuggestions = useCallback(
@@ -455,7 +459,7 @@ function EnhancedLocationInputComponent({
       if (!isLocationServiceReady) {
         setError(
           locationServiceError ||
-            'Location service is not ready for suggestions.'
+            locationErrors.serviceNotReady
         )
         return
       }
@@ -515,7 +519,7 @@ function EnhancedLocationInputComponent({
         if (requestId === lastRequestIdRef.current) {
           setPredictions([])
           setShowPredictions(false)
-          setError('Failed to fetch suggestions. Please try again.')
+          setError(locationErrors.fetchSuggestions)
         }
       } finally {
         if (activeAutocompleteRequestControllerRef.current === controller) {
@@ -523,7 +527,7 @@ function EnhancedLocationInputComponent({
         }
       }
     },
-    [isLocationServiceReady, locationServiceError]
+    [isLocationServiceReady, locationServiceError, locationErrors]
   )
 
   // 增加防抖延迟以减少 INP 问题
@@ -587,7 +591,7 @@ function EnhancedLocationInputComponent({
         } else {
           setError(
             locationServiceError ||
-              'Suggestions not ready. Press Enter to search.'
+              locationErrors.suggestionsNotReady
           )
           setPredictions([])
           setShowPredictions(false)
@@ -610,6 +614,7 @@ function EnhancedLocationInputComponent({
       debouncedFetchSuggestions,
       locationServiceError,
       isFetchingToken,
+      locationErrors,
     ]
   )
 
@@ -618,7 +623,7 @@ function EnhancedLocationInputComponent({
     setIsLoading(true)
 
     if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser.')
+      setError(locationErrors.geolocationNotSupported)
       setIsLoading(false)
       return
     }
@@ -686,34 +691,34 @@ function EnhancedLocationInputComponent({
       if (err instanceof GeolocationPositionError) {
         switch (err.code) {
           case err.PERMISSION_DENIED:
-            setError('Please allow location access or enter location manually')
+            setError(locationErrors.permissionDenied)
             break
           case err.POSITION_UNAVAILABLE:
             setError(
-              'Location information is unavailable. Please try entering location manually'
+              locationErrors.positionUnavailable
             )
             break
           case err.TIMEOUT:
             setError(
-              'Location request timed out. Please try again or enter location manually'
+              locationErrors.requestTimeout
             )
             break
           default:
             setError(
-              'An unknown error occurred. Please try entering location manually'
+              locationErrors.unknownError
             )
         }
       } else {
         const error = err instanceof Error ? err : new Error('Unknown error')
+        logger.error('Failed to get location from browser API', error)
         setError(
-          error.message ||
-            'Failed to get location. Please try entering location manually'
+          locationErrors.getLocation
         )
       }
     } finally {
       setIsLoading(false)
     }
-  }, [onLocationChange, onUseCurrentLocation])
+  }, [onLocationChange, onUseCurrentLocation, locationErrors])
 
   const handleInputKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -807,7 +812,7 @@ function EnhancedLocationInputComponent({
     if (!currentCoords) return null
     const lat = currentCoords.latitude.toFixed(4)
     const lng = currentCoords.longitude.toFixed(4)
-    return `longitude: ${lng}, latitude: ${lat}`
+    return t(calculatorMessages.coordinatesLabel, { longitude: lng, latitude: lat })
   }
 
   return (
@@ -817,7 +822,7 @@ function EnhancedLocationInputComponent({
           htmlFor="location"
           className="block text-sm font-medium text-gray-700 dark:text-gray-300"
         >
-          Location
+          {calculatorMessages.locationLabel}
         </label>
         {/* Popular cities quick buttons - always show for easy access */}
         <div className="flex items-center gap-1">
@@ -845,7 +850,7 @@ function EnhancedLocationInputComponent({
                          will-change-transform touch-manipulation
                          disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100`}
                 type="button"
-                aria-label={`Switch to ${city.displayName}`}
+                aria-label={t(calculatorMessages.switchToCity, { city: city.displayName })}
                 aria-pressed={isSelected}
               >
                 {isProcessing ? (
@@ -886,7 +891,7 @@ function EnhancedLocationInputComponent({
                    focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500
                    transition-all duration-200 pl-4 pr-10
                    placeholder:text-gray-500 dark:placeholder:text-gray-400"
-          placeholder="Enter your location..."
+          placeholder={calculatorMessages.locationPlaceholder}
           value={searchInput}
           onChange={handleInputChange}
           onKeyDown={handleInputKeyDown}
@@ -942,7 +947,7 @@ function EnhancedLocationInputComponent({
               </li>
             ))}
             <li className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 text-right">
-              Powered by Google
+              {calculatorMessages.poweredByGoogle}
             </li>
           </ul>
         )}
@@ -953,7 +958,7 @@ function EnhancedLocationInputComponent({
                     ${isLoading ? 'text-purple-400' : 'text-gray-400 hover:text-purple-500 dark:text-gray-500 dark:hover:text-purple-400'}
                     transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/30
                     rounded-full p-1 hover:scale-105 active:scale-95`}
-          aria-label="Use current location"
+          aria-label={calculatorMessages.useCurrentLocation}
         >
           {isLoading ? (
             <Loader2 size={18} className="animate-spin" />

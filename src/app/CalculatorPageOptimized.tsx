@@ -533,6 +533,7 @@ function CalculatorCore({
                       onUseCurrentLocation={handleCoordinatesUpdate}
                       onTimezoneChange={(tz) => applyTimezoneUpdate(tz, "location-input")}
                       onCitySelect={handleCitySelect}
+                      locale={locale}
                       aria-label="Enter location for planetary hours calculation"
                     />
                     <DateTimeInput
@@ -540,6 +541,7 @@ function CalculatorCore({
                       onDateChange={handleDateChange}
                       selectedDate={selectedDate}
                       serverTime={serverTime}
+                      locale={locale}
                       aria-label="Select date for planetary hours calculator"
                     />
                   </div>
@@ -561,6 +563,7 @@ function CalculatorCore({
                       initialHourPayload={initialHour}
                       serverTime={serverTime}
                       planetaryHoursRaw={planetaryHoursRaw}
+                      locale={locale}
                     />
                   )}
                 </LayoutStabilizer>
@@ -676,6 +679,7 @@ function CalculatorCore({
                             hours={daytimeHours}
                             titleColor="text-amber-600"
                             showTitle={true}
+                            locale={locale}
                           />
                         </Suspense>
                       )}
@@ -701,6 +705,7 @@ function CalculatorCore({
                             hours={nighttimeHours}
                             titleColor="text-indigo-600"
                             showTitle={true}
+                            locale={locale}
                           />
                         </Suspense>
                       )}
@@ -762,7 +767,12 @@ export default function CalculatorPageOptimized({
   const initialDate = fromZonedTime(`${todayNYStr}T12:00:00`, initialTimezone);
 
   return (
-    <DateProvider initialDate={initialDate} initialTimezone={initialTimezone} serverTime={serverTime}>
+    <DateProvider
+      initialDate={initialDate}
+      initialTimezone={initialTimezone}
+      serverTime={serverTime}
+      locale={locale}
+    >
       <CalculatorCore
         precomputed={precomputed}
         initialHour={initialHour}

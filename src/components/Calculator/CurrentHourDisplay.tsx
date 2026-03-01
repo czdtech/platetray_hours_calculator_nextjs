@@ -6,6 +6,9 @@ import { useDateContext } from "@/contexts/DateContext";
 import { timeZoneService } from "@/services/TimeZoneService";
 import { useState, useEffect } from "react";
 import { getCurrentTime } from '@/utils/time';
+import type { Locale } from "@/i18n/config";
+import { getMessagesSync, t } from "@/i18n/getMessages";
+import { getLocalizedPlanetAttributes } from "@/i18n/planetAttributes";
 // 导入全局行星颜色常量
 import {
   PLANET_COLOR_CLASSES,
@@ -26,6 +29,7 @@ interface CurrentHourDisplayProps {
   serverTime?: string; // 用于确保 SSR/CSR 一致性
   // 新增：接收完整的行星时数据，用于统一计算逻辑
   planetaryHoursRaw?: PlanetaryHoursCalculationResult | null;
+  locale?: Locale;
 }
 
 export function CurrentHourDisplay({
@@ -38,7 +42,10 @@ export function CurrentHourDisplay({
   initialHourPayload = null,
   serverTime,
   planetaryHoursRaw = null,
+  locale = "en",
 }: CurrentHourDisplayProps) {
+  const messages = getMessagesSync(locale);
+  const localizedPlanets = messages.planets as Record<string, string>;
   // 使用DateContext获取时区及选中日期
   const { timezone, selectedDate, formatDate } = useDateContext();
 
@@ -143,17 +150,26 @@ export function CurrentHourDisplay({
   const planetSymbol = isValidDayRuler
     ? PLANET_SYMBOLS[dayRuler as keyof typeof PLANET_SYMBOLS]
     : "";
+  const dayRulerLabel = dayRuler ? localizedPlanets[dayRuler] || dayRuler : "";
 
   // 获取当前小时的行星颜色值
   const currentPlanetColor =
     currentHour?.planet && currentHour.planet in PLANET_COLOR_HEX
       ? PLANET_COLOR_HEX[currentHour.planet as keyof typeof PLANET_COLOR_HEX]
       : undefined;
+  const currentPlanetLabel = currentHour?.planet
+    ? localizedPlanets[currentHour.planet] || currentHour.planet
+    : "";
+  const localizedCurrentAttributes = currentHour?.planet
+    ? getLocalizedPlanetAttributes(currentHour.planet, locale)
+    : null;
+  const currentHourGoodFor = localizedCurrentAttributes?.goodFor ?? currentHour?.goodFor;
+  const currentHourAvoid = localizedCurrentAttributes?.avoid ?? currentHour?.avoid;
 
   return (
     <div className="space-y-2" suppressHydrationWarning={true}>
       <p className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-        {showCurrentHour ? "Current Planetary Hour" : "Day Ruler"}
+        {showCurrentHour ? messages.calculator.currentHour : messages.calculator.dayRuler}
       </p>
       <div className="relative">
         {showCurrentHour ? (
@@ -165,7 +181,7 @@ export function CurrentHourDisplay({
             {dayRuler && (
               <div className="p-2.5 flex justify-between items-center bg-gray-50 dark:bg-gray-700/50">
                 <span className="text-sm font-medium text-purple-700 dark:text-purple-400">
-                  Day Ruler
+                  {messages.calculator.dayRuler}
                 </span>
                 <div className="flex items-center gap-2">
                   <span
@@ -177,7 +193,7 @@ export function CurrentHourDisplay({
                         ],
                     }}
                   >
-                    {dayRuler}
+                    {dayRulerLabel}
                   </span>
                   <span
                     className={`text-xl ${planetColorClass}`}
@@ -216,7 +232,7 @@ export function CurrentHourDisplay({
                     }`}
                     style={{ color: currentPlanetColor }}
                   >
-                    {currentHour?.planet}
+                    {currentPlanetLabel}
                   </span>
                   <span className="text-gray-300 dark:text-gray-600">|</span>
                   <span className="text-gray-600 dark:text-gray-400 text-sm">
@@ -230,18 +246,18 @@ export function CurrentHourDisplay({
             <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-gray-200 dark:divide-gray-700">
               <div className="p-2.5 flex-1">
                 <div className="text-xs font-medium text-green-700 dark:text-green-400 uppercase mb-1">
-                  Good For
+                  {messages.calculator.goodFor}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-300 leading-snug break-words">
-                  {currentHour?.goodFor}
+                  {currentHourGoodFor}
                 </div>
               </div>
               <div className="p-2.5 flex-1">
                 <div className="text-xs font-medium text-red-600 dark:text-red-400 uppercase mb-1">
-                  Avoid
+                  {messages.calculator.avoid}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-300 leading-snug break-words">
-                  {currentHour?.avoid}
+                  {currentHourAvoid}
                 </div>
               </div>
             </div>
@@ -249,10 +265,11 @@ export function CurrentHourDisplay({
             {/* Before Sunrise Message Row */}
             {shouldShowPreSunriseMessage && (
               <div className="p-2.5 text-center text-indigo-600 dark:text-indigo-400 text-sm italic">
-                It&apos;s early morning, before today&apos;s sunrise (
-                {formattedSunriseTime}). You&apos;re seeing the night hours from{" "}
-                {formattedYesterday}, continuing until sunrise on{" "}
-                {formattedToday}
+                {t(messages.calculator.preSunriseMessage, {
+                  sunriseTime: formattedSunriseTime,
+                  yesterdayDate: formattedYesterday,
+                  todayDate: formattedToday,
+                })}
               </div>
             )}
           </div>
@@ -265,7 +282,7 @@ export function CurrentHourDisplay({
             {dayRuler && (
               <div className="p-2.5 flex justify-between items-center bg-gray-50 dark:bg-gray-700/50">
                 <span className="text-sm font-medium text-purple-700 dark:text-purple-400">
-                  Day Ruler
+                  {messages.calculator.dayRuler}
                 </span>
                 <div className="flex items-center gap-2">
                   <span
@@ -277,7 +294,7 @@ export function CurrentHourDisplay({
                         ],
                     }}
                   >
-                    {dayRuler}
+                    {dayRulerLabel}
                   </span>
                   <span
                     className={`text-xl ${planetColorClass}`}
@@ -297,7 +314,7 @@ export function CurrentHourDisplay({
             {/* Message for non-today dates */}
             {!isSelectedDateToday && (
               <div className="p-2.5 text-center text-gray-500 dark:text-gray-400 text-sm">
-                You&apos;re viewing planetary hours for {formattedToday}.
+                {t(messages.calculator.viewingDateMessage, { date: formattedToday })}
               </div>
             )}
           </div>
