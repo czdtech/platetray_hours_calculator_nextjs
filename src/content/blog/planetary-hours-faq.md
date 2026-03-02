@@ -117,15 +117,15 @@ As experts in the field of Planetary Hours, we've compiled and answered the 20 m
 
 **Detailed Explanation:** Core qualities of each planet:
 
-- **Sun**: Leadership, vitality, success, authority, creativity
-- **Moon**: Emotions, intuition, home, nurturing, subconscious
-- **Mercury**: Communication, learning, business, logic, short travel
-- **Venus**: Love, beauty, art, harmony, socializing
-- **Mars**: Action, courage, competition, decisiveness, physical energy
-- **Jupiter**: Expansion, wisdom, wealth, opportunities, higher education
-- **Saturn**: Structure, discipline, responsibility, patience, long-term planning
+- **[Sun](/blog/sun-hour-guide)**: Leadership, vitality, success, authority, creativity
+- **[Moon](/blog/moon-hour-guide)**: Emotions, intuition, home, nurturing, subconscious
+- **[Mercury](/blog/mercury-hour-guide)**: Communication, learning, business, logic, short travel
+- **[Venus](/blog/venus-hour-guide)**: Love, beauty, art, harmony, socializing
+- **[Mars](/blog/mars-hour-guide)**: Action, courage, competition, decisiveness, physical energy
+- **[Jupiter](/blog/jupiter-hour-guide)**: Expansion, wisdom, wealth, opportunities, higher education
+- **[Saturn](/blog/saturn-hour-guide)**: Structure, discipline, responsibility, patience, long-term planning
 
-**Practical Example:** Sun hours are ideal for important speeches, Moon hours for family gatherings, Mercury hours for signing contracts, and Venus hours for dates.
+**Practical Example:** [Sun hours](/blog/sun-hour-guide) are ideal for important speeches, [Moon hours](/blog/moon-hour-guide) for family gatherings, [Mercury hours](/blog/mercury-hour-guide) for signing contracts, and [Venus hours](/blog/venus-hour-guide) for dates.
 
 ## Advanced Applications
 
@@ -185,13 +185,13 @@ As experts in the field of Planetary Hours, we've compiled and answered the 20 m
 
 **Detailed Explanation:** Activities to avoid during each planetary hour:
 
-- **Sun hours**: Excessive humility, secretive activities, power struggles
-- **Moon hours**: Major rational decisions, intense conflicts, high-risk speculation
-- **Mercury hours**: Purely emotional exchanges, monotonous physical labor, hasty decisions
-- **Venus hours**: Intense competition, harsh criticism, overspending
-- **Mars hours**: Activities requiring patience, delicate diplomacy, impulsive decisions
-- **Jupiter hours**: Excessive optimism, overlooking details, austerity measures
-- **Saturn hours**: New project launches, casual socializing, expecting immediate rewards
+- **[Sun hours](/blog/sun-hour-guide)**: Excessive humility, secretive activities, power struggles
+- **[Moon hours](/blog/moon-hour-guide)**: Major rational decisions, intense conflicts, high-risk speculation
+- **[Mercury hours](/blog/mercury-hour-guide)**: Purely emotional exchanges, monotonous physical labor, hasty decisions
+- **[Venus hours](/blog/venus-hour-guide)**: Intense competition, harsh criticism, overspending
+- **[Mars hours](/blog/mars-hour-guide)**: Activities requiring patience, delicate diplomacy, impulsive decisions
+- **[Jupiter hours](/blog/jupiter-hour-guide)**: Excessive optimism, overlooking details, austerity measures
+- **[Saturn hours](/blog/saturn-hour-guide)**: New project launches, casual socializing, expecting immediate rewards
 
 **Practical Example:** Don't do patient customer service work during Mars hours, and don't host casual parties during Saturn hours.
 

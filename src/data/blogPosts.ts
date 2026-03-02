@@ -14,11 +14,299 @@ import businessImg from "../../public/images/blog/business-planetary-hours.jpg";
 import faqImg from "../../public/images/blog/planetary-hours-faq.jpg";
 import historyImg from "../../public/images/blog/planetary-hours-history.jpg";
 import astronomicalImg from "../../public/images/blog/2025-planetary-alignment.jpg";
+import venusHourImg from "../../public/images/blog/venus-hour-guide.jpg";
+import jupiterHourImg from "../../public/images/blog/jupiter-hour-guide.jpg";
+import saturnHourImg from "../../public/images/blog/saturn-hour-guide.jpg";
+import mercuryHourImg from "../../public/images/blog/mercury-hour-guide.jpg";
+import marsHourImg from "../../public/images/blog/mars-hour-guide.jpg";
+import sunHourImg from "../../public/images/blog/sun-hour-guide.jpg";
+import moonHourImg from "../../public/images/blog/moon-hour-guide.jpg";
+import planetaryDaysPillarImg from "../../public/images/blog/planetary-days-pillar.jpg";
+import meaningsImg from "../../public/images/blog/planetary-hours-and-their-meanings.jpg";
+import loveImg from "../../public/images/blog/planetary-hours-for-love.jpg";
+import magicImg from "../../public/images/blog/planetary-hours-for-magic.jpg";
+import manifestationImg from "../../public/images/blog/planetary-hours-for-manifestation.jpg";
+import moneyImg from "../../public/images/blog/planetary-hours-for-money.jpg";
+import marriageImg from "../../public/images/blog/best-planetary-hour-for-marriage.jpg";
+import interviewImg from "../../public/images/blog/best-planetary-hour-for-interview.jpg";
+import surgeryImg from "../../public/images/blog/best-planetary-hour-for-surgery.jpg";
+import chartPdfImg from "../../public/images/blog/planetary-hours-chart-pdf.jpg";
+import sundayImg from "../../public/images/blog/sunday-sun-day.jpg";
+import mondayImg from "../../public/images/blog/monday-moon-day.jpg";
+import tuesdayImg from "../../public/images/blog/tuesday-mars-day.jpg";
+import wednesdayImg from "../../public/images/blog/wednesday-mercury-day.jpg";
+import thursdayImg from "../../public/images/blog/thursday-jupiter-day.jpg";
+import fridayImg from "../../public/images/blog/friday-venus-day.jpg";
+import saturdayImg from "../../public/images/blog/saturday-saturn-day.jpg";
 
 /**
  * 博客文章数据 - 按发布日期倒序排列（最新的在前）
  */
 export const blogPosts: BlogPost[] = [
+  {
+    slug: "planetary-hours-and-their-meanings",
+    title: "Planetary Hours and Their Meanings: Complete Reference Guide",
+    excerpt:
+      "A comprehensive guide to all seven planetary hours and their meanings. Learn what each planetary hour represents, its ruling planet's energy, and the best activities for every hour.",
+    imageUrl: meaningsImg as StaticImageData,
+    date: blogDates["planetary-hours-and-their-meanings"],
+    readingTime: blogRead["planetary-hours-and-their-meanings"],
+    category: "education",
+    tags: ["meanings", "guide", "reference", "planetary hours"],
+  },
+  {
+    slug: "planetary-hours-for-love",
+    title: "Planetary Hours for Love & Relationships: Complete Timing Guide",
+    excerpt:
+      "Discover the best planetary hours for love, romance, and relationships. Learn why Venus hour is ideal for dates, Moon hour for emotional bonds, and how to time your romantic activities.",
+    imageUrl: loveImg as StaticImageData,
+    date: blogDates["planetary-hours-for-love"],
+    readingTime: blogRead["planetary-hours-for-love"],
+    category: "practical-use",
+    tags: ["love", "relationships", "venus", "romance"],
+  },
+  {
+    slug: "planetary-hours-for-magic",
+    title: "Planetary Hours and Days for Magic: A Practitioner's Guide",
+    excerpt:
+      "Learn how to align your magical workings with planetary hours and days for enhanced efficacy. A comprehensive guide to planetary correspondences, spell timing, and ritual planning.",
+    imageUrl: magicImg as StaticImageData,
+    date: blogDates["planetary-hours-for-magic"],
+    readingTime: blogRead["planetary-hours-for-magic"],
+    category: "practical-use",
+    tags: ["magic", "spells", "ritual", "correspondences"],
+  },
+  {
+    slug: "planetary-hours-for-manifestation",
+    title: "Planetary Hours for Manifestation: Align Your Intentions with Cosmic Timing",
+    excerpt:
+      "Learn how to use planetary hours for manifestation and intention-setting. Discover which planetary hours amplify abundance, love, career success, and spiritual growth.",
+    imageUrl: manifestationImg as StaticImageData,
+    date: blogDates["planetary-hours-for-manifestation"],
+    readingTime: blogRead["planetary-hours-for-manifestation"],
+    category: "practical-use",
+    tags: ["manifestation", "intention", "abundance"],
+  },
+  {
+    slug: "planetary-hours-for-money",
+    title: "Best Planetary Hours for Money, Business & Financial Success",
+    excerpt:
+      "Discover the best planetary hours for financial decisions, business deals, and wealth building. Learn why Jupiter hour is the premier time for money matters in astrology.",
+    imageUrl: moneyImg as StaticImageData,
+    date: blogDates["planetary-hours-for-money"],
+    readingTime: blogRead["planetary-hours-for-money"],
+    category: "practical-use",
+    tags: ["money", "business", "finance", "jupiter"],
+  },
+  {
+    slug: "best-planetary-hour-for-marriage",
+    title: "Best Planetary Hour for Marriage & Wedding Timing",
+    excerpt:
+      "Find the best planetary hours for marriage ceremonies, proposals, and wedding planning. Learn which cosmic timing creates the most auspicious conditions for lasting love.",
+    imageUrl: marriageImg as StaticImageData,
+    date: blogDates["best-planetary-hour-for-marriage"],
+    readingTime: blogRead["best-planetary-hour-for-marriage"],
+    category: "practical-use",
+    tags: ["marriage", "wedding", "venus", "timing"],
+  },
+  {
+    slug: "best-planetary-hour-for-interview",
+    title: "Best Planetary Hour for Job Interviews & Career Moves",
+    excerpt:
+      "Discover the best planetary hours for job interviews, career moves, and professional success. Learn which cosmic timing helps you make the strongest impression.",
+    imageUrl: interviewImg as StaticImageData,
+    date: blogDates["best-planetary-hour-for-interview"],
+    readingTime: blogRead["best-planetary-hour-for-interview"],
+    category: "practical-use",
+    tags: ["interview", "career", "job", "mercury"],
+  },
+  {
+    slug: "best-planetary-hour-for-surgery",
+    title: "Best Planetary Hour for Surgery & Medical Procedures",
+    excerpt:
+      "Learn about astrological traditions regarding surgical timing and planetary hours. Understand the historical and cultural perspectives on timing medical procedures.",
+    imageUrl: surgeryImg as StaticImageData,
+    date: blogDates["best-planetary-hour-for-surgery"],
+    readingTime: blogRead["best-planetary-hour-for-surgery"],
+    category: "practical-use",
+    tags: ["surgery", "medical", "health", "mars"],
+  },
+  {
+    slug: "planetary-hours-chart-pdf",
+    title: "Planetary Hours Chart: Free Printable Reference Guide (PDF)",
+    excerpt:
+      "Download our free printable planetary hours chart PDF. A complete reference guide showing all seven planetary hours, their meanings, best activities, and the weekly planetary day rulers.",
+    imageUrl: chartPdfImg as StaticImageData,
+    date: blogDates["planetary-hours-chart-pdf"],
+    readingTime: blogRead["planetary-hours-chart-pdf"],
+    category: "education",
+    tags: ["chart", "pdf", "reference", "printable"],
+  },
+  {
+    slug: "planetary-days-of-the-week",
+    title: "Planetary Days of the Week: Complete Guide to Daily Planetary Rulers",
+    excerpt:
+      "Discover which planet rules each day of the week and how planetary days influence your daily energy. A comprehensive guide to the seven planetary days from Sunday to Saturday.",
+    imageUrl: planetaryDaysPillarImg as StaticImageData,
+    date: blogDates["planetary-days-of-the-week"],
+    readingTime: blogRead["planetary-days-of-the-week"],
+    category: "planet-days",
+    tags: ["planetary days", "astrology", "weekly planning"],
+  },
+  {
+    slug: "sunday-sun-day",
+    title: "Sunday: Day of the Sun — Meaning, Energy & Best Activities",
+    excerpt:
+      "Sunday is ruled by the Sun, bringing energy of leadership, vitality, and success. Learn the best activities for the Sun's day and how to harness solar energy.",
+    imageUrl: sundayImg as StaticImageData,
+    date: blogDates["sunday-sun-day"],
+    readingTime: blogRead["sunday-sun-day"],
+    category: "planet-days",
+    tags: ["sunday", "sun", "planetary days", "leadership"],
+  },
+  {
+    slug: "monday-moon-day",
+    title: "Monday: Day of the Moon — Meaning, Energy & Best Activities",
+    excerpt:
+      "Monday is ruled by the Moon, governing emotions, intuition, and domestic life. Discover the best activities for the Moon's day and how to work with lunar energy.",
+    imageUrl: mondayImg as StaticImageData,
+    date: blogDates["monday-moon-day"],
+    readingTime: blogRead["monday-moon-day"],
+    category: "planet-days",
+    tags: ["monday", "moon", "planetary days", "intuition"],
+  },
+  {
+    slug: "tuesday-mars-day",
+    title: "Tuesday: Day of Mars — Meaning, Energy & Best Activities",
+    excerpt:
+      "Tuesday is ruled by Mars, the planet of action, courage, and energy. Learn the best activities for Mars day and how to channel warrior energy productively.",
+    imageUrl: tuesdayImg as StaticImageData,
+    date: blogDates["tuesday-mars-day"],
+    readingTime: blogRead["tuesday-mars-day"],
+    category: "planet-days",
+    tags: ["tuesday", "mars", "planetary days", "action"],
+  },
+  {
+    slug: "wednesday-mercury-day",
+    title: "Wednesday: Day of Mercury — Meaning, Energy & Best Activities",
+    excerpt:
+      "Wednesday is ruled by Mercury, the planet of communication and intellect. Discover the best activities for Mercury's day and how to maximize mental clarity.",
+    imageUrl: wednesdayImg as StaticImageData,
+    date: blogDates["wednesday-mercury-day"],
+    readingTime: blogRead["wednesday-mercury-day"],
+    category: "planet-days",
+    tags: ["wednesday", "mercury", "planetary days", "communication"],
+  },
+  {
+    slug: "thursday-jupiter-day",
+    title: "Thursday: Day of Jupiter — Meaning, Energy & Best Activities",
+    excerpt:
+      "Thursday is ruled by Jupiter, the Greater Benefic of abundance and growth. Learn the best activities for Jupiter's day and how to attract opportunity and prosperity.",
+    imageUrl: thursdayImg as StaticImageData,
+    date: blogDates["thursday-jupiter-day"],
+    readingTime: blogRead["thursday-jupiter-day"],
+    category: "planet-days",
+    tags: ["thursday", "jupiter", "planetary days", "abundance"],
+  },
+  {
+    slug: "friday-venus-day",
+    title: "Friday: Day of Venus — Meaning, Energy & Best Activities",
+    excerpt:
+      "Friday is ruled by Venus, the planet of love, beauty, and pleasure. Discover the best activities for Venus day and why Friday is the ultimate day for romance and art.",
+    imageUrl: fridayImg as StaticImageData,
+    date: blogDates["friday-venus-day"],
+    readingTime: blogRead["friday-venus-day"],
+    category: "planet-days",
+    tags: ["friday", "venus", "planetary days", "love"],
+  },
+  {
+    slug: "saturday-saturn-day",
+    title: "Saturday: Day of Saturn — Meaning, Energy & Best Activities",
+    excerpt:
+      "Saturday is ruled by Saturn, the planet of discipline, structure, and long-term achievement. Learn the best activities for Saturn's day and how to use its focused energy.",
+    imageUrl: saturdayImg as StaticImageData,
+    date: blogDates["saturday-saturn-day"],
+    readingTime: blogRead["saturday-saturn-day"],
+    category: "planet-days",
+    tags: ["saturday", "saturn", "planetary days", "discipline"],
+  },
+  {
+    slug: "venus-hour-guide",
+    title: "Venus Hour in Astrology: Meaning, Best Activities & Today's Times",
+    excerpt:
+      "Discover the Venus hour meaning in astrology, the best activities during Venus planetary hours, and why Friday amplifies Venus energy. Learn how to find your next Venus hour today.",
+    imageUrl: venusHourImg as StaticImageData,
+    date: blogDates["venus-hour-guide"],
+    readingTime: blogRead["venus-hour-guide"],
+    category: "planet-hours",
+    tags: ["venus", "planetary hours", "love", "beauty"],
+  },
+  {
+    slug: "jupiter-hour-guide",
+    title: "Jupiter Hour in Astrology: Growth, Abundance & Opportunity Timing",
+    excerpt:
+      "Learn about Jupiter hour meaning in astrology — the Greater Benefic's most auspicious time for growth, wealth, legal matters, and expansion. Discover why Thursday amplifies Jupiter's power.",
+    imageUrl: jupiterHourImg as StaticImageData,
+    date: blogDates["jupiter-hour-guide"],
+    readingTime: blogRead["jupiter-hour-guide"],
+    category: "planet-hours",
+    tags: ["jupiter", "planetary hours", "abundance", "growth"],
+  },
+  {
+    slug: "saturn-hour-guide",
+    title: "Saturn Hour in Astrology: Discipline, Structure & Strategic Timing",
+    excerpt:
+      "Understand Saturn hour meaning and activities in astrology. Learn why Saturn's planetary hours favor discipline, long-term planning, and serious work — especially on Saturday.",
+    imageUrl: saturnHourImg as StaticImageData,
+    date: blogDates["saturn-hour-guide"],
+    readingTime: blogRead["saturn-hour-guide"],
+    category: "planet-hours",
+    tags: ["saturn", "planetary hours", "discipline", "structure"],
+  },
+  {
+    slug: "mercury-hour-guide",
+    title: "Mercury Hour in Astrology: Communication, Learning & Mental Clarity",
+    excerpt:
+      "Explore Mercury hour meaning in astrology. Discover the best activities for Mercury's planetary hours — from writing and studying to negotiations and travel planning.",
+    imageUrl: mercuryHourImg as StaticImageData,
+    date: blogDates["mercury-hour-guide"],
+    readingTime: blogRead["mercury-hour-guide"],
+    category: "planet-hours",
+    tags: ["mercury", "planetary hours", "communication", "learning"],
+  },
+  {
+    slug: "mars-hour-guide",
+    title: "Mars Hour in Astrology: Energy, Courage & the Power of Action",
+    excerpt:
+      "Learn about Mars hour meaning in astrology — the warrior planet's time for action, courage, competition, and physical energy. Discover why Tuesday amplifies Mars power.",
+    imageUrl: marsHourImg as StaticImageData,
+    date: blogDates["mars-hour-guide"],
+    readingTime: blogRead["mars-hour-guide"],
+    category: "planet-hours",
+    tags: ["mars", "planetary hours", "action", "courage"],
+  },
+  {
+    slug: "sun-hour-guide",
+    title: "Sun Hour in Astrology: Leadership, Vitality & Success Timing",
+    excerpt:
+      "Discover Sun hour meaning in astrology — the most radiant planetary hour for leadership, success, vitality, and seeking favor from authorities.",
+    imageUrl: sunHourImg as StaticImageData,
+    date: blogDates["sun-hour-guide"],
+    readingTime: blogRead["sun-hour-guide"],
+    category: "planet-hours",
+    tags: ["sun", "planetary hours", "leadership", "success"],
+  },
+  {
+    slug: "moon-hour-guide",
+    title: "Moon Hour in Astrology: Intuition, Emotions & Lunar Timing",
+    excerpt:
+      "Explore Moon hour meaning in astrology — the lunar planetary hour for intuition, emotions, domestic matters, and public engagement.",
+    imageUrl: moonHourImg as StaticImageData,
+    date: blogDates["moon-hour-guide"],
+    readingTime: blogRead["moon-hour-guide"],
+    category: "planet-hours",
+    tags: ["moon", "planetary hours", "intuition", "emotions"],
+  },
   {
     slug: "planetary-hours-faq",
     title: "Planetary Hours FAQ: Expert Answers to Your Most Important Questions",
@@ -27,6 +315,8 @@ export const blogPosts: BlogPost[] = [
     imageUrl: faqImg as StaticImageData,
     date: blogDates["planetary-hours-faq"],
     readingTime: blogRead["planetary-hours-faq"],
+    category: "education",
+    tags: ["faq", "beginner", "planetary hours"],
   },
   {
     slug: "mobile-planetary-hours-guide",
@@ -36,6 +326,8 @@ export const blogPosts: BlogPost[] = [
     imageUrl: mobileImg as StaticImageData,
     date: blogDates["mobile-planetary-hours-guide"],
     readingTime: blogRead["mobile-planetary-hours-guide"],
+    category: "practical-use",
+    tags: ["mobile", "pwa", "guide"],
   },
   {
     slug: "planetary-hours-history-culture",
@@ -45,6 +337,8 @@ export const blogPosts: BlogPost[] = [
     imageUrl: historyImg as StaticImageData,
     date: blogDates["planetary-hours-history-culture"],
     readingTime: blogRead["planetary-hours-history-culture"],
+    category: "education",
+    tags: ["history", "culture", "babylon"],
   },
   {
     slug: "planetary-hours-business-success",
@@ -54,6 +348,8 @@ export const blogPosts: BlogPost[] = [
     imageUrl: businessImg as StaticImageData,
     date: blogDates["planetary-hours-business-success"],
     readingTime: blogRead["planetary-hours-business-success"],
+    category: "practical-use",
+    tags: ["business", "productivity", "timing"],
   },
   {
     slug: "introduction",
@@ -63,33 +359,41 @@ export const blogPosts: BlogPost[] = [
     imageUrl: introImg as StaticImageData,
     date: blogDates["introduction"],
     readingTime: blogRead["introduction"],
+    category: "education",
+    tags: ["introduction", "calculator", "guide"],
   },
   {
     slug: "what-are-planetary-hours",
     title: "What Are Planetary Hours? A Beginner's Guide",
     excerpt:
-      "Understand the ancient timing system that fuels our calculator and discover its historical roots.",
+      "What are planetary hours? Understand this ancient timing system explained in simple terms — the Chaldean Order, the 7 classical planets, and how planetary hours work.",
     imageUrl: whatIsImg as StaticImageData,
     date: blogDates["what-are-planetary-hours"],
     readingTime: blogRead["what-are-planetary-hours"],
+    category: "education",
+    tags: ["beginner", "explained", "planetary hours"],
   },
   {
     slug: "using-planetary-hours",
     title: "How to Use Planetary Hours for Daily Planning",
     excerpt:
-      "Practical strategies to align your schedule with the cosmic clock for productivity and harmony.",
+      "Learn how to use planetary hours for daily planning. Apply each planet's energy to work, relationships, and well-being with strategic timing approaches.",
     imageUrl: usingImg as StaticImageData,
     date: blogDates["using-planetary-hours"],
     readingTime: blogRead["using-planetary-hours"],
+    category: "practical-use",
+    tags: ["how-to", "daily planning", "guide"],
   },
   {
     slug: "algorithm-behind-calculator",
     title: "The Algorithm Behind Our Planetary Hours Calculator",
     excerpt:
-      "A technical deep-dive into the TypeScript code and astronomical data that power instant results.",
+      "How are planetary hours calculated? A technical deep-dive into the astronomical algorithm, TypeScript code, and solar data that power instant, accurate results.",
     imageUrl: algoImg as StaticImageData,
     date: blogDates["algorithm-behind-calculator"],
     readingTime: blogRead["algorithm-behind-calculator"],
+    category: "education",
+    tags: ["algorithm", "technical", "suncalc"],
   },
   {
     slug: "2025-astronomical-events-planetary-hours",
@@ -99,5 +403,7 @@ export const blogPosts: BlogPost[] = [
     imageUrl: astronomicalImg as StaticImageData,
     date: blogDates["2025-astronomical-events-planetary-hours"],
     readingTime: blogRead["2025-astronomical-events-planetary-hours"],
+    category: "news",
+    tags: ["2025", "planetary alignment", "astronomy"],
   },
 ];

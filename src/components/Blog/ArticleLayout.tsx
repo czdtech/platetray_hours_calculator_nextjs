@@ -1,10 +1,13 @@
 import { Header } from "@/components/Layout/Header";
 import { Breadcrumb } from "@/components/SEO/Breadcrumb";
+import type { Locale } from "@/i18n/config";
+import { getMessagesSync } from "@/i18n/getMessages";
 
 interface ArticleLayoutProps {
   hero?: React.ReactNode;
   children: React.ReactNode;
   breadcrumbItems?: Array<{ name: string; url: string }>;
+  locale?: Locale;
 }
 
 /**
@@ -15,10 +18,13 @@ export function ArticleLayout({
   hero,
   children,
   breadcrumbItems,
+  locale = "en",
 }: ArticleLayoutProps) {
+  const messages = getMessagesSync(locale);
+
   return (
     <>
-      <Header activePage="blog" />
+      <Header activePage="blog" locale={locale} />
       <article className="bg-white dark:bg-gray-900">
         {hero}
 
@@ -27,7 +33,7 @@ export function ArticleLayout({
           <main className="max-w-3xl mx-auto bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-lg px-6 md:px-10 pt-10 pb-16 shadow-sm">
             {/* 面包屑导航 */}
             {breadcrumbItems && (
-              <nav aria-label="Breadcrumb" className="mb-6 text-sm">
+              <nav aria-label={messages.common.breadcrumb} className="mb-6 text-sm">
                 <Breadcrumb items={breadcrumbItems} />
               </nav>
             )}

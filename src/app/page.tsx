@@ -1,27 +1,22 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { getSoftwareApplicationSchema } from "@/utils/seo/jsonld";
+import { getHreflangTags } from "@/utils/seo/hreflang";
+import { getMessagesSync } from "@/i18n/getMessages";
+import { siteConfig } from "@/config/seo";
 import CalculatorServer from "./CalculatorServer";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
+const locale = "en";
+const messages = getMessagesSync(locale);
+const hreflang = getHreflangTags("/");
 
 // 页面完全动态渲染，配合 CalculatorServer 的实时 TTL 策略
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: "Planetary Hours Calculator - Find Your Perfect Timing",
-  description: "Discover the perfect timing with our planetary hours calculator. Calculate astrological planetary hours based on your location and date for optimal life decisions.",
-  keywords: [
-    "planetary hours",
-    "astrological timing",
-    "planetary calculator",
-    "astrology hours",
-    "timing calculator",
-    "planetary influences",
-    "astrological calculator",
-    "magical hours",
-    "planetary periods"
-  ],
+  title: messages.home.metaTitle,
+  description: messages.home.metaDescription,
+  keywords: messages.home.keywords,
   authors: [{ name: "Planetary Hours Team" }],
   creator: "Planetary Hours Calculator",
   publisher: "Planetary Hours",
@@ -42,51 +37,42 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Planetary Hours Calculator - Find Your Perfect Timing",
-    description: "Discover the perfect timing with our planetary hours calculator. Calculate astrological planetary hours based on your location and date for optimal life decisions.",
-    url: SITE_URL,
-    siteName: "Planetary Hours Calculator",
+    title: messages.home.metaTitle,
+    description: messages.home.metaDescription,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: `${SITE_URL}/images/og-image.jpg`,
+        url: `${siteConfig.url}/images/og-image.jpg`,
         width: 1200,
         height: 630,
-        alt: "Planetary Hours Calculator - Astrological Timing Tool",
+        alt: messages.home.metaTitle,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Planetary Hours Calculator - Find Your Perfect Timing",
-    description: "Discover the perfect timing with our planetary hours calculator. Calculate astrological planetary hours based on your location and date for optimal life decisions.",
-    images: [`${SITE_URL}/images/og-image.jpg`],
+    title: messages.home.metaTitle,
+    description: messages.home.metaDescription,
+    images: [`${siteConfig.url}/images/og-image.jpg`],
     creator: "@planetaryhours",
   },
   alternates: {
-    canonical: SITE_URL,
-  },
-  verification: {
-    google: "your-google-verification-code",
+    canonical: siteConfig.url,
+    languages: hreflang,
   },
 };
 
 const softwareAppSchema = getSoftwareApplicationSchema({
-  name: "Planetary Hours Calculator",
-  description:
-    "Calculate planetary hours for any location with our advanced calculator. Discover optimal timing based on ancient wisdom. Free astronomical tool.",
-  url: SITE_URL,
+  name: messages.home.title,
+  description: messages.home.metaDescription,
+  url: siteConfig.url,
   applicationCategory: "UtilityApplication",
-  featureList: [
-    "Global location support with automatic timezone detection",
-    "Accurate astronomical calculations for sunrise/sunset",
-    "Real-time planetary hours display",
-    "Interactive date and location selection",
-    "Mobile-responsive design",
-    "Free to use with no registration required",
-  ],
-  publisherName: "Planetary Hours Calculator",
+  featureList: messages.home.featureList,
+  publisherName: messages.common.siteName,
+  inLanguage: locale,
 });
 
 /**
@@ -112,7 +98,7 @@ export default function HomePage() {
       >
         {JSON.stringify(softwareAppSchema)}
       </Script>
-      <CalculatorServer />
+      <CalculatorServer locale={locale} />
     </>
   );
 }

@@ -175,6 +175,7 @@ export interface SoftwareApplicationSchema extends SchemaOrgBase {
   releaseNotes?: string;
   screenshot?: string | ImageObjectSchema | ImageObjectSchema[];
   featureList?: string[];
+  inLanguage?: string;
   offers?: OfferSchema;
   aggregateRating?: AggregateRatingSchema;
   author?: PersonSchema | OrganizationSchema;

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planetary Hours Chart — Printable Reference Guide</title>
+  <style>
+    :root {
+      --sun: #f59e0b;
+      --moon: #8b5cf6;
+      --mars: #ef4444;
+      --mercury: #06b6d4;
+      --jupiter: #6366f1;
+      --venus: #ec4899;
+      --saturn: #475569;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #1e293b;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      line-height: 1.6;
+    }
+    h1 { text-align: center; font-size: 1.8rem; margin-bottom: 0.25rem; }
+    .subtitle { text-align: center; color: #64748b; margin-bottom: 2rem; font-size: 0.95rem; }
+
+    .print-notice {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #0369a1;
+    }
+
+    h2 { font-size: 1.3rem; margin: 2rem 0 0.75rem; color: #334155; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.35rem; }
+
+    /* Matrix table */
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.85rem; }
+    th, td { border: 1px solid #cbd5e1; padding: 6px 8px; text-align: center; }
+    thead th { background: #f1f5f9; font-weight: 600; }
+
+    .planet-sun { background: #fffbeb; }
+    .planet-moon { background: #f5f3ff; }
+    .planet-mars { background: #fef2f2; }
+    .planet-mercury { background: #ecfeff; }
+    .planet-jupiter { background: #eef2ff; }
+    .planet-venus { background: #fdf2f8; }
+    .planet-saturn { background: #f8fafc; }
+
+    .day-header-sun { background: var(--sun); color: #fff; }
+    .day-header-moon { background: var(--moon); color: #fff; }
+    .day-header-mars { background: var(--mars); color: #fff; }
+    .day-header-mercury { background: var(--mercury); color: #fff; }
+    .day-header-jupiter { background: var(--jupiter); color: #fff; }
+    .day-header-venus { background: var(--venus); color: #fff; }
+    .day-header-saturn { background: var(--saturn); color: #fff; }
+
+    /* Attributes table */
+    .attr-table td:first-child { font-weight: 600; white-space: nowrap; width: 120px; }
+    .attr-table td:nth-child(2) { width: 100px; }
+
+    .footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    @media print {
+      .print-notice { display: none; }
+      body { padding: 0.5cm; font-size: 10pt; }
+      h1 { font-size: 16pt; }
+      h2 { font-size: 13pt; }
+      table { font-size: 8pt; page-break-inside: avoid; }
+      th, td { padding: 3px 5px; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Planetary Hours Chart</h1>
+<p class="subtitle">Printable Reference Guide &mdash; planetaryhours.org</p>
+
+<div class="print-notice">
+  <strong>Tip:</strong> Print this page (<kbd>Ctrl+P</kbd> / <kbd>&#8984;P</kbd>) or use <em>Save as PDF</em> in your browser&rsquo;s print dialog for a permanent copy.
+</div>
+
+<h2>Planetary Day Rulers</h2>
+<table>
+  <thead>
+    <tr>
+      <th class="day-header-sun">Sunday</th>
+      <th class="day-header-moon">Monday</th>
+      <th class="day-header-mars">Tuesday</th>
+      <th class="day-header-mercury">Wednesday</th>
+      <th class="day-header-jupiter">Thursday</th>
+      <th class="day-header-venus">Friday</th>
+      <th class="day-header-saturn">Saturday</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="planet-sun">&#9737; Sun</td>
+      <td class="planet-moon">&#9789; Moon</td>
+      <td class="planet-mars">&#9794; Mars</td>
+      <td class="planet-mercury">&#9791; Mercury</td>
+      <td class="planet-jupiter">&#9795; Jupiter</td>
+      <td class="planet-venus">&#9792; Venus</td>
+      <td class="planet-saturn">&#9796; Saturn</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Daytime Planetary Hours Sequence (Sunrise &rarr; Sunset)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Hour</th>
+      <th class="day-header-sun">Sun</th>
+      <th class="day-header-moon">Mon</th>
+      <th class="day-header-mars">Tue</th>
+      <th class="day-header-mercury">Wed</th>
+      <th class="day-header-jupiter">Thu</th>
+      <th class="day-header-venus">Fri</th>
+      <th class="day-header-saturn">Sat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td></tr>
+    <tr><td>2</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td></tr>
+    <tr><td>3</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td></tr>
+    <tr><td>4</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td></tr>
+    <tr><td>5</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td></tr>
+    <tr><td>6</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td></tr>
+    <tr><td>7</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td></tr>
+    <tr><td>8</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td></tr>
+    <tr><td>9</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td></tr>
+    <tr><td>10</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td></tr>
+    <tr><td>11</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td></tr>
+    <tr><td>12</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td></tr>
+  </tbody>
+</table>
+
+<h2>Nighttime Planetary Hours Sequence (Sunset &rarr; Sunrise)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Hour</th>
+      <th class="day-header-sun">Sun</th>
+      <th class="day-header-moon">Mon</th>
+      <th class="day-header-mars">Tue</th>
+      <th class="day-header-mercury">Wed</th>
+      <th class="day-header-jupiter">Thu</th>
+      <th class="day-header-venus">Fri</th>
+      <th class="day-header-saturn">Sat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td></tr>
+    <tr><td>2</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td></tr>
+    <tr><td>3</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td></tr>
+    <tr><td>4</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td></tr>
+    <tr><td>5</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td></tr>
+    <tr><td>6</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td></tr>
+    <tr><td>7</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td></tr>
+    <tr><td>8</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td></tr>
+    <tr><td>9</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td></tr>
+    <tr><td>10</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td></tr>
+    <tr><td>11</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td></tr>
+    <tr><td>12</td><td class="planet-mercury">Mercury</td><td class="planet-jupiter">Jupiter</td><td class="planet-venus">Venus</td><td class="planet-saturn">Saturn</td><td class="planet-sun">Sun</td><td class="planet-moon">Moon</td><td class="planet-mars">Mars</td></tr>
+  </tbody>
+</table>
+
+<h2>Planet Attributes &amp; Best Activities</h2>
+<table class="attr-table">
+  <thead>
+    <tr><th>Planet</th><th>Symbol</th><th>Day</th><th>Key Themes</th><th>Best Activities</th></tr>
+  </thead>
+  <tbody>
+    <tr class="planet-sun"><td>Sun</td><td>&#9737;</td><td>Sunday</td><td>Leadership, Vitality, Success</td><td>Start ventures, seek authority favors, public appearances, health rituals</td></tr>
+    <tr class="planet-moon"><td>Moon</td><td>&#9789;</td><td>Monday</td><td>Intuition, Emotions, Home</td><td>Domestic tasks, journaling, nurturing relationships, dream work</td></tr>
+    <tr class="planet-mars"><td>Mars</td><td>&#9794;</td><td>Tuesday</td><td>Action, Courage, Energy</td><td>Exercise, competition, surgeries, confronting challenges, mechanical work</td></tr>
+    <tr class="planet-mercury"><td>Mercury</td><td>&#9791;</td><td>Wednesday</td><td>Communication, Learning, Travel</td><td>Writing, studying, negotiations, signing contracts, short trips</td></tr>
+    <tr class="planet-jupiter"><td>Jupiter</td><td>&#9795;</td><td>Thursday</td><td>Growth, Abundance, Luck</td><td>Financial planning, legal matters, teaching, spiritual growth, expansion</td></tr>
+    <tr class="planet-venus"><td>Venus</td><td>&#9792;</td><td>Friday</td><td>Love, Beauty, Pleasure</td><td>Dates, artistic creation, beauty treatments, socializing, decoration</td></tr>
+    <tr class="planet-saturn"><td>Saturn</td><td>&#9796;</td><td>Saturday</td><td>Discipline, Structure, Wisdom</td><td>Long-term planning, organizing, banishing habits, deep study, boundaries</td></tr>
+  </tbody>
+</table>
+
+<h2>The Chaldean Order</h2>
+<p>The seven classical planets cycle in the <strong>Chaldean Order</strong> (slowest to fastest orbital period as seen from Earth):</p>
+<p style="text-align:center; font-size:1.1rem; margin:1rem 0; font-weight:600;">
+  Saturn &rarr; Jupiter &rarr; Mars &rarr; Sun &rarr; Venus &rarr; Mercury &rarr; Moon &rarr; <em>(repeat)</em>
+</p>
+
+<div class="footer">
+  <p>&copy; planetaryhours.org &mdash; Free Planetary Hours Chart. For real-time calculations visit <a href="https://planetaryhours.org">planetaryhours.org</a></p>
+</div>
+
+</body>
+</html>

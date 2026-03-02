@@ -1,3 +1,5 @@
+export type BlogCategory = 'planet-hours' | 'planet-days' | 'practical-use' | 'education' | 'news';
+
 export interface BlogPost {
     slug: string;
     title: string;
@@ -6,6 +8,8 @@ export interface BlogPost {
     date: string;
     author?: string;
     readingTime?: number;
+    category?: BlogCategory;
+    tags?: string[];
 }
 
 export interface MarkdownContent {

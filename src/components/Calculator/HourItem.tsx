@@ -3,6 +3,9 @@
 import { memo, useMemo } from "react";
 import { ChevronRight } from "lucide-react";
 import { FormattedPlanetaryHour } from "@/utils/planetaryHourFormatters";
+import type { Locale } from "@/i18n/config";
+import { getMessagesSync } from "@/i18n/getMessages";
+import { getLocalizedPlanetAttributes } from "@/i18n/planetAttributes";
 // 导入全局行星颜色常量
 import {
   PLANET_COLOR_CLASSES,
@@ -15,9 +18,13 @@ interface HourItemProps {
   index: number;
   isOpen: boolean;
   onToggle: (index: number) => void;
+  locale?: Locale;
 }
 
-function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
+function HourItemComponent({ hour, index, isOpen, onToggle, locale = "en" }: HourItemProps) {
+  const messages = getMessagesSync(locale);
+  const localizedPlanets = messages.planets as Record<string, string>;
+
   // 为按钮和可折叠详情区域建立稳定的关联 id
   const detailsId = useMemo(() => `hour-details-${index}`, [index]);
 
@@ -37,6 +44,10 @@ function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
   const planetSymbol = isValidPlanet
     ? PLANET_SYMBOLS[hour.planet as keyof typeof PLANET_SYMBOLS]
     : ""; // 空字符串作为后备
+  const localizedPlanet = localizedPlanets[hour.planet] || hour.planet;
+  const localizedAttributes = getLocalizedPlanetAttributes(hour.planet, locale);
+  const goodForText = localizedAttributes?.goodFor ?? hour.goodFor;
+  const avoidText = localizedAttributes?.avoid ?? hour.avoid;
   return (
     <div className="relative group">
       <button
@@ -66,7 +77,7 @@ function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
           className={`font-medium ${planetColorClass}`}
           style={{ color: planetColor }}
         >
-          {hour.planet}
+          {localizedPlanet}
         </span>
         <div className="ml-auto flex items-center shrink-0">
           <span className="text-sm text-gray-600 dark:text-gray-400 truncate">
@@ -89,11 +100,11 @@ function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
       <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 mt-2 w-72 z-20 pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 opacity-0 transition-opacity duration-200"
            style={{ top: 'calc(100% + 8px)' }}>
         <div className="p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg text-xs leading-relaxed">
-          <div className="font-semibold text-green-700 dark:text-green-400 mb-1">Good For</div>
-          <div className="text-gray-700 dark:text-gray-300">{hour.goodFor}</div>
+          <div className="font-semibold text-green-700 dark:text-green-400 mb-1">{messages.calculator.goodFor}</div>
+          <div className="text-gray-700 dark:text-gray-300">{goodForText}</div>
           <hr className="my-2 border-gray-100 dark:border-gray-600" />
-          <div className="font-semibold text-red-600 dark:text-red-400 mb-1">Avoid</div>
-          <div className="text-gray-700 dark:text-gray-300">{hour.avoid}</div>
+          <div className="font-semibold text-red-600 dark:text-red-400 mb-1">{messages.calculator.avoid}</div>
+          <div className="text-gray-700 dark:text-gray-300">{avoidText}</div>
         </div>
       </div>
 
@@ -102,11 +113,11 @@ function HourItemComponent({ hour, index, isOpen, onToggle }: HourItemProps) {
           id={detailsId}
           className="mt-2 p-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-xs leading-relaxed"
         >
-          <div className="font-semibold text-green-700 dark:text-green-400 mb-1">Good For</div>
-          <div className="text-gray-700 dark:text-gray-300">{hour.goodFor}</div>
+          <div className="font-semibold text-green-700 dark:text-green-400 mb-1">{messages.calculator.goodFor}</div>
+          <div className="text-gray-700 dark:text-gray-300">{goodForText}</div>
           <hr className="my-2 border-gray-100 dark:border-gray-600" />
-          <div className="font-semibold text-red-600 dark:text-red-400 mb-1">Avoid</div>
-          <div className="text-gray-700 dark:text-gray-300">{hour.avoid}</div>
+          <div className="font-semibold text-red-600 dark:text-red-400 mb-1">{messages.calculator.avoid}</div>
+          <div className="text-gray-700 dark:text-gray-300">{avoidText}</div>
         </div>
       )}
     </div>
@@ -120,6 +131,7 @@ export const HourItem = memo(HourItemComponent, (prevProps, nextProps) => {
     prevProps.hour.timeRange === nextProps.hour.timeRange &&
     prevProps.hour.current === nextProps.hour.current &&
     prevProps.index === nextProps.index &&
-    prevProps.isOpen === nextProps.isOpen
+    prevProps.isOpen === nextProps.isOpen &&
+    prevProps.locale === nextProps.locale
   );
 });

@@ -8,18 +8,28 @@ import { JsonLd } from "@/components/SEO/JsonLd";
 import { getBreadcrumbSchema } from "@/utils/seo/jsonld";
 import { Section } from "@/components/semantic/Section";
 import { Header } from "@/components/Layout/Header";
+import { BlogCategoryFilter } from "@/components/Blog/BlogCategoryFilter";
+import { getMessagesSync } from "@/i18n/getMessages";
+import { getDateFnsLocale } from "@/utils/dateLocale";
+import { getHreflangTags } from "@/utils/seo/hreflang";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://planetaryhours.org";
+const locale = "en";
+const messages = getMessagesSync(locale);
+const dateLocale = getDateFnsLocale(locale);
+const hreflang = getHreflangTags("/blog");
 
 export const metadata: Metadata = {
-  title: "Blog",
-  description:
-    "Read the latest updates, guides and announcements about the Planetary Hours Calculator.",
+  title: messages.blog.title,
+  description: messages.blog.description,
+  alternates: {
+    canonical: `${SITE_URL}/blog`,
+    languages: hreflang,
+  },
   openGraph: {
-    title: "Blog | Planetary Hours Calculator",
-    description:
-      "Read the latest updates, guides and announcements about the Planetary Hours Calculator.",
+    title: `${messages.blog.title} | ${messages.home.title}`,
+    description: messages.blog.description,
     url: `${SITE_URL}/blog`,
     type: "article",
   },
@@ -31,8 +41,8 @@ export default function BlogPage() {
 
   // 面包屑导航项
   const breadcrumbItems = [
-    { name: "Home", url: "/" },
-    { name: "Blog", url: "/blog" },
+    { name: messages.common.home, url: "/" },
+    { name: messages.common.blog, url: "/blog" },
   ];
 
   return (
@@ -40,12 +50,12 @@ export default function BlogPage() {
       {/* JSON-LD 结构化数据 */}
       <JsonLd
         data={getBreadcrumbSchema([
-          { name: "Home", url: SITE_URL },
-          { name: "Blog", url: `${SITE_URL}/blog` },
+          { name: messages.common.home, url: SITE_URL },
+          { name: messages.common.blog, url: `${SITE_URL}/blog` },
         ])}
       />
 
-      <Header activePage="blog" />
+      <Header activePage="blog" locale={locale} />
       <div className="container mx-auto px-4 py-8 space-y-8">
         <Section className="py-4">
           <div className="max-w-5xl mx-auto">
@@ -55,7 +65,7 @@ export default function BlogPage() {
             </div>
 
             <h1 className="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-purple-500 to-indigo-400 bg-clip-text text-transparent">
-              Planetary Hours Calculator Blog
+              {messages.blog.title}
             </h1>
 
             {/* 特色文章 - 最新一篇 */}
@@ -78,6 +88,7 @@ export default function BlogPage() {
                         <div className="text-sm text-indigo-600 mb-2">
                           {formatDistanceToNow(new Date(blogPosts[0].date), {
                             addSuffix: true,
+                            locale: dateLocale,
                           })}
                         </div>
                         <Link
@@ -97,7 +108,7 @@ export default function BlogPage() {
                           href={`/blog/${blogPosts[0].slug}`}
                           className="text-indigo-600 hover:underline font-medium"
                         >
-                          Read full article →
+                          {messages.blog.readFullArticle}
                         </Link>
                       </div>
                     </div>
@@ -106,54 +117,8 @@ export default function BlogPage() {
               </div>
             )}
 
-            {/* 其他文章 - 网格布局 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogPosts.slice(1).map((post) => (
-                <article
-                  key={post.slug}
-                  className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 group hover:shadow-md transition-shadow"
-                >
-                  <Link href={`/blog/${post.slug}`} className="block">
-                    <div className="h-48 overflow-hidden relative">
-                      <Image
-                        src={post.imageUrl as string | StaticImageData}
-                        alt={post.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        placeholder="blur"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                  </Link>
-                  <div className="p-6">
-                    <div className="text-xs text-gray-500 mb-2">
-                      {formatDistanceToNow(new Date(post.date), {
-                        addSuffix: true,
-                      })}
-                      {post.readingTime !== undefined &&
-                        ` • ${post.readingTime} min read`}
-                    </div>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                      <Link
-                        href={`/blog/${post.slug}`}
-                        className="hover:text-indigo-600 transition-colors"
-                      >
-                        {post.title}
-                      </Link>
-                    </h2>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                      {post.excerpt}
-                    </p>
-                    <Link
-                      href={`/blog/${post.slug}`}
-                      className="text-indigo-600 font-medium text-sm hover:underline"
-                    >
-                      Read more →
-                    </Link>
-                  </div>
-                </article>
-              ))}
-            </div>
+            {/* 其他文章 - 带分类筛选的网格布局 */}
+            <BlogCategoryFilter posts={blogPosts.slice(1)} locale={locale} messages={messages} />
           </div>
         </Section>
       </div>

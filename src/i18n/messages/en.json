@@ -1,0 +1,246 @@
+{
+  "common": {
+    "siteName": "Planetary Hours",
+    "home": "Home",
+    "blog": "Blog",
+    "about": "About",
+    "cities": "Cities",
+    "calculator": "Calculator",
+    "faq": "FAQ",
+    "skipToContent": "Skip to content",
+    "backToTop": "Back to top",
+    "selectLanguage": "Select language",
+    "homeAriaLabel": "Planetary Hours home",
+    "toggleNavigation": "Toggle navigation",
+    "footerNavigation": "Footer navigation",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "breadcrumb": "Breadcrumb",
+    "shareArticle": "Share article"
+  },
+  "planets": {
+    "Sun": "Sun",
+    "Moon": "Moon",
+    "Mercury": "Mercury",
+    "Venus": "Venus",
+    "Mars": "Mars",
+    "Jupiter": "Jupiter",
+    "Saturn": "Saturn"
+  },
+  "calculator": {
+    "daytimeHours": "Daytime Planetary Hours",
+    "nighttimeHours": "Nighttime Planetary Hours",
+    "currentHour": "Current Planetary Hour",
+    "dayRuler": "Day Ruler",
+    "sunrise": "Sunrise",
+    "sunset": "Sunset",
+    "goodFor": "Good for",
+    "avoid": "Avoid",
+    "planet": "Planet",
+    "time": "Time",
+    "duration": "Duration",
+    "now": "Now",
+    "daytime": "Daytime",
+    "nighttime": "Nighttime",
+    "openCalculator": "Open Full Calculator",
+    "findNextPlanetHour": "Find your next {planet} hour",
+    "calculatePlanetaryHours": "Calculate your planetary hours",
+    "calculationError": "Calculation Error",
+    "calculationErrorMessage": "Unable to calculate planetary hours for {city} at this time. Please try again later.",
+    "backToAllCities": "Back to all cities",
+    "locationLabel": "Location",
+    "locationPlaceholder": "Enter your location...",
+    "switchToCity": "Switch to {city}",
+    "useCurrentLocation": "Use current location",
+    "poweredByGoogle": "Powered by Google",
+    "coordinatesLabel": "longitude: {longitude}, latitude: {latitude}",
+    "dateLabel": "Date",
+    "today": "Today",
+    "todayShort": "Tod",
+    "yesterday": "Yesterday",
+    "yesterdayShort": "Yes",
+    "tomorrow": "Tomorrow",
+    "tomorrowShort": "Tom",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "selectDate": "Select date",
+    "selectDatePlaceholder": "Select date...",
+    "selectDateShortcut": "Select {dateLabel}",
+    "preSunriseMessage": "It's early morning, before today's sunrise ({sunriseTime}). You're seeing the night hours from {yesterdayDate}, continuing until sunrise on {todayDate}.",
+    "viewingDateMessage": "You're viewing planetary hours for {date}.",
+    "todayPrefix": "planetary hours today, {date}",
+    "locationErrors": {
+      "initializeService": "Failed to initialize location service",
+      "selectCity": "Failed to select city",
+      "locationNotFound": "Could not find location. Please try a different search term.",
+      "fetchPlaceDetails": "Error fetching place details.",
+      "serviceNotReady": "Location service is not ready for suggestions.",
+      "fetchSuggestions": "Failed to fetch suggestions. Please try again.",
+      "suggestionsNotReady": "Suggestions not ready. Press Enter to search.",
+      "geolocationNotSupported": "Geolocation is not supported by your browser.",
+      "permissionDenied": "Please allow location access or enter location manually",
+      "positionUnavailable": "Location information is unavailable. Please try entering location manually",
+      "requestTimeout": "Location request timed out. Please try again or enter location manually",
+      "unknownError": "An unknown error occurred. Please try entering location manually",
+      "getLocation": "Failed to get location. Please try entering location manually"
+    }
+  },
+  "cityPage": {
+    "title": "Planetary Hours in {city} Today",
+    "description": "Find today's planetary hours for {city}, {country}.",
+    "descriptionTemplate": "In {city}, {country}, planetary hours are calculated using local coordinates ({lat}, {lon}) and timezone {timezone}, ensuring accurate sunrise and sunset based timing.",
+    "timezone": "Timezone",
+    "faq": "Frequently Asked Questions",
+    "otherCities": "Planetary Hours in Other Cities",
+    "customLocation": "Want to calculate planetary hours for a custom location?",
+    "faqTemplates": {
+      "todayQuestion": "What are the planetary hours in {city} today?",
+      "todayAnswer": "Today, planetary hours in {city} begin at sunrise ({sunrise}) and are ruled by {dayRuler}. Each daytime planetary hour lasts about {dayMinutes} minutes, while each nighttime hour lasts about {nightMinutes} minutes.",
+      "rulerQuestion": "What planet rules today in {city}?",
+      "rulerAnswer": "The day ruler in {city} today is {dayRuler}. The day ruler is the planet that governs the first planetary hour after sunrise. In the Chaldean order, each day of the week is ruled by a specific planet: Sun (Sunday), Moon (Monday), Mars (Tuesday), Mercury (Wednesday), Jupiter (Thursday), Venus (Friday), and Saturn (Saturday).",
+      "calculationQuestion": "How are planetary hours calculated for {city}?",
+      "calculationAnswer": "Planetary hours for {city} are calculated using the city's precise coordinates ({lat}, {lon}) and timezone ({timezone}). The time between sunrise and sunset is divided into 12 equal daytime planetary hours, and the time between sunset and the next sunrise is divided into 12 equal nighttime hours. Each hour is assigned a planet following the Chaldean order."
+    }
+  },
+  "cityIndex": {
+    "title": "Planetary Hours by City",
+    "description": "Select a city to view today's planetary hours calculated with precise local coordinates and timezone.",
+    "dontSeeCity": "Don't see your city? Use the full calculator for any location worldwide.",
+    "regions": {
+      "africa": "Africa",
+      "asia": "Asia",
+      "europe": "Europe",
+      "northAmerica": "North America",
+      "southAmerica": "South America",
+      "oceania": "Oceania"
+    }
+  },
+  "blog": {
+    "title": "Planetary Hours Blog",
+    "description": "Read the latest guides and articles about planetary hours, astrology and ancient wisdom.",
+    "readMore": "Read more →",
+    "readFullArticle": "Read full article →",
+    "minRead": "min read",
+    "author": "Planetary Hours Team",
+    "relatedArticles": "Related Articles",
+    "shareArticle": "Share this article:",
+    "shareOn": "Share on {platform}",
+    "copyLink": "Copy link",
+    "linkCopied": "Link copied!",
+    "copyError": "Unable to copy link. Please copy the URL from your browser address bar.",
+    "tableOfContents": "Table of Contents",
+    "faq": "Frequently Asked Questions",
+    "translationFallbackNotice": "This article is not yet translated into your selected language. English content is shown below.",
+    "all": "All",
+    "categoryFilterLabel": "Filter by category",
+    "noArticlesInCategory": "No articles in this category yet.",
+    "categoryDescriptions": {
+      "planet-hours": "In-depth guides to each of the seven planetary hours",
+      "planet-days": "Understanding the planetary rulers of each day of the week",
+      "practical-use": "How to apply planetary hours to everyday activities",
+      "education": "Foundational knowledge about planetary hours and astrology",
+      "news": "Astronomical events and updates related to planetary hours"
+    }
+  },
+  "about": {
+    "title": "About Planetary Hours",
+    "description": "Learn about the mission, methodology and team behind the Planetary Hours Calculator.",
+    "whatArePH": "What are Planetary Hours?",
+    "whatArePHText": "Planetary hours are an ancient astrological system that divides the time between sunrise and sunset, and between sunset and sunrise, into 12 unequal \"hours.\" Each hour is ruled by one of the seven traditional planets (Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn).",
+    "chaldeanOrderText": "The sequence of rulers follows the Chaldean order of the planets, based on their apparent speed from Earth's perspective. The planet ruling the first hour of the day (starting at sunrise) is the ruler of that day.",
+    "howCanBeUsed": "How Can They Be Used?",
+    "howCanBeUsedText": "Practitioners believe that the nature of the ruling planet influences the energy and suitability of that hour for certain activities.",
+    "examplesIntro": "For example:",
+    "planetHourExamples": {
+      "sun": "Sun Hour: Good for activities related to leadership, vitality, success, and seeking favor from authorities.",
+      "venus": "Venus Hour: Favors love, beauty, art, social activities, and pleasure.",
+      "mercury": "Mercury Hour: Suitable for communication, learning, writing, trade, and travel.",
+      "moon": "Moon Hour: Related to domestic matters, emotions, intuition, and public affairs.",
+      "saturn": "Saturn Hour: Associated with discipline, responsibility, long-term projects, dealing with obstacles, and endings.",
+      "jupiter": "Jupiter Hour: Ideal for growth, expansion, abundance, seeking wisdom, and financial matters.",
+      "mars": "Mars Hour: Connected to energy, courage, action, competition, and potential conflict."
+    },
+    "keyFeatures": "Key Features",
+    "keyFeaturesItems": {
+      "locationInput": "Location input with Google Places auto-complete or one-click geolocation.",
+      "timezoneHandling": "Automatic timezone handling to ensure accurate sunrise/sunset and hour calculations.",
+      "timeFormats": "Toggle between 12-hour and 24-hour time formats.",
+      "weekNavigation": "Week navigation to quickly jump to any day.",
+      "contextualSuggestions": "Contextual suggestions on what activities are good for or should be avoided during each hour."
+    },
+    "limitations": "Limitations & Disclaimer",
+    "limitationsText": "Planetary hours originate from traditional astrology. The calculations provided here are based on widely accepted historical methods and modern astronomical data for sunrise and sunset. They are offered for informational and entertainment purposes only and should not replace professional advice or planning.",
+    "closingText": "This calculator helps you determine planetary hours for any date and place, empowering you to schedule tasks in harmony with the prevailing planetary energies."
+  },
+  "home": {
+    "title": "Planetary Hours Calculator",
+    "subtitle": "Find the perfect timing for your activities based on ancient planetary wisdom. Enter your location and date to get started.",
+    "metaTitle": "Planetary Hours Calculator - Find Your Perfect Timing",
+    "metaDescription": "Discover the perfect timing with our planetary hours calculator. Calculate astrological planetary hours based on your location and date.",
+    "keywords": [
+      "planetary hours",
+      "astrological timing",
+      "planetary calculator",
+      "astrology hours",
+      "timing calculator",
+      "planetary influences",
+      "astrological calculator",
+      "magical hours",
+      "planetary periods"
+    ],
+    "featureList": [
+      "Global location support with automatic timezone detection",
+      "Accurate astronomical calculations for sunrise/sunset",
+      "Real-time planetary hours display",
+      "Interactive date and location selection",
+      "Mobile-responsive design",
+      "Free to use with no registration required"
+    ],
+    "faqHeading": "Frequently Asked Questions",
+    "faqItems": [
+      {
+        "question": "How are planetary hours calculated?",
+        "answer": "Planetary hours are calculated by dividing the time between sunrise and sunset (for daytime hours) and sunset and the next sunrise (for nighttime hours) into 12 equal parts. The length of these \"hours\" varies depending on the season and latitude."
+      },
+      {
+        "question": "Why are the planetary hours not exactly 60 minutes long?",
+        "answer": "Because the length of daylight and nighttime changes throughout the year, the duration of each planetary hour also changes. They are only close to 60 minutes near the equinoxes."
+      },
+      {
+        "question": "Do I need to know my exact sunrise/sunset times for the planetary hours calculator?",
+        "answer": "No, this planetary hours calculator handles that automatically based on the location and date you provide. It uses precise astronomical calculations."
+      },
+      {
+        "question": "Which planets are used in the planetary hours system?",
+        "answer": "The planetary hours system uses the seven traditional astrological planets: Sun, Moon, Mercury, Venus, Mars, Jupiter, and Saturn. Uranus, Neptune, and Pluto are not part of this traditional planetary hours system."
+      },
+      {
+        "question": "Is the planetary hours system scientifically proven?",
+        "answer": "Planetary hours are part of traditional astrology and are not based on modern scientific principles. They are used as a symbolic or spiritual timing system by those who follow these traditions."
+      },
+      {
+        "question": "How accurate is the location detection in this planetary hours calculator?",
+        "answer": "If you allow location access, the planetary hours calculator uses your browser's geolocation capabilities, which are generally quite accurate for determining sunrise/sunset times. You can also manually enter any location worldwide."
+      },
+      {
+        "question": "Why do summer and winter planetary hours differ in length?",
+        "answer": "Because planetary hours divide sunrise-to-sunset into 12 slices, the length of each slice stretches in summer and shrinks in winter. Near the equator they stay close to 60 minutes all year."
+      },
+      {
+        "question": "Why is it still night hours before today's sunrise?",
+        "answer": "By tradition the planetary day starts at sunrise. Any time before sunrise belongs to the previous night set, even if the clock shows 3 AM of the new calendar date."
+      },
+      {
+        "question": "How do I choose the best planetary hour for my task?",
+        "answer": "Match the symbolism: Venus for love or art, Mercury for emails or study, Mars for workouts or assertive action. Use our planetary hours calculator cheat-sheet or hover tips for quick guidance."
+      }
+    ]
+  },
+  "categories": {
+    "planet-hours": "Planet Hours",
+    "planet-days": "Planet Days",
+    "practical-use": "Practical Use",
+    "education": "Education",
+    "news": "News & Events"
+  }
+}

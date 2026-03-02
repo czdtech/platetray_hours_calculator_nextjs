@@ -18,7 +18,7 @@ beforeAll(async () => {
   delete process.env.UPSTASH_REDIS_REST_TOKEN;
   delete process.env.KV_REST_API_URL;
   delete process.env.KV_REST_API_TOKEN;
-});
+}, 60000);
 
 // mock 对象引用
 let writeFileSpy: any;

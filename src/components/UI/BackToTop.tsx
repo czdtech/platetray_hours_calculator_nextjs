@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { ChevronUp } from 'lucide-react';
+import { getMessagesSync } from '@/i18n/getMessages';
+import { getCurrentLocale } from '@/i18n/routePolicy';
 
 interface BackToTopProps {
   /** 显示按钮的滚动阈值（像素） */
@@ -21,6 +23,8 @@ export function BackToTop({
   const [isVisible, setIsVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
+  const currentLocale = getCurrentLocale(pathname ?? '/');
+  const messages = getMessagesSync(currentLocale);
 
   // 防止 hydration 错误
   useEffect(() => {
@@ -28,7 +32,9 @@ export function BackToTop({
   }, []);
 
   // 如果是博客文章页面，不显示通用返回顶部按钮
-  const isBlogPost = pathname?.startsWith('/blog/') && pathname !== '/blog';
+  const isBlogPost = Boolean(
+    pathname && /^(\/(es|pt))?\/blog\/(?!category\/)[^/]+$/.test(pathname),
+  );
 
   useEffect(() => {
     if (!isMounted || isBlogPost) {
@@ -82,8 +88,8 @@ export function BackToTop({
         focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2
         ${className}
       `}
-      aria-label="Back to top"
-      title="Back to top"
+      aria-label={messages.common.backToTop}
+      title={messages.common.backToTop}
     >
       <ChevronUp className="w-6 h-6" />
     </button>

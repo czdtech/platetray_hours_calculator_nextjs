@@ -20,6 +20,8 @@ import { createLogger } from '@/utils/unified-logger';
 import { ServerCurrentHourPayload } from '@/utils/planetaryHourHelpers';
 import { getCurrentTime } from '@/utils/time';
 import { reanchorSelectedDateOnTimezoneChange } from "@/utils/timezoneDates";
+import type { Locale } from "@/i18n/config";
+import { getMessagesSync } from "@/i18n/getMessages";
 
 // 将 logger 创建移到组件外部，避免每次渲染时重新创建
 const logger = createLogger('CalculatorPageOptimized');
@@ -50,54 +52,10 @@ const pendingTimezoneRequests = new Map<string, Promise<string | null>>();
 const API_CALL_INTERVAL = 1000; // 最小间隔1秒
 const CACHE_DURATION = 5 * 60 * 1000; // 缓存5分钟
 
-// FAQ数据移到组件外部，避免重复创建
-const FAQ_DATA = [
-  {
-    question: "How are planetary hours calculated?",
-    answer:
-      'Planetary hours are calculated by dividing the time between sunrise and sunset (for daytime hours) and sunset and the next sunrise (for nighttime hours) into 12 equal parts. The length of these "hours" varies depending on the season and latitude.',
-  },
-  {
-    question: "Why are the planetary hours not exactly 60 minutes long?",
-    answer:
-      "Because the length of daylight and nighttime changes throughout the year, the duration of each planetary hour also changes. They are only close to 60 minutes near the equinoxes.",
-  },
-  {
-    question: "Do I need to know my exact sunrise/sunset times for the planetary hours calculator?",
-    answer:
-      "No, this planetary hours calculator handles that automatically based on the location and date you provide. It uses precise astronomical calculations.",
-  },
-  {
-    question: "Which planets are used in the planetary hours system?",
-    answer:
-      "The planetary hours system uses the seven traditional astrological planets: Sun, Moon, Mercury, Venus, Mars, Jupiter, and Saturn. Uranus, Neptune, and Pluto are not part of this traditional planetary hours system.",
-  },
-  {
-    question: "Is the planetary hours system scientifically proven?",
-    answer:
-      "Planetary hours are part of traditional astrology and are not based on modern scientific principles. They are used as a symbolic or spiritual timing system by those who follow these traditions.",
-  },
-  {
-    question: "How accurate is the location detection in this planetary hours calculator?",
-    answer:
-      "If you allow location access, the planetary hours calculator uses your browser's geolocation capabilities, which are generally quite accurate for determining sunrise/sunset times. You can also manually enter any location worldwide.",
-  },
-  {
-    question: "Why do summer and winter planetary hours differ in length?",
-    answer:
-      "Because planetary hours divide sunrise-to-sunset into 12 slices, the length of each slice stretches in summer and shrinks in winter. Near the equator they stay close to 60 minutes all year.",
-  },
-  {
-    question: "Why is it still night hours before today's sunrise?",
-    answer:
-      "By tradition the planetary day starts at sunrise. Any time before sunrise belongs to the previous night set, even if the clock shows 3 AM of the new calendar date.",
-  },
-  {
-    question: "How do I choose the best planetary hour for my task?",
-    answer:
-      "Match the symbolism: Venus for love or art, Mercury for emails or study, Mars for workouts or assertive action. Use our planetary hours calculator cheat-sheet or hover tips for quick guidance.",
-  },
-];
+interface HomeFaqItem {
+  question: string;
+  answer: string;
+}
 
 interface CalculatorPageOptimizedProps {
   precomputed?: PlanetaryHoursCalculationResult | null;
@@ -106,12 +64,14 @@ interface CalculatorPageOptimizedProps {
   cacheControl?: string; // 缓存控制头信息（当前仅透传用于调试）
   ttlInfo?: import('@/utils/cache/dynamicTTL').TTLCalculationResult; // TTL计算结果（当前仅透传用于调试）
   error?: string; // 错误信息（当前仅透传用于调试）
+  locale?: Locale;
 }
 
 function CalculatorCore({
   precomputed,
   initialHour,
   serverTime,
+  locale = "en",
   // 以下参数当前未在 UI 中直接使用，但保留以便未来调试和扩展
   cacheControl: _cacheControl,
   ttlInfo: _ttlInfo,
@@ -127,6 +87,15 @@ function CalculatorCore({
   const [activeTab, setActiveTab] = useState<"day" | "night">("day");
   const [hasInitialCalculated, setHasInitialCalculated] = useState(false);
   const [showFAQ, setShowFAQ] = useState(false);
+  const messages = getMessagesSync(locale);
+  const faqItems = useMemo<HomeFaqItem[]>(
+    () =>
+      messages.home.faqItems.map((item: HomeFaqItem) => ({
+        question: item.question,
+        answer: item.answer,
+      })),
+    [messages],
+  );
 
   // 使用useRef存储函数引用，避免依赖变化
   const lastApiCallRef = useRef<number>(0);
@@ -529,20 +498,19 @@ function CalculatorCore({
 
   return (
     <>
-      <Header activePage="calculator" />
+      <Header activePage="calculator" locale={locale} />
       <div className="container mx-auto px-4 py-8 space-y-8">
         <Section className="bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-4 sm:p-6 md:p-8 mb-8 w-full max-w-full">
           <div className="flex flex-col md:flex-row justify-between items-center border-b border-gray-100 dark:border-gray-700 pb-6 mb-8">
             <div className="w-full md:w-2/5 pr-0 md:pr-6">
               {/* 页面主标题 */}
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-500 to-indigo-400 bg-clip-text text-transparent mb-3 md:mb-0 leading-tight overflow-hidden text-ellipsis">
-                Planetary Hours Calculator
+                {messages.home.title}
               </h1>
             </div>
             <div className="w-full md:w-3/5 mt-3 md:mt-0 md:pl-6 md:border-l border-gray-200 dark:border-gray-700">
               <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg leading-relaxed">
-                Find the perfect timing for your activities based on ancient planetary wisdom.
-                Enter your location and date below to get started.
+                {messages.home.subtitle}
               </p>
             </div>
           </div>
@@ -565,6 +533,7 @@ function CalculatorCore({
                       onUseCurrentLocation={handleCoordinatesUpdate}
                       onTimezoneChange={(tz) => applyTimezoneUpdate(tz, "location-input")}
                       onCitySelect={handleCitySelect}
+                      locale={locale}
                       aria-label="Enter location for planetary hours calculation"
                     />
                     <DateTimeInput
@@ -572,6 +541,7 @@ function CalculatorCore({
                       onDateChange={handleDateChange}
                       selectedDate={selectedDate}
                       serverTime={serverTime}
+                      locale={locale}
                       aria-label="Select date for planetary hours calculator"
                     />
                   </div>
@@ -593,6 +563,7 @@ function CalculatorCore({
                       initialHourPayload={initialHour}
                       serverTime={serverTime}
                       planetaryHoursRaw={planetaryHoursRaw}
+                      locale={locale}
                     />
                   )}
                 </LayoutStabilizer>
@@ -663,7 +634,7 @@ function CalculatorCore({
                       <circle cx="12" cy="12" r="5" />
                       <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
                     </svg>
-                    Day
+                    {messages.calculator.daytime}
                   </button>
                   <button
                     onClick={() => setActiveTab("night")}
@@ -683,7 +654,7 @@ function CalculatorCore({
                     >
                       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                     </svg>
-                    Night
+                    {messages.calculator.nighttime}
                   </button>
                 </div>
 
@@ -696,7 +667,7 @@ function CalculatorCore({
                     <LayoutStabilizer minHeight="400px">
                       {showHourListLoading ? (
                         <HoursListSkeleton 
-                          title="Daytime Planetary Hours" 
+                          title={messages.calculator.daytimeHours}
                           showTitle={true} 
                         />
                       ) : (
@@ -704,10 +675,11 @@ function CalculatorCore({
                           <div className="h-[400px]" style={{ minHeight: '400px' }} />
                         }>
                           <LazyHoursList
-                            title="Daytime Planetary Hours"
+                            title={messages.calculator.daytimeHours}
                             hours={daytimeHours}
                             titleColor="text-amber-600"
                             showTitle={true}
+                            locale={locale}
                           />
                         </Suspense>
                       )}
@@ -721,7 +693,7 @@ function CalculatorCore({
                     <LayoutStabilizer minHeight="400px">
                       {showHourListLoading ? (
                         <HoursListSkeleton 
-                          title="Nighttime Planetary Hours" 
+                          title={messages.calculator.nighttimeHours}
                           showTitle={true} 
                         />
                       ) : (
@@ -729,10 +701,11 @@ function CalculatorCore({
                           <div className="h-[400px]" style={{ minHeight: '400px' }} />
                         }>
                           <LazyHoursList
-                            title="Nighttime Planetary Hours"
+                            title={messages.calculator.nighttimeHours}
                             hours={nighttimeHours}
                             titleColor="text-indigo-600"
                             showTitle={true}
+                            locale={locale}
                           />
                         </Suspense>
                       )}
@@ -763,7 +736,12 @@ function CalculatorCore({
                 </div>
               </div>
             }>
-              <LazyFAQSection faqs={FAQ_DATA} />
+              <LazyFAQSection
+                faqs={faqItems}
+                locale={locale}
+                messages={messages}
+                title={messages.home.faqHeading}
+              />
             </Suspense>
           </Section>
         )}
@@ -772,7 +750,15 @@ function CalculatorCore({
   );
 }
 
-export default function CalculatorPageOptimized({ precomputed, initialHour, serverTime, cacheControl, ttlInfo, error }: CalculatorPageOptimizedProps = {}) {
+export default function CalculatorPageOptimized({
+  precomputed,
+  initialHour,
+  serverTime,
+  cacheControl,
+  ttlInfo,
+  error,
+  locale = "en",
+}: CalculatorPageOptimizedProps = {}) {
   const initialTimezone = "America/New_York";
 
   // 使用服务端传递的时间戳确保 SSR/CSR 一致性
@@ -781,7 +767,12 @@ export default function CalculatorPageOptimized({ precomputed, initialHour, serv
   const initialDate = fromZonedTime(`${todayNYStr}T12:00:00`, initialTimezone);
 
   return (
-    <DateProvider initialDate={initialDate} initialTimezone={initialTimezone} serverTime={serverTime}>
+    <DateProvider
+      initialDate={initialDate}
+      initialTimezone={initialTimezone}
+      serverTime={serverTime}
+      locale={locale}
+    >
       <CalculatorCore
         precomputed={precomputed}
         initialHour={initialHour}
@@ -789,6 +780,7 @@ export default function CalculatorPageOptimized({ precomputed, initialHour, serv
         cacheControl={cacheControl}
         ttlInfo={ttlInfo}
         error={error}
+        locale={locale}
       />
     </DateProvider>
   );

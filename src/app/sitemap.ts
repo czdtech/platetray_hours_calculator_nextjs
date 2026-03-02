@@ -1,11 +1,14 @@
 import { MetadataRoute } from "next";
 import { siteConfig } from "@/config/seo";
-import { blogPosts } from "@/data/blogPosts"; // 导入实际的博客文章数据
-import staticPageDates from "@/data/staticPageDates.json"; // 导入静态页面日期
-// blogDates.json is implicitly used by blogPosts.ts, so no direct import needed here if blogPosts already processes it.
-// However, if blogPosts only contains slugs and we need to fetch dates separately:
-import blogActualDates from "@/data/blogDates.json"; // Explicitly import for clarity if needed for direct use
+import { blogPosts } from "@/data/blogPosts";
+import { blogPostsEs } from "@/data/blogPosts-es";
+import { blogPostsPt } from "@/data/blogPosts-pt";
+import { ALL_CATEGORIES } from "@/constants/blogCategories";
+import staticPageDates from "@/data/staticPageDates.json";
+import blogActualDates from "@/data/blogDates.json";
+import { cities } from "@/data/cities";
 import { createLogger } from '@/utils/unified-logger';
+import { TRANSLATED_SLUGS } from '@/i18n/routePolicy';
 
 const logger = createLogger('Sitemap');
 
@@ -31,6 +34,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = siteConfig.url;
   const siteLaunchDate = new Date(staticPageDates.home); // Use home date as a general fallback or site launch
 
+  const getLocaleUrl = (locale: 'en' | 'es' | 'pt', pathname: string): string => {
+    if (pathname === '/') {
+      return locale === 'en' ? baseUrl : `${baseUrl}/${locale}`;
+    }
+    return locale === 'en' ? `${baseUrl}${pathname}` : `${baseUrl}/${locale}${pathname}`;
+  };
+
+  const buildAlternates = (
+    pathname: string,
+    localesToInclude: Array<'en' | 'es' | 'pt'> = ['en', 'es', 'pt'],
+  ) => {
+    const languages: Record<string, string> = {
+      'x-default': getLocaleUrl('en', pathname),
+    };
+
+    for (const locale of localesToInclude) {
+      languages[locale] = getLocaleUrl(locale, pathname);
+    }
+
+    return { languages };
+  };
+
   // 静态页面配置
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -38,18 +63,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(staticPageDates.home),
       changeFrequency: "daily" as const,
       priority: 1.0,
+      alternates: buildAlternates('/'),
     },
     {
       url: `${baseUrl}/about`,
       lastModified: new Date(staticPageDates.about),
       changeFrequency: "monthly" as const,
       priority: 0.8,
+      alternates: buildAlternates('/about'),
     },
     {
       url: `${baseUrl}/blog`, // 博客列表页
       lastModified: getLatestBlogPostDate(), // 使用最新博客文章的日期
       changeFrequency: "weekly" as const,
       priority: 0.9,
+      alternates: buildAlternates('/blog'),
     },
     {
       url: `${baseUrl}/privacy`,
@@ -65,20 +93,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // 从导入的 blogPosts (它会使用 blogActualDates) 生成 sitemap 条目
+  const translatedSlugs = TRANSLATED_SLUGS;
+
   const blogPostEntries: MetadataRoute.Sitemap = blogPosts.map((post) => {
-    // Ensure post.slug exists in blogActualDates or post.date is a valid fallback
     const postDateString = blogActualDates[post.slug as keyof typeof blogActualDates] || post.date;
     const postDate = new Date(postDateString);
+    const hasEs = translatedSlugs.es.has(post.slug);
+    const hasPt = translatedSlugs.pt.has(post.slug);
+    const hasTranslation = hasEs || hasPt;
 
-    // Add a check for invalid dates
+    const localesToInclude: Array<'en' | 'es' | 'pt'> = ['en'];
+    if (hasEs) localesToInclude.push('es');
+    if (hasPt) localesToInclude.push('pt');
+
+    const alternatesBlock = hasTranslation
+      ? {
+          alternates: buildAlternates(`/blog/${post.slug}`, localesToInclude),
+        }
+      : {};
+
     if (isNaN(postDate.getTime())) {
       logger.warn(`Invalid date for blog post slug "${post.slug}": ${postDateString}. Falling back to site launch date.`);
       return {
         url: `${baseUrl}/blog/${post.slug}`,
-        lastModified: siteLaunchDate, // Fallback for invalid dates
+        lastModified: siteLaunchDate,
         changeFrequency: "monthly" as const,
         priority: 0.7,
+        ...alternatesBlock,
       };
     }
 
@@ -87,9 +128,181 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: postDate,
       changeFrequency: "monthly" as const,
       priority: 0.7,
+      ...alternatesBlock,
     };
   });
 
-  // 合并所有页面
-  return [...staticPages, ...blogPostEntries];
+  const esBlogPostEntries: MetadataRoute.Sitemap = blogPostsEs.map((post) => {
+    const postDateString = blogActualDates[post.slug as keyof typeof blogActualDates] || post.date;
+    const postDate = new Date(postDateString);
+    const lastMod = isNaN(postDate.getTime()) ? siteLaunchDate : postDate;
+    return {
+      url: `${baseUrl}/es/blog/${post.slug}`,
+      lastModified: lastMod,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+      alternates: buildAlternates(`/blog/${post.slug}`),
+    };
+  });
+
+  const ptBlogPostEntries: MetadataRoute.Sitemap = blogPostsPt.map((post) => {
+    const postDateString = blogActualDates[post.slug as keyof typeof blogActualDates] || post.date;
+    const postDate = new Date(postDateString);
+    const lastMod = isNaN(postDate.getTime()) ? siteLaunchDate : postDate;
+    return {
+      url: `${baseUrl}/pt/blog/${post.slug}`,
+      lastModified: lastMod,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+      alternates: buildAlternates(`/blog/${post.slug}`),
+    };
+  });
+
+  const blogCategoryEntries: MetadataRoute.Sitemap = ALL_CATEGORIES.map((category) => ({
+    url: `${baseUrl}/blog/category/${category}`,
+    lastModified: getLatestBlogPostDate(),
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+    alternates: buildAlternates(`/blog/category/${category}`),
+  }));
+
+  const esBlogCategoryEntries: MetadataRoute.Sitemap = ALL_CATEGORIES.map((category) => ({
+    url: `${baseUrl}/es/blog/category/${category}`,
+    lastModified: getLatestBlogPostDate(),
+    changeFrequency: "weekly" as const,
+    priority: 0.5,
+    alternates: buildAlternates(`/blog/category/${category}`),
+  }));
+
+  const ptBlogCategoryEntries: MetadataRoute.Sitemap = ALL_CATEGORIES.map((category) => ({
+    url: `${baseUrl}/pt/blog/category/${category}`,
+    lastModified: getLatestBlogPostDate(),
+    changeFrequency: "weekly" as const,
+    priority: 0.5,
+    alternates: buildAlternates(`/blog/category/${category}`),
+  }));
+
+  // City pages
+  const cityIndexEntry: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/planetary-hours`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+      alternates: buildAlternates('/planetary-hours'),
+    },
+  ];
+
+  const cityPageEntries: MetadataRoute.Sitemap = cities.map((city) => ({
+    url: `${baseUrl}/planetary-hours/${city.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "daily" as const,
+    priority: 0.8,
+    alternates: buildAlternates(`/planetary-hours/${city.slug}`),
+  }));
+
+  // Spanish city pages
+  const esCityIndexEntry: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/es/planetary-hours`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+      alternates: buildAlternates('/planetary-hours'),
+    },
+  ];
+
+  const esCityPageEntries: MetadataRoute.Sitemap = cities.map((city) => ({
+    url: `${baseUrl}/es/planetary-hours/${city.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "daily" as const,
+    priority: 0.7,
+    alternates: buildAlternates(`/planetary-hours/${city.slug}`),
+  }));
+
+  // Portuguese city pages
+  const ptCityIndexEntry: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/pt/planetary-hours`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+      alternates: buildAlternates('/planetary-hours'),
+    },
+  ];
+
+  const ptCityPageEntries: MetadataRoute.Sitemap = cities.map((city) => ({
+    url: `${baseUrl}/pt/planetary-hours/${city.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "daily" as const,
+    priority: 0.7,
+    alternates: buildAlternates(`/planetary-hours/${city.slug}`),
+  }));
+
+  // Spanish & Portuguese static pages
+  const esStaticPages: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/es`,
+      lastModified: new Date(staticPageDates.home),
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+      alternates: buildAlternates('/'),
+    },
+    {
+      url: `${baseUrl}/es/about`,
+      lastModified: new Date(staticPageDates.about),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+      alternates: buildAlternates('/about'),
+    },
+    {
+      url: `${baseUrl}/es/blog`,
+      lastModified: getLatestBlogPostDate(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+      alternates: buildAlternates('/blog'),
+    },
+  ];
+
+  const ptStaticPages: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/pt`,
+      lastModified: new Date(staticPageDates.home),
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+      alternates: buildAlternates('/'),
+    },
+    {
+      url: `${baseUrl}/pt/about`,
+      lastModified: new Date(staticPageDates.about),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+      alternates: buildAlternates('/about'),
+    },
+    {
+      url: `${baseUrl}/pt/blog`,
+      lastModified: getLatestBlogPostDate(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+      alternates: buildAlternates('/blog'),
+    },
+  ];
+
+  return [
+    ...staticPages,
+    ...esStaticPages,
+    ...ptStaticPages,
+    ...cityIndexEntry,
+    ...cityPageEntries,
+    ...esCityIndexEntry,
+    ...esCityPageEntries,
+    ...ptCityIndexEntry,
+    ...ptCityPageEntries,
+    ...blogPostEntries,
+    ...esBlogPostEntries,
+    ...ptBlogPostEntries,
+    ...blogCategoryEntries,
+    ...esBlogCategoryEntries,
+    ...ptBlogCategoryEntries,
+  ];
 }

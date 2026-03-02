@@ -1,11 +1,18 @@
 ---
-title: "The Celestial Dance in Milliseconds: A Deep Dive into the Planetary Hours Calculator's Precision Algorithm"
-excerpt: "Explore the precise astronomical algorithm behind our Planetary Hours Calculator, from geolocation and SunCalc.js to meticulous time zone corrections for truly accurate results."
+title: "How Are Planetary Hours Calculated? A Deep Dive into the Precision Algorithm"
+excerpt: "How are planetary hours calculated? Explore the precise astronomical algorithm behind our Planetary Hours Calculator — from sunrise/sunset via SunCalc.js, to the Chaldean Order, to meticulous time zone corrections."
 date: "2025-05-19T17:39:49+08:00"
 author: "Planetary Hours Team"
+keywords:
+  - how are planetary hours calculated
+  - planetary hours calculation
+  - planetary hours algorithm
+  - planetary hours calculator how it works
 ---
 
-# The Celestial Dance in Milliseconds: A Deep Dive into the Planetary Hours Calculator's Precision Algorithm
+# How Are Planetary Hours Calculated? A Deep Dive into the Precision Algorithm
+
+**How are planetary hours calculated?** In short, planetary hours are calculated by dividing the time between sunrise and sunset into 12 equal daytime segments, and the time between sunset and the next sunrise into 12 equal nighttime segments, then assigning each segment a ruling planet according to the ancient Chaldean Order. The process requires precise astronomical data for your exact location and date — which is why accurate calculators rely on solar-position libraries, geographic coordinates, and robust time zone handling.
 
 When you use the Planetary Hours Calculator and, within moments, receive a precise schedule of planetary hours tailored to your exact location, have you ever paused to consider the intricate calculations happening "behind the curtain"? In our digital age, a seemingly simple output often results from a sophisticated interplay of algorithms and data.
 
